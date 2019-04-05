@@ -1,0 +1,30 @@
+{
+    "name": "nimbly/capsule",
+    "description": "PSR-7 implementation",
+    "type": "library",
+    "require": {
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "vimeo/psalm": "^3.2",
+        "phpunit/phpunit": "^8.0",
+        "php-coveralls/php-coveralls": "^2.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brent Scheffler",
+            "email": "brent@nimbly.io"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Capsule\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Capsule\\Tests\\": "tests/"
+        }        
+    }
+}
