@@ -166,16 +166,14 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
-     * @return StreamInterface
      */
-    public function getBody(): StreamInterface
+    public function getBody(): ?StreamInterface
     {
         return $this->body;
     }
 
     /**
      * @inheritDoc
-     * @return MessageInterface
      */
     public function withBody(StreamInterface $body)
     {
