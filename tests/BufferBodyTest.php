@@ -7,6 +7,7 @@ use Capsule\Body\BufferBody;
 
 /**
  * @covers Capsule\Body\BufferBody
+ * @covers Capsule\Stream\BufferStream
  */
 class BufferBodyTest extends TestCase
 {

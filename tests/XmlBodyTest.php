@@ -8,6 +8,7 @@ use Capsule\Body\XmlBody;
 /**
  * @covers Capsule\Body\XmlBody
  * @covers Capsule\Body\BufferBody
+ * @covers Capsule\Stream\BufferStream
  */
 class XmlBodyTest extends TestCase
 {

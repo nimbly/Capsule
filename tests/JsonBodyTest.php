@@ -8,6 +8,7 @@ use Capsule\Body\JsonBody;
 /**
  * @covers Capsule\Body\JsonBody
  * @covers Capsule\Body\BufferBody
+ * @covers Capsule\Stream\BufferStream
  */
 class JsonBodyTest extends TestCase
 {
