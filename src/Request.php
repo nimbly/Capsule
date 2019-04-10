@@ -94,7 +94,7 @@ class Request extends MessageAbstract implements RequestInterface
             $_SERVER['REQUEST_METHOD'] ?? 'get',
             new Uri(
                 (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') .
-                (isset($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'] . ':' . ($_SERVER['PHP_AUTH_PW'] ?? null) . '@') : null) .
+                (isset($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'] . ':' . ($_SERVER['PHP_AUTH_PW'] ?? '') . '@') : '') .
                 $_SERVER['HTTP_HOST'] .
                 $_SERVER['REQUEST_URI']
             ),
