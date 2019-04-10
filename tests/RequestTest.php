@@ -11,6 +11,7 @@ use Capsule\Uri;
  * @covers Capsule\Request
  * @covers Capsule\Uri
  * @covers Capsule\Stream\BufferStream
+ * @covers Capsule\Stream\FileStream
  * @covers Capsule\MessageAbstract
  */
 class RequestTest extends TestCase

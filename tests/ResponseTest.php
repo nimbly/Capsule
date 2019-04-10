@@ -86,4 +86,21 @@ class ResponseTest extends TestCase
 
         $this->assertTrue(($response instanceof Response));
     }
+
+    public function test_constructor()
+    {
+        $response = new Response(
+            "201",
+            new BufferStream("OK"),
+            [
+                "Content-Type" => "text/plain",
+            ],
+            "2"
+        );
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals("OK", $response->getBody()->getContents());
+        $this->assertEquals("text/plain", $response->getHeader('Content-Type')[0]);
+        $this->assertEquals(2, $response->getProtocolVersion());
+    }
 }
