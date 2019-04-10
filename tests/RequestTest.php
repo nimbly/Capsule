@@ -94,4 +94,23 @@ class RequestTest extends TestCase
 
         $this->assertTrue(($request instanceof Request));
     }
+
+    public function test_make_from_globals()
+    {
+        $_SERVER['SERVER_PROTOCOL'] = "HTTP/2";
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/path/to/somewhere?foo=bar';
+        $_SERVER['HTTP_HOST'] = 'localhost';
+        $_SERVER['HTTPS'] = 'https';
+
+        $request = Request::makeFromGlobals();
+
+        $this->assertEquals(2, $request->getProtocolVersion());
+        $this->assertEquals("GET", $request->getMethod());
+        
+        $this->assertEquals('https', $request->getUri()->getScheme());
+        $this->assertEquals('localhost', $request->getUri()->getHost());
+        $this->assertEquals('/path/to/somewhere', $request->getUri()->getPath());
+        $this->assertEquals('foo=bar', $request->getUri()->getQuery());
+    }
 }

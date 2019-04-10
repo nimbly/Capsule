@@ -90,6 +90,8 @@ class Request extends MessageAbstract implements RequestInterface
      */
     public static function makeFromGlobals(): Request
     {
+        preg_match('/^HTTP\/(.+)$/i', $_SERVER['SERVER_PROTOCOL'] ?? '', $serverProtocol);
+
         $request = new Request(
             $_SERVER['REQUEST_METHOD'] ?? 'get',
             new Uri(
@@ -98,12 +100,10 @@ class Request extends MessageAbstract implements RequestInterface
                 $_SERVER['HTTP_HOST'] .
                 $_SERVER['REQUEST_URI']
             ),
-            new FileStream(fopen('php://input', 'r'))
+            new FileStream(fopen('php://input', 'r')),
+            \getallheaders(),
+            $serverProtocol[1] ?? '1.1'
         );
-
-        if( preg_match('/^HTTP\/(.+)$/i', $_SERVER['SERVER_PROTOCOL'] ?? '', $match) ){
-            $request = $request->withProtocolVersion($match[1]);
-        }
 
         return $request;
     }
