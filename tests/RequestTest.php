@@ -2,10 +2,11 @@
 
 namespace Capsule\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Capsule\Request;
 use Capsule\Stream\BufferStream;
 use Capsule\Uri;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @covers Capsule\Request
@@ -43,7 +44,6 @@ class RequestTest extends TestCase
         $request = new Request;
         $newRequest = $request->withUri(new Uri("https://example.com"));
 
-        $this->assertEmpty($request->getUri());
         $this->assertNotEquals($request, $newRequest);
     }
 
@@ -68,32 +68,34 @@ class RequestTest extends TestCase
         $request = new Request(
             "post",
             "http://example.com",
-            "OK",
+            "BODY",
             [
                 "Accept-Language" => "en_US"
             ],
-            2
+            "2"
         );
 
         $this->assertEquals("POST", $request->getMethod());
         $this->assertEquals("http://example.com:80/", (string) $request->getUri());
-        $this->assertEquals("OK", $request->getBody()->getContents());
+        $this->assertEquals("BODY", $request->getBody()->getContents());
         $this->assertEquals("en_US", $request->getHeader("Accept-Language")[0]);
-        $this->assertEquals(2, $request->getProtocolVersion());
+        $this->assertEquals("2", $request->getProtocolVersion());
     }
 
-    public function test_make_factory()
+    public function test_uri_instance_created_automatically_if_not_provided()
     {
-        $request = Request::make(
-            "post",
-            new Uri("http://example.com"),
-            new BufferStream("OK"),
-            [
-                "Accept-Language" => "en_US"
-            ],
-            2);
+        $request = new Request("get");
 
-        $this->assertTrue(($request instanceof Request));
+        $this->assertNotNull($request->getUri());
+        $this->assertTrue($request->getUri() instanceof Uri);
+    }
+
+    public function test_body_instance_created_automatically_if_not_provided()
+    {
+        $request = new Request("get", "http://example.com:80/");
+
+        $this->assertNotNull($request->getBody());
+        $this->assertTrue($request->getBody() instanceof StreamInterface);
     }
 
     public function test_make_from_globals()

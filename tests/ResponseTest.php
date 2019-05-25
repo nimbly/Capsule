@@ -2,10 +2,11 @@
 
 namespace Capsule\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Capsule\Response;
 use Capsule\ResponseStatus;
 use Capsule\Stream\BufferStream;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @covers Capsule\Response
@@ -73,20 +74,6 @@ class ResponseTest extends TestCase
         $this->assertFalse($response->isSuccessful());
     }
 
-    public function test_make_factory()
-    {
-        $response = Response::make(
-            201,
-            new BufferStream("OK"),
-            [
-                "X-Foo" =>"Bar",
-            ],
-            2
-        );
-
-        $this->assertTrue(($response instanceof Response));
-    }
-
     public function test_constructor()
     {
         $response = new Response(
@@ -102,5 +89,13 @@ class ResponseTest extends TestCase
         $this->assertEquals("OK", $response->getBody()->getContents());
         $this->assertEquals("text/plain", $response->getHeader('Content-Type')[0]);
         $this->assertEquals(2, $response->getProtocolVersion());
+    }
+
+    public function test_no_body_provided_in_constructor_creates_a_body()
+    {
+        $response = new Response("200");
+
+        $this->assertNotNull($response->getBody());
+        $this->assertTrue($response->getBody() instanceof StreamInterface);
     }
 }

@@ -10,6 +10,7 @@ use Capsule\Stream\BufferStream;
  * @covers Capsule\MessageAbstract
  * @covers Capsule\Request
  * @covers Capsule\Stream\BufferStream
+ * @covers Capsule\Uri
  */
 class MessageTest extends TestCase
 {
