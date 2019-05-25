@@ -156,4 +156,13 @@ class FileStreamTest extends TestCase
         $fileStream = $this->getFileStream();
         $this->assertTrue(is_array($fileStream->getMetadata()));
     }
+
+    public function test_get_unknown_meta_throws()
+    {
+        $fileStream = $this->getFileStream();
+
+        $this->expectException(\Exception::class);
+
+        $fileStream->getMetadata("foo");
+    }
 }

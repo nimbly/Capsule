@@ -64,6 +64,35 @@ class MessageTest extends TestCase
         $this->assertNull($header);
     }
 
+    public function test_get_header_line_returns_empty_string_if_header_not_found()
+    {
+        $request = new Request;
+
+        $this->assertEquals("", $request->getHeaderLine("X-Foo"));
+    }
+
+    public function test_get_headers_returns_all_headrs()
+    {
+        $request = new Request;
+
+        $request = $request->withHeader("X-Foo", "FooHeader");
+        $request = $request->withHeader("X-Bar", "BarHeader");
+
+        $this->assertEquals([
+            "X-Foo" => ["FooHeader"],
+            "X-Bar" => ["BarHeader"]
+        ], $request->getHeaders());
+    }
+
+    public function test_with_added_header_uses_header_name_as_is_if_not_found()
+    {
+        $request = new Request;
+
+        $request = $request->withAddedHeader("X-Foo", "FooHeader");
+
+        $this->assertEquals("X-Foo: FooHeader", $request->getHeaderLine("X-Foo"));
+    }
+
     public function test_with_header_replaces_existing_header()
     {
         $request = (new Request)->withHeader("Content-Type", "application/json");

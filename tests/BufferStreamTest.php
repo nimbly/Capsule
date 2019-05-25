@@ -32,7 +32,7 @@ class BufferStreamTest extends TestCase
     public function test_detach_resets_buffer_contents()
     {
         $bufferStream = new BufferStream("Capsule!");
-        $bufferStream->close();
+        $bufferStream->detach();
         $this->assertEquals("", $bufferStream->getContents());
     }
 

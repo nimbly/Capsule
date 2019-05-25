@@ -160,4 +160,10 @@ class UriTest extends TestCase
         $this->assertEmpty($uri->getFragment());
         $this->assertNotEquals($uri, $newUri);
     }
+
+    public function test_get_authority_with_no_credentials_returns_empty_string()
+    {
+        $uri = new Uri("http://www.example.com");
+        $this->assertEquals("", $uri->getAuthority());
+    }
 }
