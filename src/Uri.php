@@ -79,7 +79,7 @@ class Uri implements UriInterface
             $query = "(?:[\w\[\]\_]+\=[^&^#]+&?)+";
             $fragment = "#([0-9a-zA-Z\!\$&'\(\)\*\+\,;\=\-\.\_\~\:\@\/\?]+)";
     
-            preg_match("/^(?:{$scheme})(?:{$authorization})?({$host})(?:{$port})?({$path})?(?:\?({$query}))?(?:{$fragment})?$/i", $url, $match, PREG_UNMATCHED_AS_NULL);
+            \preg_match("/^(?:{$scheme})(?:{$authorization})?({$host})(?:{$port})?({$path})?(?:\?({$query}))?(?:{$fragment})?$/i", $url, $match, PREG_UNMATCHED_AS_NULL);
     
             // Check that supplied URI is valid.
             if( empty($match[1]) ||
@@ -87,10 +87,10 @@ class Uri implements UriInterface
                 throw new \Exception("Invalid URI");
             }
     
-            $this->scheme = strtolower($match[1]);
+            $this->scheme = \strtolower($match[1]);
             $this->username = $match[2] ?? "";
             $this->password = $match[3] ?? "";
-            $this->host = strtolower($match[4]);
+            $this->host = \strtolower($match[4]);
             $this->port = (int) ($match[5] ?? $this->derivePortFromScheme($this->scheme));
             $this->path = $match[6] ?? "/";
             $this->query = $match[7] ?? "";
@@ -106,7 +106,7 @@ class Uri implements UriInterface
      */
     private function derivePortFromScheme($scheme): int
     {
-        if( strtolower($scheme) === 'https' ){
+        if( \strtolower($scheme) === 'https' ){
             return 443;
         }
 
