@@ -5,11 +5,11 @@
 [![Code Coverage](https://img.shields.io/coveralls/github/nimbly/Capsule.svg?style=flat-square)](https://coveralls.io/github/nimbly/Capsule)
 [![License](https://img.shields.io/github/license/nimbly/Capsule.svg?style=flat-square)](https://packagist.org/packages/nimbly/Capsule)
 
-Simple PSR-7 HTTP message implementation -- no bells, no whistles.
+Capsule is a simple [PSR-7](https://www.php-fig.org/psr/psr-7/) HTTP message interface implementation.
 
-## Using globals
-You can create a ```Request``` instance from PHP's ```$_SERVER``` super global by calling the static method ```createFromGlobals```.
+**Note:** This library is simply an HTTP Request and Response message interface implementation. If you are looking for an HTTP client, checkout [nimbly/Shuttle](https://github.com/nimbly/shuttle). Shuttle is a [PSR-18](https://www.php-fig.org/psr/psr-18/) HTTP client utilizing Capsule as its HTTP message implementation.
 
-```php
-$request = Request::createFromGlobals();
+## Install
+```bash
+composer require nimbly/capsule
 ```

@@ -56,7 +56,7 @@ class FileStream implements StreamInterface
      */
     public function close()
     {
-        fclose($this->resource);
+        \fclose($this->resource);
     }
 
     /**
@@ -72,7 +72,7 @@ class FileStream implements StreamInterface
      */
     public function getSize()
     {
-        $fstat = fstat($this->resource);
+        $fstat = \fstat($this->resource);
         return $fstat["size"] ?? null;
     }
 
@@ -81,7 +81,7 @@ class FileStream implements StreamInterface
      */
     public function tell(): int
     {
-        return ftell($this->resource);
+        return \ftell($this->resource);
     }
 
     /**
@@ -89,7 +89,7 @@ class FileStream implements StreamInterface
      */
     public function eof()
     {
-        return feof($this->resource);
+        return \feof($this->resource);
     }
 
     /**
@@ -106,7 +106,7 @@ class FileStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        return fseek($this->resource, $offset, $whence);
+        return \fseek($this->resource, $offset, $whence);
     }
 
     /**
@@ -115,7 +115,7 @@ class FileStream implements StreamInterface
      */
     public function rewind()
     {
-        return rewind($this->resource);
+        return \rewind($this->resource);
     }
 
     /**
@@ -123,8 +123,8 @@ class FileStream implements StreamInterface
      */
     public function isWritable()
     {
-        $mode = strtolower($this->getMetadata('mode'));
-        return in_array($mode, $this->fileModes['writeable']);        
+        $mode = \strtolower($this->getMetadata('mode'));
+        return \in_array($mode, $this->fileModes['writeable']);
     }
 
     /**
@@ -132,7 +132,7 @@ class FileStream implements StreamInterface
      */
     public function write($string)
     {
-        return fwrite($this->resource, $string);
+        return \fwrite($this->resource, $string);
     }
 
     /**
@@ -140,8 +140,8 @@ class FileStream implements StreamInterface
      */
     public function isReadable()
     {
-        $mode = strtolower($this->getMetadata('mode'));
-        return in_array($mode, $this->fileModes['readable']);        
+        $mode = \strtolower($this->getMetadata('mode'));
+        return \in_array($mode, $this->fileModes['readable']);
     }
 
     /**
@@ -149,7 +149,7 @@ class FileStream implements StreamInterface
      */
     public function read($length)
     {
-        return fread($this->resource, $length);
+        return \fread($this->resource, $length);
     }
 
     /**
@@ -159,8 +159,8 @@ class FileStream implements StreamInterface
     {
         $buffer = "";
 
-        while( !feof($this->resource) ){
-            $buffer.=fread($this->resource, 1024);
+        while( !\feof($this->resource) ){
+            $buffer.=\fread($this->resource, 1024);
         }
 
         return $buffer;
@@ -172,12 +172,12 @@ class FileStream implements StreamInterface
     public function getMetadata($key = null)
     {
         if( empty($key) ){
-            return stream_get_meta_data($this->resource);
+            return \stream_get_meta_data($this->resource);
         }
-        
-        $meta = stream_get_meta_data($this->resource);
 
-        if( array_key_exists($key, $meta) ){
+        $meta = \stream_get_meta_data($this->resource);
+
+        if( \array_key_exists($key, $meta) ){
             return $meta[$key];
         }
 

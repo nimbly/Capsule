@@ -55,7 +55,7 @@ class BufferStream implements StreamInterface
      */
     public function getSize()
     {
-        return strlen($this->buffer);
+        return \strlen($this->buffer);
     }
 
     /**
@@ -71,7 +71,7 @@ class BufferStream implements StreamInterface
      */
     public function eof()
     {
-        return (strlen($this->buffer) === 0);
+        return (\strlen($this->buffer) === 0);
     }
 
     /**
@@ -113,7 +113,7 @@ class BufferStream implements StreamInterface
     public function write($string)
     {
         $this->buffer .= $string;
-        return strlen($string);
+        return \strlen($string);
     }
 
     /**
@@ -129,12 +129,12 @@ class BufferStream implements StreamInterface
      */
     public function read($length)
     {
-        if( $length >= strlen($this->buffer) ){
+        if( $length >= \strlen($this->buffer) ){
             return $this->getContents();
         }
 
-        $chunk = substr($this->buffer, 0, $length);
-        $this->buffer = substr($this->buffer, $length);
+        $chunk = \substr($this->buffer, 0, $length);
+        $this->buffer = \substr($this->buffer, $length);
         return $chunk;
     }
 
