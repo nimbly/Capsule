@@ -77,7 +77,7 @@ class BufferStreamTest extends TestCase
     public function test_is_writeable()
     {
         $bufferStream = new BufferStream;
-        
+
         $this->assertTrue($bufferStream->isWritable());
     }
 

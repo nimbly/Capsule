@@ -43,7 +43,7 @@ class Request extends MessageAbstract implements RequestInterface
     public function __construct(?string $method = null, $uri = null, $body = null, array $headers = null, string $httpVersion = "1.1")
     {
         if( $method ){
-            $this->method = strtoupper($method);
+            $this->method = \strtoupper($method);
         }
 
         $this->uri = $uri instanceof UriInterface ? $uri : new Uri((string) $uri);
@@ -57,37 +57,12 @@ class Request extends MessageAbstract implements RequestInterface
     }
 
     /**
-     * Create a Request from the PHP $_SERVER global.
-     *
-     * @return Request
-     */
-    public static function makeFromGlobals(): Request
-    {
-        preg_match('/^HTTP\/(.+)$/i', $_SERVER['SERVER_PROTOCOL'] ?? '', $serverProtocol);
-
-        $request = new static(
-            $_SERVER['REQUEST_METHOD'] ?? 'get',
-            new Uri(
-                (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') .
-                (isset($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'] . ':' . ($_SERVER['PHP_AUTH_PW'] ?? '') . '@') : '') .
-                $_SERVER['HTTP_HOST'] .
-                $_SERVER['REQUEST_URI']
-            ),
-            new FileStream(fopen('php://input', 'r')),
-            \getallheaders(),
-            $serverProtocol[1] ?? '1.1'
-        );
-
-        return $request;
-    }
-
-    /**
      * @inheritDoc
      */
     public function withMethod($method) : Request
     {
         $instance = clone $this;
-        $instance->method = strtoupper($method);
+        $instance->method = \strtoupper($method);
         return $instance;
     }
 

@@ -42,7 +42,7 @@ abstract class MessageAbstract implements MessageInterface
      */
     public function withProtocolVersion($version)
     {
-        if( !in_array($version, ["1.1", "1.0", "2", "2.0"]) ){
+        if( !\in_array($version, ["1.1", "1.0", "2", "2.0"]) ){
             throw new \Exception("Invalid protocol version {$version}");
         }
 
@@ -61,7 +61,7 @@ abstract class MessageAbstract implements MessageInterface
     private function findHeaderKey($name)
     {
         foreach( $this->headers as $key => $value ){
-            if( strtolower($name) === strtolower($key) ){
+            if( \strtolower($name) === \strtolower($key) ){
                 return $key;
             }
         }
@@ -93,7 +93,7 @@ abstract class MessageAbstract implements MessageInterface
         if( ($key = $this->findHeaderKey($name)) !== false ){
             return $this->headers[$key];
         }
-        
+
         return null;
     }
 
@@ -108,7 +108,7 @@ abstract class MessageAbstract implements MessageInterface
             return "";
         }
 
-        return "{$name}: " . implode(",", $header);
+        return "{$name}: " . \implode(",", $header);
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * Mass assign headers.
-     * 
+     *
      * This method is NOT immutable and *will* modify the current object.
      *
      * @param array $headers

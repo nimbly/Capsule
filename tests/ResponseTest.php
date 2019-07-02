@@ -21,7 +21,7 @@ class ResponseTest extends TestCase
         $response = (new Response)->withStatus(200);
         $this->assertNotEmpty($response->getReasonPhrase());
     }
-    
+
     public function test_with_status_code_saves_data()
     {
         $response = (new Response)->withStatus(200);

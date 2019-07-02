@@ -85,7 +85,7 @@ class UriTest extends TestCase
         $this->assertEmpty($uri->getScheme());
         $this->assertNotEquals($uri, $newUri);
     }
-    
+
     public function test_with_host_saves_data()
     {
         $uri = (new Uri)->withHost("www.example.com");

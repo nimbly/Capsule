@@ -7,7 +7,7 @@ use Capsule\ResponseStatus;
 
 /**
  * @package Capsule\Tests
- * 
+ *
  * @covers Capsule\ResponseStatus
  */
 class ResponseStatusTest extends TestCase

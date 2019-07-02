@@ -15,7 +15,7 @@ class ResponseStatus
         101 => "Switching Protocols",
         102 => "Processing",
         103 => "Early Hints",
-        
+
         200 => "OK",
         201 => "Created",
         202 => "Accepted",
@@ -26,7 +26,7 @@ class ResponseStatus
         207 => "Multi-Status",
         208 => "Already Reported",
         226 => "IM Used",
-        
+
         300 => "Multiple Choices",
         301 => "Moved Permanently",
         302 => "Found",
@@ -36,7 +36,7 @@ class ResponseStatus
         306 => "Switch Proxy",
         307 => "Temporary Redirect",
         308 => "Permanent Redirect",
-        
+
         400 => "Bad Request",
         401 => "Unauthorized",
         402 => "Payment Required",
@@ -65,7 +65,7 @@ class ResponseStatus
         429 => "Too Many Requests",
         431 => "Request Header Fields Too Large",
         451 => "Unavailable For Legal Reasons",
-        
+
         500 => "Internal Server Error",
         501 => "Not Implemented",
         502 => "Bad Gateway",
@@ -87,7 +87,7 @@ class ResponseStatus
      */
     public static function getPhrase(int $code): ?string
     {
-        if( array_key_exists($code, self::$phrases) ){
+        if( \array_key_exists($code, self::$phrases) ){
             return self::$phrases[$code];
         }
 
