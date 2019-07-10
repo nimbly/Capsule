@@ -3,13 +3,14 @@
     "description": "PSR-7 implementation",
     "type": "library",
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2",
         "psr\/http-message": "^1.0"
     },
     "require-dev": {
         "vimeo\/psalm": "^3.2",
         "phpunit\/phpunit": "^8.0",
-        "php-coveralls\/php-coveralls": "^2.1"
+        "php-coveralls\/php-coveralls": "^2.1",
+        "symfony/var-dumper": "^4.3"
     },
     "license": "MIT",
     "authors": [
