@@ -78,15 +78,15 @@ class Uri implements UriInterface
             $path = "\/[^\?#]*\/?";
             $query = "(?:[\w\[\]\_]+\=[^&^#]+&?)+";
             $fragment = "#([0-9a-zA-Z\!\$&'\(\)\*\+\,;\=\-\.\_\~\:\@\/\?]+)";
-    
+
             \preg_match("/^(?:{$scheme})(?:{$authorization})?({$host})(?:{$port})?({$path})?(?:\?({$query}))?(?:{$fragment})?$/i", $url, $match, PREG_UNMATCHED_AS_NULL);
-    
+
             // Check that supplied URI is valid.
             if( empty($match[1]) ||
                 empty($match[4]) ){
                 throw new \Exception("Invalid URI");
             }
-    
+
             $this->scheme = \strtolower($match[1]);
             $this->username = $match[2] ?? "";
             $this->password = $match[3] ?? "";
@@ -197,7 +197,7 @@ class Uri implements UriInterface
     public function withScheme($scheme)
     {
         $instance = clone $this;
-        $instance->scheme = $scheme;
+        $instance->scheme = \strtolower($scheme);
         return $instance;
     }
 
@@ -229,7 +229,7 @@ class Uri implements UriInterface
     {
         $instance = clone $this;
         $instance->port = $port;
-        return $instance; 
+        return $instance;
     }
 
     /**
@@ -252,7 +252,7 @@ class Uri implements UriInterface
         return $instance;
     }
 
-    
+
     /**
      * @inheritDoc
      */
