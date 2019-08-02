@@ -45,19 +45,39 @@ class UploadedFile implements UploadedFileInterface
 	protected $error;
 
 	/**
-	 * Create an UploadedFile instance from a PHP $_FILES element.
+	 * UploadedFile constructor.
+	 *
+	 * @param string $clientFilename
+	 * @param string $clientMediaType
+	 * @param string $tempFilename
+	 * @param integer $size
+	 * @param integer $error
+	 */
+	public function __construct(string $clientFilename, string $clientMediaType, string $tempFilename, int $size, int $error = 0)
+	{
+		$this->clientFilename = $clientFilename;
+		$this->clientMediaType = $clientMediaType;
+		$this->size = $size;
+		$this->tempFilename = $tempFilename;
+		$this->error = $error;
+	}
+
+	/**
+	 * Create an UploadedFile instance from a single $_FILES element.
 	 *
 	 * @param array $file
 	 * @return UploadedFile
 	 */
 	public static function createFromGlobal(array $file): UploadedFile
 	{
-		$uploadedFile = new static;
-		$uploadedFile->clientFilename = $file['name'] ?? 'filename';
-		$uploadedFile->clientMediaType = $file['type'] ?? 'text/plain';
-		$uploadedFile->size = (int) ($file['size'] ?? 0);
-		$uploadedFile->tempFilename = $file['tmp_name'] ?? 'tmp_file';
-		$uploadedFile->error = (int) ($file['error'] ?? 0);
+		$uploadedFile = new static(
+			$file['name'] ?? 'filename',
+			$file['type'] ?? 'text/plain',
+			$file['tmp_name'] ?? 'tmp_file',
+			(int) ($file['size'] ?? 0),
+			(int) ($file['error'] ?? 0)
+		);
+
 		return $uploadedFile;
 	}
 
@@ -68,7 +88,7 @@ class UploadedFile implements UploadedFileInterface
 	{
 		if( empty($this->stream) ){
 			$this->stream = new FileStream(
-				\fopen($this->tempFilename)
+				\fopen($this->tempFilename, "r")
 			);
 		}
 

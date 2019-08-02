@@ -2,19 +2,12 @@
 
 namespace Capsule;
 
-use Capsule\Stream\FileStream;
+use Capsule\Stream\BufferStream;
 use Psr\Http\Message\ServerRequestInterface;
 
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-	/**
-	 * Remote address of client.
-	 *
-	 * @var string
-	 */
-	protected $remoteAddress;
-
 	/**
 	 * Query parameters sent in request.
 	 *
@@ -39,7 +32,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Parsed representation of body contents.
 	 *
-	 * @var array<string, string>
+	 * @var array<string, mixed>
 	 */
 	protected $parsedBody = [];
 
@@ -51,60 +44,110 @@ class ServerRequest extends Request implements ServerRequestInterface
 	protected $attributes = [];
 
 	/**
+	 * Create a ServerRequest instance.
+	 *
+	 * @param string $method
+	 * @param Uri|string $uri
+	 * @param object|array|string|null $body
+	 * @param array<string, mixed> $query
+	 * @param array<string, mixed> $headers
+	 * @param array<string, mixed> $cookies
+	 * @param array<UploadedFile> $files
+	 * @param string $version
+	 * @return ServerRequest
+	 */
+	public static function create(
+		string $method,
+		$uri,
+		$body,
+		array $query,
+		array $headers,
+		array $cookies,
+		array $files,
+		string $version = "1.1"): ServerRequest
+	{
+		$serverRequest = new static;
+		$serverRequest->method = $method;
+
+		if( $uri instanceof Uri ){
+			$serverRequest->uri = $uri;
+		}
+		else {
+			$serverRequest->uri = new Uri($uri);
+		}
+
+		foreach( $headers as $header => $value ){
+			$serverRequest = $serverRequest->withAddedHeader($header, $value);
+		}
+
+		$serverRequest->queryParams = $query;
+
+		if( \is_array($body) ){
+			$serverRequest->body = new BufferStream(\http_build_query($body));
+			$serverRequest->parsedBody = $body;
+		}
+		elseif( \is_string($body) ) {
+
+			if( ($jsonBody = \json_decode($body, true)) !== null ){
+				$serverRequest->parsedBody = $jsonBody;
+			}
+			elseif( \parse_str($body, $formBody) ){
+				$serverRequest->parsedBody = $formBody;
+			}
+			else {
+				$serverRequest->parsedBody = $body;
+			}
+
+			$serverRequest->body = new BufferStream($body);
+		}
+		elseif( \is_object($body) ){
+			$serverRequest->parsedBody = (array) $body;
+			$serverRequest->body = new BufferStream(\json_encode((array) $body));
+		}
+
+		$serverRequest->uploadedFiles = $files;
+		$serverRequest->cookieParams = $cookies;
+		$serverRequest->version = $version;
+
+		return $serverRequest;
+	}
+
+	/**
 	 * Create an incoming Request instance from the PHP globals space.
 	 *
 	 * @return ServerRequest
 	 */
 	public static function createFromGlobals(): ServerRequest
 	{
-		$serverRequest = new static;
-
-		// Parse the protocol and version
-		if( \preg_match("/(HTTPS?)\/([\d\.]+)/i", $_SERVER['SERVER_PROTOCOL'], $match) ){
-
-			$serverRequest->uri = new Uri(
-				\strtolower($match[1]) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
-			);
-
-			$serverRequest->version = $match[2];
+		if( \preg_match("/(HTTPS?)\/([\d\.]+)/i", $_SERVER['SERVER_PROTOCOL'] ?? "", $match) == false ){
+			throw new \Exception('Cannot parse request.');
 		}
 
-		// Get the request method
-		$serverRequest->method = $_SERVER['REQUEST_METHOD'];
+		// Build out the URI
+		$uri = \strtolower($match[1]) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		// Get the remote address.
-		$serverRequest->remoteAddress = $_SERVER['REMOTE_ADDR'] ?? '';
+		// Capture the version.
+		$version = $match[2];
 
-		// Get all the headers
-		foreach( \array_change_key_case(\getallheaders()) as $header => $value ){
-			$serverRequest = $serverRequest->withAddedHeader($header, $value);
-		}
-
-		// Get the query params.
-		\parse_str($serverRequest->getUri()->getQuery(), $serverRequest->queryParams);
-
-		// Parse the request body
+		// Get the request body first by getting raw input from php://input.
 		$body = \file_get_contents("php://input");
 
-		if( empty($body) ){
-			$serverRequest->parsedBody = $_POST;
-		}
-		elseif( ($jsonBody = \json_decode($body, true)) !== null ){
-			$serverRequest->parsedBody = $jsonBody;
-		}
-		elseif( \parse_str($body, $formBody) ){
-			$serverRequest->parsedBody = $formBody;
-		}
-
-		// Process the uploaded files
+		// Process the uploaded files into an array of UploadedFile.
 		foreach( $_FILES as $name => $file ){
-			$serverRequest->uploadedFiles[$name] = UploadedFile::createFromGlobal($file);
+			$files[$name] = UploadedFile::createFromGlobal($file);
 		}
 
-		// Process the cookies
-		$serverRequest->cookieParams = $_COOKIE;
-
-		return $serverRequest;
+		return self::create(
+			$_SERVER['REQUEST_METHOD'],
+			$uri,
+			!empty($body) ? $body : $_POST,
+			$_GET,
+			\array_change_key_case(\getallheaders()),
+			$_COOKIE,
+			$files ?? [],
+			$_SERVER['REMOTE_ADDR'] ?? '',
+			$version ?? "1.1"
+		);
 	}
 
 	/**
@@ -148,7 +191,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	public function withQueryParams(array $query)
 	{
 		$instance = clone $this;
-		$instance->uri = $this->uri->withQuery($query);
+		$instance->queryParams = $query;
 
 		return $instance;
 	}
