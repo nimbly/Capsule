@@ -6,7 +6,10 @@ use Capsule\Stream\FileStream;
 use Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
 
-
+/**
+ * @covers Capsule\UploadedFile
+ * @covers Capsule\Stream\FileStream
+ */
 class UploadedFileTest extends TestCase
 {
 	protected function makeFile()

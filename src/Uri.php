@@ -8,95 +8,86 @@ use Psr\Http\Message\UriInterface;
 class Uri implements UriInterface
 {
     /**
-     * URI scheme.
+     * URI scheme (http or https)
      *
      * @var string
      */
     protected $scheme;
 
     /**
-     * Request host.
+     * Request host
      *
      * @var string
      */
     protected $host;
 
     /**
-     * URI port number.
+     * Port number
      *
      * @var int|null
      */
     protected $port;
 
     /**
-     * URI username.
+     * Username
      *
      * @var string
      */
     protected $username;
 
     /**
-     * URI password
+     * Password
      *
      * @var string
      */
     protected $password;
 
     /**
-     * URI path
+     * Path
      *
      * @var string
      */
     protected $path;
 
     /**
-     * URI query
+     * Query
      *
      * @var string
      */
     protected $query;
 
     /**
-     * URI fragment
+     * Fragment
      *
      * @var string
      */
     protected $fragment;
 
-    /**
-     * URI constructor.
-     *
-     * @param string|null $url
-     */
-    public function __construct($url = null)
-    {
-        if( $url ){
-            $scheme = "(https?)\:\/\/";
-            $authorization = "(\w+)\:(\w+)?@";
-            $host = "[a-z0-9\-\.]+";
-            $port = "\:([0-9]+)";
-            $path = "\/[^\?#]*\/?";
-            $query = "(?:[\w\[\]\_]+\=[^&^#]+&?)+";
-            $fragment = "#([0-9a-zA-Z\!\$&'\(\)\*\+\,;\=\-\.\_\~\:\@\/\?]+)";
+	/**
+	 * Make a Uri instance from a string.
+	 *
+	 * @param string $url
+	 * @return Uri
+	 */
+	public static function makeFromString(string $url): Uri
+	{
+		// Parse the URL
+		if( ($urlPart = \parse_url($url)) === false ){
+			throw new \Exception("Malformed URL string.");
+		}
 
-            \preg_match("/^(?:{$scheme})(?:{$authorization})?({$host})(?:{$port})?({$path})?(?:\?({$query}))?(?:{$fragment})?$/i", $url, $match, PREG_UNMATCHED_AS_NULL);
+		$uri = new static;
+		$uri->scheme = !empty($urlPart['scheme']) ? \strtolower($urlPart['scheme']) : null;
+		$uri->username = $urlPart['user'] ?? null;
+		$uri->password = $urlPart['pass'] ?? null;
+		$uri->host = !empty($urlPart['host']) ? \strtolower($urlPart['host']) : null;
+		$uri->port = !empty($urlPart['port']) ? (int) $urlPart['port'] : ($uri->scheme ? $uri->derivePortFromScheme($uri->scheme) : null);
+		$uri->path = $urlPart['path'] ?? null;
+		$uri->query = $urlPart['query'] ?? null;
+		$uri->fragment = $urlPart['fragment'] ?? null;
 
-            // Check that supplied URI is valid.
-            if( empty($match[1]) ||
-                empty($match[4]) ){
-                throw new \Exception("Invalid URI");
-            }
-
-            $this->scheme = \strtolower($match[1]);
-            $this->username = $match[2] ?? "";
-            $this->password = $match[3] ?? "";
-            $this->host = \strtolower($match[4]);
-            $this->port = (int) ($match[5] ?? $this->derivePortFromScheme($this->scheme));
-            $this->path = $match[6] ?? "/";
-            $this->query = $match[7] ?? "";
-            $this->fragment = $match[8] ?? "";
-        }
-    }
+		return $uri;
+	}
 
     /**
      * Given a scheme, derive the port number to use.
@@ -104,7 +95,7 @@ class Uri implements UriInterface
      * @param string $scheme
      * @return int
      */
-    private function derivePortFromScheme($scheme): int
+    private function derivePortFromScheme(string $scheme): int
     {
         if( \strtolower($scheme) === 'https' ){
             return 443;
@@ -280,7 +271,7 @@ class Uri implements UriInterface
             $url .= ":{$this->port}";
         }
 
-        $url.=$this->path;
+        $url.= ($this->path ?? "/");
 
         if( $this->query ){
             $url .= "?{$this->query}";

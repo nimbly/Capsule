@@ -32,7 +32,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Parsed representation of body contents.
 	 *
-	 * @var array<string, mixed>
+	 * @var array<string, mixed>|string
 	 */
 	protected $parsedBody = [];
 
@@ -73,7 +73,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 			$serverRequest->uri = $uri;
 		}
 		else {
-			$serverRequest->uri = new Uri($uri);
+			$serverRequest->uri = Uri::makeFromString($uri);
 		}
 
 		foreach( $headers as $header => $value ){
@@ -87,22 +87,12 @@ class ServerRequest extends Request implements ServerRequestInterface
 			$serverRequest->parsedBody = $body;
 		}
 		elseif( \is_string($body) ) {
-
-			if( ($jsonBody = \json_decode($body, true)) !== null ){
-				$serverRequest->parsedBody = $jsonBody;
-			}
-			elseif( \parse_str($body, $formBody) ){
-				$serverRequest->parsedBody = $formBody;
-			}
-			else {
-				$serverRequest->parsedBody = $body;
-			}
-
+			$serverRequest->parsedBody = $serverRequest->parseStringBody($body);
 			$serverRequest->body = new BufferStream($body);
 		}
 		elseif( \is_object($body) ){
-			$serverRequest->parsedBody = (array) $body;
 			$serverRequest->body = new BufferStream(\json_encode((array) $body));
+			$serverRequest->parsedBody = (array) $body;
 		}
 
 		$serverRequest->uploadedFiles = $files;
@@ -110,6 +100,30 @@ class ServerRequest extends Request implements ServerRequestInterface
 		$serverRequest->version = $version;
 
 		return $serverRequest;
+	}
+
+	/**
+	 * Parse the body.
+	 *
+	 * @param string $body
+	 * @return array|object|string
+	 */
+	private function parseStringBody(string $body)
+	{
+		// Use the Content-Type header to inform the parsing.
+		if( ($contentType = $this->getHeader('Content-Type')) ){
+
+			if( \stripos($contentType[0], 'json') !== false ){
+				return (array) \json_decode($body);
+			}
+			elseif( \stripos($contentType[0], 'application/x-www-form-urlencoded') !== false ||
+					\stripos($contentType[0], 'multipart/form-data') !== false ){
+				\parse_str($body, $parsedBody);
+				return $parsedBody;
+			}
+		}
+
+		return $body;
 	}
 
 	/**

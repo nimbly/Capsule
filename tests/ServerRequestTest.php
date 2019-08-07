@@ -26,7 +26,6 @@ class ServerRequestTest extends TestCase
 			[
 				"query1" => "value1",
 				"query2" => "value2"
-
 			],
 			[
 				"Content-Type" => "application/json",
@@ -47,6 +46,132 @@ class ServerRequestTest extends TestCase
 			],
 			"1.2.3.4",
 			"1.1"
+		);
+	}
+
+	public function test_create_with_uri_instance()
+	{
+		$uri = Uri::makeFromString("http://example.org/foo/bar?q=search");
+
+		$request = ServerRequest::create(
+			"get",
+			$uri,
+			null,
+			[],
+			[],
+			[],
+			[]
+		);
+
+		$this->assertSame(
+			$uri,
+			$request->getUri()
+		);
+	}
+
+	public function test_create_with_array_body()
+	{
+		$request = ServerRequest::create(
+			"get",
+			"http://example.org/foo/bar?q=search",
+			["email" => "test@example.com", "name" => "Testy Test"],
+			[],
+			[],
+			[],
+			[]
+		);
+
+		$this->assertEquals(
+			[
+				"email" => "test@example.com",
+				"name" => "Testy Test"
+			],
+			$request->getParsedBody()
+		);
+	}
+
+	public function test_create_with_object_body()
+	{
+		$request = ServerRequest::create(
+			"get",
+			"http://example.org/foo/bar?q=search",
+			(object) ["email" => "test@example.com", "name" => "Testy Test"],
+			[],
+			[],
+			[],
+			[]
+		);
+
+		$this->assertEquals(
+			[
+				"email" => "test@example.com",
+				"name" => "Testy Test"
+			],
+			$request->getParsedBody()
+		);
+	}
+
+	public function test_create_with_json_content_type()
+	{
+		$request = ServerRequest::create(
+			"get",
+			"http://example.org/foo/bar?q=search",
+			'{"name": "Testy Test", "email": "test@example.com"}',
+			[],
+			[
+				'Content-Type' => 'application/json'
+			],
+			[],
+			[]
+		);
+
+		$this->assertEquals(
+			[
+				"name" => "Testy Test",
+				"email" => "test@example.com"
+			],
+			$request->getParsedBody()
+		);
+	}
+
+	public function test_create_with_form_encoded_content_type()
+	{
+		$request = ServerRequest::create(
+			"get",
+			"http://example.org/foo/bar?q=search",
+			"name=Testy+Test&email=test@example.com",
+			[],
+			[
+				'Content-Type' => 'application/x-www-form-urlencoded'
+			],
+			[],
+			[]
+		);
+
+		$this->assertEquals(
+			[
+				"name" => "Testy Test",
+				"email" => "test@example.com"
+			],
+			$request->getParsedBody()
+		);
+	}
+
+	public function test_create_with_no_content_type_header()
+	{
+		$request = ServerRequest::create(
+			"get",
+			"http://example.org/foo/bar?q=search",
+			"Ok",
+			[],
+			[],
+			[],
+			[]
+		);
+
+		$this->assertEquals(
+			"Ok",
+			$request->getParsedBody()
 		);
 	}
 
@@ -167,16 +292,6 @@ class ServerRequestTest extends TestCase
 			],
 			$newRequest->getUploadedFiles()
 		);
-	}
-
-	public function test_get_parsed_body()
-	{
-		$request = $this->makeRequest();
-
-		$this->assertEquals([
-			"name" => "Test User",
-			"email" => "test@example.com"
-		], $request->getParsedBody());
 	}
 
 	public function test_with_parsed_body()

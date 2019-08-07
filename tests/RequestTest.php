@@ -34,7 +34,7 @@ class RequestTest extends TestCase
 
     public function test_with_uri_saves_data()
     {
-        $uri = new Uri("https://www.example.com");
+        $uri = Uri::makeFromString("https://www.example.com");
         $request = (new Request)->withUri($uri);
         $this->assertEquals($uri, $request->getUri());
     }
@@ -42,9 +42,9 @@ class RequestTest extends TestCase
     public function test_with_uri_is_immutable()
     {
         $request = new Request;
-        $newRequest = $request->withUri(new Uri("https://example.com"));
+        $newRequest = $request->withUri(Uri::makeFromString("https://example.com"));
 
-        $this->assertNotEquals($request, $newRequest);
+        $this->assertNotSame($request, $newRequest);
     }
 
     public function test_with_request_target_saves_data()

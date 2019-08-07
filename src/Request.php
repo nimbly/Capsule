@@ -46,7 +46,7 @@ class Request extends MessageAbstract implements RequestInterface
             $this->method = \strtoupper($method);
         }
 
-        $this->uri = $uri instanceof UriInterface ? $uri : new Uri((string) $uri);
+        $this->uri = $uri instanceof UriInterface ? $uri : Uri::makeFromString((string) $uri);
         $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
 
         if( $headers ){
