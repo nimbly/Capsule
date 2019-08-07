@@ -10,7 +10,7 @@
         "vimeo\/psalm": "^3.2",
         "phpunit\/phpunit": "^8.0",
         "php-coveralls\/php-coveralls": "^2.1",
-        "symfony/var-dumper": "^4.3"
+        "symfony\/var-dumper": "^4.3"
     },
     "license": "MIT",
     "authors": [
@@ -29,5 +29,5 @@
             "Capsule\\Tests\\": "tests\/"
         }
     },
-    "version": "0.4.1"
+    "version": "0.5"
 }
