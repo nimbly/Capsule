@@ -13,7 +13,7 @@ class UriTest extends TestCase
     public function test_make_from_string_parses_all_uri_parts()
     {
         $url = "https://username:password@www.example.com:443/path/to/some/resource?q=foo&s=some+search+text&n=John%20Doe#fragment-1";
-        $uri = Uri::makeFromString($url);
+        $uri = Uri::createFromString($url);
 
         $this->assertEquals("https", $uri->getScheme());
         $this->assertEquals("username:password", $uri->getUserInfo());
@@ -28,25 +28,25 @@ class UriTest extends TestCase
 	public function test_make_from_string_throws_exception_on_malformed_url()
 	{
 		$this->expectException(\Exception::class);
-		$uri = Uri::makeFromString("//::🖕");
+		$uri = Uri::createFromString("//::🖕");
 	}
 
     public function test_uri_cast_as_string()
     {
         $url = "https://username:password@www.example.com:443/path/to/some/resource?q=foo&s=some+search+text&n=John%20Doe#fragment-1";
-        $uri = Uri::makeFromString($url);
+        $uri = Uri::createFromString($url);
         $this->assertEquals($url, (string) $uri);
     }
 
     public function test_uri_derives_https_port_number_if_not_provided()
     {
-        $uri = Uri::makeFromString("https://www.example.com");
+        $uri = Uri::createFromString("https://www.example.com");
         $this->assertEquals(443, $uri->getPort());
     }
 
     public function test_uri_derives_http_port_number_if_not_provided()
     {
-        $uri = Uri::makeFromString("http://www.example.com");
+        $uri = Uri::createFromString("http://www.example.com");
         $this->assertEquals(80, $uri->getPort());
     }
 
@@ -157,7 +157,7 @@ class UriTest extends TestCase
 
     public function test_get_authority_with_no_credentials_returns_empty_string()
     {
-        $uri = Uri::makeFromString("http://www.example.com");
+        $uri = Uri::createFromString("http://www.example.com");
         $this->assertEquals("", $uri->getAuthority());
     }
 }

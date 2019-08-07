@@ -73,7 +73,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 			$serverRequest->uri = $uri;
 		}
 		else {
-			$serverRequest->uri = Uri::makeFromString($uri);
+			$serverRequest->uri = Uri::createFromString($uri);
 		}
 
 		foreach( $headers as $header => $value ){
@@ -159,7 +159,6 @@ class ServerRequest extends Request implements ServerRequestInterface
 			\array_change_key_case(\getallheaders()),
 			$_COOKIE,
 			$files ?? [],
-			$_SERVER['REMOTE_ADDR'] ?? '',
 			$version ?? "1.1"
 		);
 	}

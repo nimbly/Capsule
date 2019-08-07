@@ -64,12 +64,12 @@ class Uri implements UriInterface
     protected $fragment;
 
 	/**
-	 * Make a Uri instance from a string.
+	 * Create a Uri instance from a string.
 	 *
 	 * @param string $url
 	 * @return Uri
 	 */
-	public static function makeFromString(string $url): Uri
+	public static function createFromString(string $url): Uri
 	{
 		// Parse the URL
 		if( ($urlPart = \parse_url($url)) === false ){

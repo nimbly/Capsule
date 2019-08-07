@@ -38,6 +38,13 @@ class UploadedFile implements UploadedFileInterface
 	protected $tempFilename;
 
 	/**
+	 * File size (in bytes).
+	 *
+	 * @var int
+	 */
+	protected $size;
+
+	/**
 	 * Error code for upload.
 	 *
 	 * @var int
@@ -53,12 +60,12 @@ class UploadedFile implements UploadedFileInterface
 	 * @param integer $size
 	 * @param integer $error
 	 */
-	public function __construct(string $clientFilename, string $clientMediaType, string $tempFilename, int $size, int $error = 0)
+	public function __construct(string $clientFilename, string $clientMediaType, string $tempFilename, int $size, int $error = UPLOADED_ERR_OK)
 	{
 		$this->clientFilename = $clientFilename;
 		$this->clientMediaType = $clientMediaType;
-		$this->size = $size;
 		$this->tempFilename = $tempFilename;
+		$this->size = $size;
 		$this->error = $error;
 	}
 
@@ -75,7 +82,7 @@ class UploadedFile implements UploadedFileInterface
 			$file['type'] ?? 'text/plain',
 			$file['tmp_name'] ?? 'tmp_file',
 			(int) ($file['size'] ?? 0),
-			(int) ($file['error'] ?? 0)
+			(int) ($file['error'] ?? UPLOAD_ERR_OK)
 		);
 
 		return $uploadedFile;

@@ -51,7 +51,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_uri_instance()
 	{
-		$uri = Uri::makeFromString("http://example.org/foo/bar?q=search");
+		$uri = Uri::createFromString("http://example.org/foo/bar?q=search");
 
 		$request = ServerRequest::create(
 			"get",
@@ -368,6 +368,78 @@ class ServerRequestTest extends TestCase
 				"attr1" => "value1"
 			],
 			$request->getAttributes()
+		);
+	}
+
+	public function test_make_from_globals()
+	{
+		$_SERVER['SERVER_PROTOCOL'] = "HTTP/1.1";
+		$_SERVER['REQUEST_METHOD'] = "POST";
+		$_SERVER['REQUEST_URI'] = "/foo?query1=value1";
+		$_SERVER['HTTP_HOST'] = "capsule.org";
+		$_SERVER['HTTP_CONTENT_TYPE'] = 'application/json';
+		$_SERVER['HTTP_X_FORWARDED_BY'] = '5.6.7.8';
+		$_GET = ["query1" => "value1"];
+		$_POST = ["post1" => "value1"];
+		$_COOKIE = ["cookie1" => "value1"];
+
+		$_FILES = [
+			[
+				'name' => 'file1.json',
+				'type' => 'text/plain',
+				'tmp_name' => 'test.json',
+				'size' => 100,
+				'error' => UPLOAD_ERR_OK
+			]
+		];
+
+		$request = ServerRequest::createFromGlobals();
+
+		$this->assertEquals(
+			'1.1',
+			$request->getProtocolVersion()
+		);
+
+		$this->assertEquals(
+			'POST',
+			$request->getMethod()
+		);
+
+		$this->assertEquals(
+			"Host: capsule.org",
+			$request->getHeaderLine("Host")
+		);
+
+		$this->assertEquals(
+			"Content-Type: application/json",
+			$request->getHeaderLine("Content-Type")
+		);
+
+		$this->assertEquals(
+			"X-Forwarded-By: 5.6.7.8",
+			$request->getHeaderLine("X-Forwarded-By")
+		);
+
+		$this->assertEquals(
+			['query1' => 'value1'],
+			$request->getQueryParams()
+		);
+
+		$this->assertEquals(
+			["cookie1" => "value1"],
+			$request->getCookieParams()
+		);
+
+		$this->assertEquals(
+			["post1" => "value1"],
+			$request->getParsedBody()
+		);
+
+		$this->assertEquals(
+			[
+				new UploadedFile('file1.json', 'text/plain', 'test.json', 100, UPLOAD_ERR_OK)
+			],
+			$request->getUploadedFiles()
 		);
 	}
 }
