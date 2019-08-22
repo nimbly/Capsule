@@ -32,9 +32,9 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Parsed representation of body contents.
 	 *
-	 * @var array<string, mixed>|string
+	 * @var null|array|object
 	 */
-	protected $parsedBody = [];
+	protected $parsedBody;
 
 	/**
 	 * Request attributes.
@@ -106,14 +106,14 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * Parse the body.
 	 *
 	 * @param string $body
-	 * @return array|object|string
+	 * @return null|array|object
 	 */
 	private function parseStringBody(string $body)
 	{
 		// Use the Content-Type header to inform the parsing.
 		if( ($contentType = $this->getHeader('Content-Type')) ){
 
-			if( \stripos($contentType[0], 'json') !== false ){
+			if( \stripos($contentType[0], 'application/json') !== false ){
 				return (array) \json_decode($body);
 			}
 			elseif( \stripos($contentType[0], 'application/x-www-form-urlencoded') !== false ||
@@ -123,7 +123,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 			}
 		}
 
-		return $body;
+		return null;
 	}
 
 	/**
@@ -147,6 +147,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 		$body = \file_get_contents("php://input");
 
 		// Process the uploaded files into an array of UploadedFile.
+		$files = [];
 		foreach( $_FILES as $name => $file ){
 			$files[$name] = UploadedFile::createFromGlobal($file);
 		}

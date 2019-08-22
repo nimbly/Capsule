@@ -77,14 +77,14 @@ class Uri implements UriInterface
 		}
 
 		$uri = new static;
-		$uri->scheme = !empty($urlPart['scheme']) ? \strtolower($urlPart['scheme']) : null;
-		$uri->username = $urlPart['user'] ?? null;
-		$uri->password = $urlPart['pass'] ?? null;
-		$uri->host = !empty($urlPart['host']) ? \strtolower($urlPart['host']) : null;
-		$uri->port = !empty($urlPart['port']) ? (int) $urlPart['port'] : ($uri->scheme ? $uri->derivePortFromScheme($uri->scheme) : null);
-		$uri->path = $urlPart['path'] ?? null;
-		$uri->query = $urlPart['query'] ?? null;
-		$uri->fragment = $urlPart['fragment'] ?? null;
+		$uri->scheme = !empty($urlPart['scheme']) ? \strtolower($urlPart['scheme']) : "";
+		$uri->username = $urlPart['user'] ?? "";
+		$uri->password = $urlPart['pass'] ?? "";
+		$uri->host = !empty($urlPart['host']) ? \strtolower($urlPart['host']) : "";
+		$uri->port = !empty($urlPart['port']) ? (int) $urlPart['port'] : (int) $uri->derivePortFromScheme($uri->scheme ?? "");
+		$uri->path = $urlPart['path'] ?? "";
+		$uri->query = $urlPart['query'] ?? "";
+		$uri->fragment = $urlPart['fragment'] ?? "";
 
 		return $uri;
 	}
@@ -109,7 +109,7 @@ class Uri implements UriInterface
      */
     public function getScheme()
     {
-        return $this->scheme;
+        return $this->scheme ?? "";
     }
 
     /**
@@ -147,7 +147,7 @@ class Uri implements UriInterface
      */
     public function getHost()
     {
-        return $this->host;
+        return $this->host ?? "";
     }
 
     /**
@@ -163,7 +163,7 @@ class Uri implements UriInterface
      */
     public function getPath()
     {
-        return $this->path;
+        return $this->path ?? "";
     }
 
     /**
@@ -171,7 +171,7 @@ class Uri implements UriInterface
      */
     public function getQuery()
     {
-        return $this->query;
+        return $this->query ?? "";
     }
 
     /**
@@ -179,7 +179,7 @@ class Uri implements UriInterface
      */
     public function getFragment()
     {
-        return $this->fragment;
+        return $this->fragment ?? "";
     }
 
     /**

@@ -162,15 +162,14 @@ class ServerRequestTest extends TestCase
 		$request = ServerRequest::create(
 			"get",
 			"http://example.org/foo/bar?q=search",
-			"Ok",
+			"name=Testy+Test&email=test@example.com",
 			[],
 			[],
 			[],
 			[]
 		);
 
-		$this->assertEquals(
-			"Ok",
+		$this->assertNull(
 			$request->getParsedBody()
 		);
 	}

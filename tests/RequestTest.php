@@ -53,7 +53,7 @@ class RequestTest extends TestCase
         ->withRequestTarget("GET example.com:443 HTTP/1.1");
 
         $this->assertEquals("GET example.com:443 HTTP/1.1", $request->getRequestTarget());
-    }
+	}
 
     public function test_with_request_target_is_immutable()
     {
@@ -61,7 +61,17 @@ class RequestTest extends TestCase
         $newRequest = $request->withRequestTarget("GET example.com:443 HTTP/1.1");
 
         $this->assertNotEquals($request, $newRequest);
-    }
+	}
+
+	public function test_building_request_target_if_none_provided()
+	{
+		$request = new Request("get", "http://example.com/sample?q=search");
+
+		$this->assertEquals(
+			"/sample?q=search",
+			$request->getRequestTarget()
+		);
+	}
 
     public function test_request_constructor()
     {
@@ -76,7 +86,7 @@ class RequestTest extends TestCase
         );
 
         $this->assertEquals("POST", $request->getMethod());
-        $this->assertEquals("http://example.com:80/", (string) $request->getUri());
+        $this->assertEquals("http://example.com:80", (string) $request->getUri());
         $this->assertEquals("BODY", $request->getBody()->getContents());
         $this->assertEquals("en_US", $request->getHeader("Accept-Language")[0]);
         $this->assertEquals("2", $request->getProtocolVersion());

@@ -42,10 +42,7 @@ class Request extends MessageAbstract implements RequestInterface
      */
     public function __construct(?string $method = null, $uri = null, $body = null, array $headers = null, string $httpVersion = "1.1")
     {
-        if( $method ){
-            $this->method = \strtoupper($method);
-        }
-
+        $this->method = \strtoupper((string) $method);
         $this->uri = $uri instanceof UriInterface ? $uri : Uri::createFromString((string) $uri);
         $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
 
@@ -97,7 +94,21 @@ class Request extends MessageAbstract implements RequestInterface
      */
     public function getRequestTarget()
     {
-        return $this->requestTarget;
+		if( !empty($this->requestTarget) ){
+			return $this->requestTarget;
+		}
+
+		$requestTarget = $this->uri->getPath();
+
+		if( empty($requestTarget) ){
+			$requestTarget = "/";
+		}
+
+		if( !empty($this->uri->getQuery()) ){
+			$requestTarget .= "?" . $this->uri->getQuery();
+		}
+
+        return $requestTarget;
     }
 
     /**
