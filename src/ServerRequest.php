@@ -148,7 +148,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 		// Get the request body first by getting raw input from php://input.
 		$body = \file_get_contents("php://input");
 
-		// Process the uploaded files into an array of UploadedFile.
+		// Process the uploaded files into an array<UploadedFile>.
 		$files = [];
 		foreach( $_FILES as $name => $file ){
 			$files[$name] = UploadedFile::createFromGlobal($file);

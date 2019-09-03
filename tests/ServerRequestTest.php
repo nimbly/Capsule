@@ -370,7 +370,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_make_from_globals()
+	public function test_create_from_globals()
 	{
 		$_SERVER['SERVER_PROTOCOL'] = "HTTP/1.1";
 		$_SERVER['REQUEST_METHOD'] = "POST";
