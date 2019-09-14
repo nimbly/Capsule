@@ -18,13 +18,13 @@ class ResponseTest extends TestCase
 {
     public function test_reason_phrase_set_on_constructor()
     {
-        $response = (new Response)->withStatus(200);
+        $response = new Response(200);
         $this->assertNotEmpty($response->getReasonPhrase());
     }
 
     public function test_with_status_code_saves_data()
     {
-        $response = (new Response)->withStatus(200);
+        $response = new Response(200);
         $response = $response->withStatus(404, "Page Not Found");
 
         $this->assertEquals(404, $response->getStatusCode());
@@ -33,51 +33,51 @@ class ResponseTest extends TestCase
 
     public function test_with_status_code_resolves_phrase_if_none_given()
     {
-        $response = (new Response)->withStatus(404);
+        $response = new Response(404);
         $this->assertEquals(ResponseStatus::getPhrase(404), $response->getReasonPhrase());
     }
 
     public function test_with_status_code_is_immutable()
     {
-        $response = (new Response)->withStatus(200);
+        $response = new Response(200);
         $newResponse = $response->withStatus(404);
-        $this->assertNotEquals($response, $newResponse);
+        $this->assertNotSame($response, $newResponse);
     }
 
     public function test_1xx_responses_are_considered_successful()
     {
-        $response = (new Response)->withStatus(100);
+        $response = new Response(100);
         $this->assertTrue($response->isSuccessful());
     }
 
     public function test_2xx_responses_are_considered_successful()
     {
-        $response = (new Response)->withStatus(201);
+        $response = new Response(201);
         $this->assertTrue($response->isSuccessful());
     }
 
     public function test_3xx_responses_are_considered_successful()
     {
-        $response = (new Response)->withStatus(304);
+        $response = new Response(304);
         $this->assertTrue($response->isSuccessful());
     }
 
     public function test_4xx_responses_are_considered_unsuccessful()
     {
-        $response = (new Response)->withStatus(422);
+        $response = new Response(422);
         $this->assertFalse($response->isSuccessful());
     }
 
     public function test_5xx_responses_are_considered_unsuccessful()
     {
-        $response = (new Response)->withStatus(503);
+        $response = new Response(503);
         $this->assertFalse($response->isSuccessful());
     }
 
     public function test_constructor()
     {
         $response = new Response(
-            "201",
+            201,
             new BufferStream("OK"),
             [
                 "Content-Type" => "text/plain",
@@ -93,7 +93,7 @@ class ResponseTest extends TestCase
 
     public function test_no_body_provided_in_constructor_creates_a_body()
     {
-        $response = new Response("200");
+        $response = new Response(200);
 
         $this->assertNotNull($response->getBody());
         $this->assertTrue($response->getBody() instanceof StreamInterface);

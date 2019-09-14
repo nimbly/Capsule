@@ -19,48 +19,49 @@ class RequestTest extends TestCase
 {
     public function test_with_method_saves_data()
     {
-        $request = (new Request)->withMethod("post");
+        $request = new Request('post', '/foo');
         $this->assertEquals("POST", $request->getMethod());
     }
 
     public function test_with_method_is_immutable()
     {
-        $request = new Request;
+        $request = new Request('get', '/foo');
         $newRequest = $request->withMethod("post");
 
-        $this->assertEmpty($request->getMethod());
-        $this->assertNotEquals($request, $newRequest);
+		$this->assertNotEquals($request->getMethod(), $newRequest->getMethod());
+		$this->assertNotSame($request, $newRequest);
     }
 
     public function test_with_uri_saves_data()
     {
         $uri = Uri::createFromString("https://www.example.com");
-        $request = (new Request)->withUri($uri);
-        $this->assertEquals($uri, $request->getUri());
+        $request = new Request('get', $uri);
+        $this->assertSame($uri, $request->getUri());
     }
 
     public function test_with_uri_is_immutable()
     {
-        $request = new Request;
+        $request = new Request('get', '/foo');
         $newRequest = $request->withUri(Uri::createFromString("https://example.com"));
 
+		$this->assertNotSame($request->getUri(), $newRequest->getUri());
         $this->assertNotSame($request, $newRequest);
     }
 
     public function test_with_request_target_saves_data()
     {
-        $request = (new Request)
-        ->withRequestTarget("GET example.com:443 HTTP/1.1");
+		$request = new Request('get', 'https://example.com:443');
+		$request = $request->withRequestTarget("GET example.com:443 HTTP/1.1");
 
         $this->assertEquals("GET example.com:443 HTTP/1.1", $request->getRequestTarget());
 	}
 
     public function test_with_request_target_is_immutable()
     {
-        $request = new Request;
+        $request = new Request('get', 'https://example.com:443');
         $newRequest = $request->withRequestTarget("GET example.com:443 HTTP/1.1");
 
-        $this->assertNotEquals($request, $newRequest);
+        $this->assertNotSame($request, $newRequest);
 	}
 
 	public function test_building_request_target_if_none_provided()
@@ -90,15 +91,7 @@ class RequestTest extends TestCase
         $this->assertEquals("BODY", $request->getBody()->getContents());
         $this->assertEquals("en_US", $request->getHeader("Accept-Language")[0]);
         $this->assertEquals("2", $request->getProtocolVersion());
-    }
-
-    public function test_uri_instance_created_automatically_if_not_provided()
-    {
-        $request = new Request("get");
-
-        $this->assertNotNull($request->getUri());
-        $this->assertTrue($request->getUri() instanceof Uri);
-    }
+	}
 
     public function test_body_instance_created_automatically_if_not_provided()
     {

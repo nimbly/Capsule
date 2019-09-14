@@ -4,6 +4,7 @@ namespace Capsule;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 
 abstract class MessageAbstract implements MessageInterface
@@ -18,7 +19,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * Message headers
      *
-     * @var array
+     * @var array<string, array<string>>
      */
     protected $headers = [];
 
@@ -27,10 +28,20 @@ abstract class MessageAbstract implements MessageInterface
      *
      * @var StreamInterface
      */
-    protected $body;
+	protected $body;
+
+	/**
+	 * Allowed HTTP versions
+	 *
+	 * @var array<string>
+	 */
+	private $allowedVersions = [
+		"1.1", "1.0", "2", "2.0"
+	];
 
     /**
      * @inheritDoc
+	 * @return string
      */
     public function getProtocolVersion()
     {
@@ -42,7 +53,7 @@ abstract class MessageAbstract implements MessageInterface
      */
     public function withProtocolVersion($version)
     {
-        if( !\in_array($version, ["1.1", "1.0", "2", "2.0"]) ){
+        if( !\in_array($version, $this->allowedVersions) ){
             throw new \Exception("Invalid protocol version {$version}");
         }
 
@@ -55,10 +66,9 @@ abstract class MessageAbstract implements MessageInterface
      * Find a header by its case-insensitive name.
      *
      * @param string $name
-     * @param mixed $default
-     * @return string|false
+     * @return string|null
      */
-    private function findHeaderKey($name)
+    private function findHeaderKey($name): ?string
     {
         foreach( $this->headers as $key => $value ){
             if( \strtolower($name) === \strtolower($key) ){
@@ -66,11 +76,12 @@ abstract class MessageAbstract implements MessageInterface
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
      * @inheritDoc
+	 * @return array<string, array<string>>
      */
     public function getHeaders()
     {
@@ -79,10 +90,11 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @return boolean
      */
     public function hasHeader($name)
     {
-        return ($this->findHeaderKey($name) !== false);
+        return ($this->findHeaderKey($name) !== null);
     }
 
     /**
@@ -90,15 +102,16 @@ abstract class MessageAbstract implements MessageInterface
      */
     public function getHeader($name)
     {
-        if( ($key = $this->findHeaderKey($name)) !== false ){
+        if( ($key = $this->findHeaderKey($name)) !== null ){
             return $this->headers[$key];
         }
 
-        return null;
+        return [];
     }
 
     /**
      * @inheritDoc
+	 * @return string
      */
     public function getHeaderLine($name)
     {
@@ -116,8 +129,13 @@ abstract class MessageAbstract implements MessageInterface
      */
     public function withHeader($name, $value)
     {
-        $instance = clone $this;
-        $instance->headers[$name] = [$value];
+		$instance = clone $this;
+
+		if( !\is_array($value) ){
+			$value = [$value];
+		}
+
+        $instance->headers[$name] = $value;
         return $instance;
     }
 
@@ -126,12 +144,21 @@ abstract class MessageAbstract implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        if( ($key = $this->findHeaderKey($name)) === false ){
+        if( ($key = $this->findHeaderKey($name)) === null ){
             $key = $name;
         }
 
-        $instance = clone $this;
-        $instance->headers[$key][] = $value;
+		$instance = clone $this;
+
+		if( !\is_array($value) ){
+			$value = [$value];
+		}
+
+        $instance->headers[$key] = \array_merge(
+			$instance->headers[$key] ?? [],
+			$value
+		);
+
         return $instance;
     }
 
@@ -140,7 +167,7 @@ abstract class MessageAbstract implements MessageInterface
      */
     public function withoutHeader($name)
     {
-        if( ($key = $this->findHeaderKey($name)) === false ){
+        if( ($key = $this->findHeaderKey($name)) === null ){
             return $this;
         }
 
@@ -160,7 +187,11 @@ abstract class MessageAbstract implements MessageInterface
     protected function setHeaders(array $headers): void
     {
         foreach( $headers as $name => $value ){
-            $this->headers[$name] = [$value];
+			if( \is_int($name) ){
+				throw new RuntimeException("Invalid header name \"{$name}\".");
+			}
+
+            $this->headers[$name][] = $value;
         }
     }
 

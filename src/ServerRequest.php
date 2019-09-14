@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Capsule;
 
 use Capsule\Stream\BufferStream;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 
 class ServerRequest extends Request implements ServerRequestInterface
@@ -44,6 +45,36 @@ class ServerRequest extends Request implements ServerRequestInterface
 	protected $attributes = [];
 
 	/**
+	 * ServerRequest constructor.
+	 *
+	 * @param string $method
+	 * @param Uri|string $uri
+	 * @param object|array|string|null $body
+	 * @param array<string, mixed> $query
+	 * @param array<string, mixed> $headers
+	 * @param array<string, mixed> $cookies
+	 * @param array<UploadedFile> $files
+	 * @param string $version
+	 */
+	public function __construct(
+		string $method,
+		$uri,
+		$body = "",
+		array $query = [],
+		array $headers = [],
+		array $cookies = [],
+		array $files  = [],
+		string $version = "1.1")
+	{
+		parent::__construct($method, $uri, $this->createStreamFromBody($body), $headers, $version);
+
+		$this->parsedBody = $this->parseBody($body);
+		$this->queryParams = $query;
+		$this->uploadedFiles = $files;
+		$this->cookieParams = $cookies;
+	}
+
+	/**
 	 * Create a ServerRequest instance.
 	 *
 	 * @param string $method
@@ -59,75 +90,80 @@ class ServerRequest extends Request implements ServerRequestInterface
 	public static function create(
 		string $method,
 		$uri,
-		$body,
-		array $query,
-		array $headers,
-		array $cookies,
-		array $files,
+		$body = "",
+		array $query = [],
+		array $headers = [],
+		array $cookies = [],
+		array $files  = [],
 		string $version = "1.1"): ServerRequest
 	{
-		$serverRequest = new static;
-		$serverRequest->method = $method;
-
-		if( $uri instanceof Uri ){
-			$serverRequest->uri = $uri;
-		}
-		else {
-			$serverRequest->uri = Uri::createFromString($uri);
-		}
-
-		foreach( $headers as $header => $value ){
-			$serverRequest = $serverRequest->withAddedHeader($header, $value);
-		}
-
-		$serverRequest->queryParams = $query;
-
-		if( \is_array($body) ){
-			$serverRequest->body = new BufferStream(\http_build_query($body));
-			$serverRequest->parsedBody = $body;
-		}
-		elseif( \is_string($body) ) {
-			$serverRequest->parsedBody = $serverRequest->parseStringBody($body);
-			$serverRequest->body = new BufferStream($body);
-		}
-		elseif( \is_object($body) ){
-			$serverRequest->body = new BufferStream(\json_encode((array) $body));
-			$serverRequest->parsedBody = (array) $body;
-		}
-
-		$serverRequest->uploadedFiles = $files;
-		$serverRequest->cookieParams = $cookies;
-		$serverRequest->version = $version;
-
-		return $serverRequest;
+		return new static($method, $uri, $body, $query, $headers, $cookies, $files, $version);
 	}
 
 	/**
-	 * Parse the body.
+	 * Create a StreamInterface instance from the Request body.
 	 *
-	 * @param string $body
+	 * @param mixed $body
+	 * @return StreamInterface
+	 */
+	private function createStreamFromBody($body): StreamInterface
+	{
+		if( \is_array($body) ){
+			$stream = new BufferStream(\http_build_query($body));
+		}
+		elseif( \is_string($body) ) {
+			$stream = new BufferStream($body);
+		}
+		elseif( \is_object($body) ){
+			$stream = new BufferStream(\json_encode((array) $body));
+		}
+		else {
+			$stream = new BufferStream;
+		}
+
+		return $stream;
+	}
+
+	/**
+	 * Parse the body of the ServerRequest into something useable (array or \stdClass).
+	 *
+	 * @param mixed $body
 	 * @return null|array|object
 	 */
-	private function parseStringBody(string $body)
+	private function parseBody($body)
 	{
-		// Use the Content-Type header to inform the parsing.
-		if( ($contentType = $this->getHeader('Content-Type')) ){
+		if( \is_string($body) ){
+			// Use the Content-Type header to inform the parsing.
+			if( ($contentType = $this->getHeader('Content-Type')) ){
 
-			if( \stripos($contentType[0], 'application/json') !== false ){
-				return (array) \json_decode($body);
+				if( \stripos($contentType[0], 'application/json') !== false ){
+					return (array) \json_decode($body);
+				}
+				elseif( \stripos($contentType[0], 'application/x-www-form-urlencoded') !== false ||
+						\stripos($contentType[0], 'multipart/form-data') !== false ){
+					\parse_str($body, $parsedBody);
+					return $parsedBody;
+				}
 			}
-			elseif( \stripos($contentType[0], 'application/x-www-form-urlencoded') !== false ||
-					\stripos($contentType[0], 'multipart/form-data') !== false ){
-				\parse_str($body, $parsedBody);
-				return $parsedBody;
-			}
+		}
+
+		elseif( \is_array($body) ||
+				\is_object($body)) {
+			return (array) $body;
 		}
 
 		return null;
 	}
 
 	/**
-	 * Create an incoming Request instance from the PHP globals space.
+	 * Create a ServerRequest instance from the PHP globals space.
+	 *
+	 * Uses values from:
+	 * 	$_SERVER
+	 * 	$_FILES
+	 * 	$_COOKIE
+	 * 	$_POST
+	 * 	$_GET
 	 *
 	 * @return ServerRequest
 	 */
@@ -154,7 +190,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 			$files[$name] = UploadedFile::createFromGlobal($file);
 		}
 
-		return self::create(
+		return new static(
 			$_SERVER['REQUEST_METHOD'],
 			$uri,
 			!empty($body) ? $body : $_POST,
@@ -171,7 +207,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function getServerParams()
 	{
-		return $_SERVER;
+		return $_SERVER ?? [];
 	}
 
 	/**

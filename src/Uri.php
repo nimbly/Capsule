@@ -61,7 +61,7 @@ class Uri implements UriInterface
      *
      * @var string
      */
-    protected $fragment;
+	protected $fragment;
 
 	/**
 	 * Create a Uri instance from a string.
@@ -77,7 +77,7 @@ class Uri implements UriInterface
 		}
 
 		$uri = new static;
-		$uri->scheme = !empty($urlPart['scheme']) ? \strtolower($urlPart['scheme']) : "";
+		$uri->scheme = !empty($urlPart['scheme']) ? \strtolower($urlPart['scheme']) : "http";
 		$uri->username = $urlPart['user'] ?? "";
 		$uri->password = $urlPart['pass'] ?? "";
 		$uri->host = !empty($urlPart['host']) ? \strtolower($urlPart['host']) : "";

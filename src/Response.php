@@ -15,36 +15,21 @@ class Response extends MessageAbstract implements ResponseInterface
      * @var int
      */
     protected $statusCode;
-    
-    /**
-     * Response phrase for status code.
-     *
-     * @var string
-     */
-    protected $statusPhrase;
 
     /**
      * Response constructor.
      *
-     * @param string $statusCode
+     * @param int $statusCode
      * @param StreamInterface|string $body
-     * @param array $headers
+     * @param array<string, string> $headers
      * @param string $httpVersion
      */
-    public function __construct($statusCode = null, $body = null, array $headers = [], $httpVersion = "1.1")
+    public function __construct(int $statusCode, $body = null, array $headers = [], $httpVersion = "1.1")
     {
-        if( $statusCode ){
-            $this->statusCode = (int) $statusCode;
-            $this->statusPhrase = ResponseStatus::getPhrase($this->statusCode) ?? "";
-        }
-
+		$this->statusCode = $statusCode;
         $this->body = ($body instanceof StreamInterface) ? $body : new BufferStream((string) $body);
-
-        if( $headers ){
-            $this->setHeaders($headers);
-        }
-        
-        $this->version = $httpVersion;        
+        $this->setHeaders($headers);
+        $this->version = $httpVersion;
     }
 
     /**
@@ -61,8 +46,7 @@ class Response extends MessageAbstract implements ResponseInterface
     public function withStatus($code, $reasonPhrase = '')
     {
         $instance = clone $this;
-        $instance->statusCode = $code;
-        $instance->statusPhrase = ResponseStatus::getPhrase($code) ?? $reasonPhrase;
+        $instance->statusCode = (int) $code;
         return $instance;
     }
 
@@ -71,7 +55,7 @@ class Response extends MessageAbstract implements ResponseInterface
      */
     public function getReasonPhrase()
     {
-        return $this->statusPhrase;
+        return ResponseStatus::getPhrase($this->statusCode) ?? "";
     }
 
     /**

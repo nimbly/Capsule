@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Capsule;
 
@@ -104,11 +104,25 @@ class UploadedFile implements UploadedFileInterface
 
 	/**
 	 * @inheritDoc
+	 * @return void
 	 */
-	public function moveTo($destination)
+	public function moveTo($targetPath)
 	{
-		if( \move_uploaded_file($this->tempFilename, $destination) === false ){
-			throw new RuntimeException("Failed to move uploaded file to {$destination}.");
+		if( \php_sapi_name() === 'cli' ){
+
+			if( \rename($this->tempFilename, $targetPath) === false ){
+				throw new RuntimeException("Failed to move uploaded file to {$targetPath}.");
+			}
+
+		} else {
+
+			if( \is_uploaded_file($this->tempFilename) === false ){
+				throw new RuntimeException("File is not an uploaded file.");
+			}
+
+			if( \move_uploaded_file($this->tempFilename, $targetPath) === false ){
+				throw new RuntimeException("Failed to move uploaded file to {$targetPath}.");
+			}
 		}
 	}
 

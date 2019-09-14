@@ -40,16 +40,13 @@ class Request extends MessageAbstract implements RequestInterface
      * @param array $headers
      * @param string $httpVersion
      */
-    public function __construct(?string $method = null, $uri = null, $body = null, array $headers = null, string $httpVersion = "1.1")
+    public function __construct(string $method, $uri, $body = null, array $headers = [], string $httpVersion = "1.1")
     {
         $this->method = \strtoupper((string) $method);
         $this->uri = $uri instanceof UriInterface ? $uri : Uri::createFromString((string) $uri);
         $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
 
-        if( $headers ){
-            $this->setHeaders($headers);
-        }
-
+        $this->setHeaders($headers);
         $this->version = $httpVersion;
     }
 

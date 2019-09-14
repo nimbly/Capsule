@@ -19,7 +19,7 @@ class ServerRequestTest extends TestCase
 {
 	public function makeRequest(): ServerRequest
 	{
-		return ServerRequest::create(
+		return new ServerRequest(
 			"GET",
 			"http://example.org/foo/bar?q=search",
 			'{"name": "Test User", "email": "test@example.com"}',
@@ -44,7 +44,6 @@ class ServerRequestTest extends TestCase
 					UPLOAD_ERR_OK
 				)
 			],
-			"1.2.3.4",
 			"1.1"
 		);
 	}
@@ -53,15 +52,7 @@ class ServerRequestTest extends TestCase
 	{
 		$uri = Uri::createFromString("http://example.org/foo/bar?q=search");
 
-		$request = ServerRequest::create(
-			"get",
-			$uri,
-			null,
-			[],
-			[],
-			[],
-			[]
-		);
+		$request = new ServerRequest("get", $uri);
 
 		$this->assertSame(
 			$uri,
@@ -71,14 +62,10 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_array_body()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
-			["email" => "test@example.com", "name" => "Testy Test"],
-			[],
-			[],
-			[],
-			[]
+			["email" => "test@example.com", "name" => "Testy Test"]
 		);
 
 		$this->assertEquals(
@@ -92,14 +79,10 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_object_body()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
-			(object) ["email" => "test@example.com", "name" => "Testy Test"],
-			[],
-			[],
-			[],
-			[]
+			(object) ["email" => "test@example.com", "name" => "Testy Test"]
 		);
 
 		$this->assertEquals(
@@ -113,16 +96,14 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_json_content_type()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			'{"name": "Testy Test", "email": "test@example.com"}',
 			[],
 			[
 				'Content-Type' => 'application/json'
-			],
-			[],
-			[]
+			]
 		);
 
 		$this->assertEquals(
@@ -136,16 +117,14 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_form_encoded_content_type()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			"name=Testy+Test&email=test@example.com",
 			[],
 			[
 				'Content-Type' => 'application/x-www-form-urlencoded'
-			],
-			[],
-			[]
+			]
 		);
 
 		$this->assertEquals(
@@ -159,14 +138,10 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_no_content_type_header()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
-			"name=Testy+Test&email=test@example.com",
-			[],
-			[],
-			[],
-			[]
+			"name=Testy+Test&email=test@example.com"
 		);
 
 		$this->assertNull(
@@ -270,7 +245,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_with_uploaded_files()
+	public function test_with_uploaded_files_is_immutable()
 	{
 		$request = $this->makeRequest();
 

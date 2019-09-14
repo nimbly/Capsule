@@ -102,20 +102,20 @@ class FileStream implements StreamInterface
 
     /**
      * @inheritDoc
-     * @return int
+     * @return void
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        return \fseek($this->resource, $offset, $whence);
+        \fseek($this->resource, $offset, $whence);
     }
 
     /**
      * @inheritDoc
-     * @return bool
+     * @return void
      */
     public function rewind()
     {
-        return \rewind($this->resource);
+        \rewind($this->resource);
     }
 
     /**
@@ -123,8 +123,10 @@ class FileStream implements StreamInterface
      */
     public function isWritable()
     {
-        $mode = \strtolower($this->getMetadata('mode'));
-        return \in_array($mode, $this->fileModes['writeable']);
+        return \in_array(
+			\strtolower($this->getMetadata('mode')),
+			$this->fileModes['writeable'])
+		;
     }
 
     /**
@@ -140,8 +142,10 @@ class FileStream implements StreamInterface
      */
     public function isReadable()
     {
-        $mode = \strtolower($this->getMetadata('mode'));
-        return \in_array($mode, $this->fileModes['readable']);
+        return \in_array(
+			\strtolower($this->getMetadata('mode')),
+			$this->fileModes['readable']
+		);
     }
 
     /**
@@ -159,8 +163,8 @@ class FileStream implements StreamInterface
     {
         $buffer = "";
 
-        while( !\feof($this->resource) ){
-            $buffer.=\fread($this->resource, 1024);
+        while( !$this->eof() ){
+            $buffer .= $this->read(1024);
         }
 
         return $buffer;
