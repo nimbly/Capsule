@@ -74,6 +74,16 @@ class RequestTest extends TestCase
 		);
 	}
 
+	public function test_building_request_target_if_no_path()
+	{
+		$request = new Request("get", "http://example.com");
+
+		$this->assertEquals(
+			"/",
+			$request->getRequestTarget()
+		);
+	}
+
     public function test_request_constructor()
     {
         $request = new Request(

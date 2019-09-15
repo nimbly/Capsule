@@ -52,7 +52,7 @@ class ServerRequestTest extends TestCase
 	{
 		$uri = Uri::createFromString("http://example.org/foo/bar?q=search");
 
-		$request = new ServerRequest("get", $uri);
+		$request = ServerRequest::create("get", $uri);
 
 		$this->assertSame(
 			$uri,
@@ -62,7 +62,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_array_body()
 	{
-		$request = new ServerRequest(
+		$request = ServerRequest::create(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			["email" => "test@example.com", "name" => "Testy Test"]
@@ -79,7 +79,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_object_body()
 	{
-		$request = new ServerRequest(
+		$request = ServerRequest::create(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			(object) ["email" => "test@example.com", "name" => "Testy Test"]
@@ -96,7 +96,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_json_content_type()
 	{
-		$request = new ServerRequest(
+		$request = ServerRequest::create(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			'{"name": "Testy Test", "email": "test@example.com"}',
@@ -117,7 +117,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_form_encoded_content_type()
 	{
-		$request = new ServerRequest(
+		$request = ServerRequest::create(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			"name=Testy+Test&email=test@example.com",
@@ -138,7 +138,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_no_content_type_header()
 	{
-		$request = new ServerRequest(
+		$request = ServerRequest::create(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			"name=Testy+Test&email=test@example.com"
