@@ -97,7 +97,7 @@ class RequestTest extends TestCase
         );
 
         $this->assertEquals("POST", $request->getMethod());
-        $this->assertEquals("http://example.com:80", (string) $request->getUri());
+        $this->assertEquals("http://example.com", (string) $request->getUri());
         $this->assertEquals("BODY", $request->getBody()->getContents());
         $this->assertEquals("en_US", $request->getHeader("Accept-Language")[0]);
         $this->assertEquals("2", $request->getProtocolVersion());
@@ -109,5 +109,15 @@ class RequestTest extends TestCase
 
         $this->assertNotNull($request->getBody());
         $this->assertTrue($request->getBody() instanceof StreamInterface);
-    }
+	}
+
+	public function test_host_header_automatically_created_from_uri()
+	{
+		$request = new Request("get", "http://example.org");
+
+		$this->assertEquals(
+			['example.org'],
+			$request->getHeader('Host')
+		);
+	}
 }

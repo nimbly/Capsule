@@ -2,9 +2,10 @@
 
 namespace Capsule\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Capsule\Request;
 use Capsule\Stream\BufferStream;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 /**
  * @covers Capsule\MessageAbstract
@@ -84,13 +85,12 @@ class MessageTest extends TestCase
         ], $request->getHeaders());
     }
 
-    public function test_with_added_header_uses_header_name_as_is_if_not_found()
+    public function test_with_added_header_for_header_that_does_not_exist()
     {
         $request = new Request('get', '/foo');
-
 		$request = $request->withAddedHeader("X-Foo", "FooHeader");
 
-        $this->assertEquals("X-Foo: FooHeader", $request->getHeaderLine("X-Foo"));
+        $this->assertEquals("FooHeader", $request->getHeaderLine("X-Foo"));
     }
 
     public function test_with_header_replaces_existing_header()
@@ -98,7 +98,7 @@ class MessageTest extends TestCase
 		$request = new Request('get', '/foo', null, ["Content-Type" => "application/json"]);
 		$request = $request->withHeader("Content-Type", "text/html");
 
-        $this->assertEquals("Content-Type: text/html", $request->getHeaderLine("Content-Type"));
+        $this->assertEquals("text/html", $request->getHeaderLine("Content-Type"));
     }
 
     public function test_with_added_header_adds_new_value()
@@ -130,5 +130,37 @@ class MessageTest extends TestCase
         $newRequest = $request->withoutHeader("X-Foo");
 
         $this->assertSame($request, $newRequest);
-    }
+	}
+
+	public function test_set_host_header_makes_host_header_first_in_array()
+	{
+		$request = new Request('get', 'http://example.org', null, [
+			'Content-Type' => 'application/json',
+			'Accept' => 'application/json'
+		]);
+
+		$reflection = new ReflectionClass($request);
+		$property = $reflection->getProperty('headers');
+		$property->setAccessible(true);
+
+		$headers = $property->getValue($request);
+
+		$this->assertEquals([
+			'Host' => ['example.org']
+		], \array_slice($headers, 0 , 1));
+	}
+
+	public function test_set_host_header_removes_previous_host_header()
+	{
+		$request = new Request('get', 'http://example.org');
+
+		$reflection = new ReflectionClass($request);
+		$method = $reflection->getMethod('setHostHeader');
+		$method->setAccessible(true);
+		$method->invokeArgs($request, ['capsule.org', 8080]);
+
+		$this->assertEquals([
+			'capsule.org:8080'
+		], $request->getHeader('Host'));
+	}
 }

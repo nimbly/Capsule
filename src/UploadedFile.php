@@ -77,15 +77,13 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	public static function createFromGlobal(array $file): UploadedFile
 	{
-		$uploadedFile = new static(
+		return new static(
 			$file['name'] ?? 'filename',
 			$file['type'] ?? 'text/plain',
 			$file['tmp_name'] ?? 'tmp_file',
 			(int) ($file['size'] ?? 0),
 			(int) ($file['error'] ?? UPLOAD_ERR_OK)
 		);
-
-		return $uploadedFile;
 	}
 
 	/**
@@ -94,9 +92,18 @@ class UploadedFile implements UploadedFileInterface
 	public function getStream()
 	{
 		if( empty($this->stream) ){
-			$this->stream = new FileStream(
-				\fopen($this->tempFilename, "r")
-			);
+
+			if( !\file_exists($this->tempFilename) ){
+				throw new RuntimeException("File not found.");
+			}
+
+			$fh = \fopen($this->tempFilename, "r");
+
+			if( empty($fh) ){
+				throw new RuntimeException("Could not open file for reading.");
+			}
+
+			$this->stream = new FileStream($fh);
 		}
 
 		return $this->stream;
@@ -108,6 +115,10 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	public function moveTo($targetPath)
 	{
+		if( !\file_exists($this->tempFilename) ){
+			throw new RuntimeException("File does not exist.");
+		}
+
 		if( \php_sapi_name() === 'cli' ){
 
 			if( \rename($this->tempFilename, $targetPath) === false ){
@@ -123,6 +134,7 @@ class UploadedFile implements UploadedFileInterface
 			if( \move_uploaded_file($this->tempFilename, $targetPath) === false ){
 				throw new RuntimeException("Failed to move uploaded file to {$targetPath}.");
 			}
+
 		}
 	}
 

@@ -81,28 +81,13 @@ class Uri implements UriInterface
 		$uri->username = $urlPart['user'] ?? "";
 		$uri->password = $urlPart['pass'] ?? "";
 		$uri->host = !empty($urlPart['host']) ? \strtolower($urlPart['host']) : "";
-		$uri->port = !empty($urlPart['port']) ? (int) $urlPart['port'] : (int) $uri->derivePortFromScheme($uri->scheme ?? "");
+		$uri->port = !empty($urlPart['port']) ? (int) $urlPart['port'] : null;
 		$uri->path = $urlPart['path'] ?? "";
 		$uri->query = $urlPart['query'] ?? "";
 		$uri->fragment = $urlPart['fragment'] ?? "";
 
 		return $uri;
 	}
-
-    /**
-     * Given a scheme, derive the port number to use.
-     *
-     * @param string $scheme
-     * @return int
-     */
-    private function derivePortFromScheme(string $scheme): int
-    {
-        if( \strtolower($scheme) === 'https' ){
-            return 443;
-        }
-
-        return 80;
-    }
 
     /**
      * @inheritDoc

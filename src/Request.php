@@ -46,9 +46,14 @@ class Request extends MessageAbstract implements RequestInterface
         $this->uri = $uri instanceof UriInterface ? $uri : Uri::createFromString((string) $uri);
         $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
 
-        $this->setHeaders($headers);
+		$this->setHeaders($headers);
+
+		if( $this->uri->getHost() ){
+			$this->setHostHeader($this->uri->getHost(), $this->uri->getPort());
+		}
+
         $this->version = $httpVersion;
-    }
+	}
 
     /**
      * @inheritDoc
@@ -82,7 +87,13 @@ class Request extends MessageAbstract implements RequestInterface
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
         $instance = clone $this;
-        $instance->uri = $uri;
+		$instance->uri = $uri;
+
+		if( $preserveHost === false ||
+			$this->hasHeader('Host') === false ){
+			$instance->setHostHeader($uri->getHost(), $uri->getPort());
+		}
+
         return $instance;
     }
 

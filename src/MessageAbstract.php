@@ -68,7 +68,7 @@ abstract class MessageAbstract implements MessageInterface
      * @param string $name
      * @return string|null
      */
-    private function findHeaderKey($name): ?string
+    private function findHeaderKey(string $name): ?string
     {
         foreach( $this->headers as $key => $value ){
             if( \strtolower($name) === \strtolower($key) ){
@@ -121,7 +121,7 @@ abstract class MessageAbstract implements MessageInterface
             return "";
         }
 
-        return "{$name}: " . \implode(",", $header);
+        return \implode(",", $header);
     }
 
     /**
@@ -179,21 +179,39 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * Mass assign headers.
      *
-     * This method is NOT immutable and *will* modify the current object.
-     *
-     * @param array $headers
+     * @param array<string, string> $headers
+	 * @throws RuntimeException
      * @return void
      */
     protected function setHeaders(array $headers): void
     {
         foreach( $headers as $name => $value ){
-			if( \is_int($name) ){
-				throw new RuntimeException("Invalid header name \"{$name}\".");
-			}
-
             $this->headers[$name][] = $value;
-        }
-    }
+		}
+	}
+
+	/**
+	 * Set the Host header.
+	 *
+	 * @param string $host
+	 * @param int|null $port
+	 * @return void
+	 */
+	protected function setHostHeader(string $host, ?int $port = null): void
+	{
+		if( ($key = $this->findHeaderKey('Host')) ){
+			unset($this->headers[$key]);
+		}
+
+		if( $port ){
+			$host .= ":{$port}";
+		}
+
+		$this->headers = \array_merge(
+			['Host' => [$host]],
+			$this->headers ?? []
+		);
+	}
 
     /**
      * @inheritDoc

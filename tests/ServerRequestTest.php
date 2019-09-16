@@ -380,17 +380,17 @@ class ServerRequestTest extends TestCase
 		);
 
 		$this->assertEquals(
-			"Host: capsule.org",
+			"capsule.org",
 			$request->getHeaderLine("Host")
 		);
 
 		$this->assertEquals(
-			"Content-Type: application/json",
+			"application/json",
 			$request->getHeaderLine("Content-Type")
 		);
 
 		$this->assertEquals(
-			"X-Forwarded-By: 5.6.7.8",
+			"5.6.7.8",
 			$request->getHeaderLine("X-Forwarded-By")
 		);
 

@@ -38,18 +38,6 @@ class UriTest extends TestCase
         $this->assertEquals($url, (string) $uri);
     }
 
-    public function test_uri_derives_https_port_number_if_not_provided()
-    {
-        $uri = Uri::createFromString("https://www.example.com");
-        $this->assertEquals(443, $uri->getPort());
-    }
-
-    public function test_uri_derives_http_port_number_if_not_provided()
-    {
-        $uri = Uri::createFromString("http://www.example.com");
-        $this->assertEquals(80, $uri->getPort());
-    }
-
     public function test_with_scheme_saves_data()
     {
         $uri = (new Uri)->withScheme("https");

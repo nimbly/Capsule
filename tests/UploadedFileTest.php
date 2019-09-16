@@ -5,6 +5,7 @@ namespace Capsule\Tests;
 use Capsule\Stream\FileStream;
 use Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @covers Capsule\UploadedFile
@@ -12,13 +13,23 @@ use PHPUnit\Framework\TestCase;
  */
 class UploadedFileTest extends TestCase
 {
-	protected function makeFile()
+	protected function makeFile(): UploadedFile
 	{
+		if( !\is_dir(__DIR__ . "/tmp") ){
+			\mkdir(__DIR__ . "/tmp");
+		}
+
+		\file_put_contents(__DIR__ . "/tmp/tmp_upload", "{\"name\": \"Test\", \"email\": \"test@example.com\"}");
+
+		if( \file_exists(__DIR__ . "/tmp/test.json") ){
+			\unlink(__DIR__ . "/tmp/test.json");
+		}
+
 		return UploadedFile::createFromGlobal([
 			"name" => "test.json",
-			"tmp_name" => __DIR__ . "/test.json",
+			"tmp_name" => __DIR__ . "/tmp/tmp_upload",
 			"type" => "text/plain",
-			"size" => \filesize(__DIR__ . "/test.json"),
+			"size" => \filesize(__DIR__ . "/tmp/tmp_upload"),
 			"error" => UPLOAD_ERR_OK
 		]);
 	}
@@ -34,15 +45,20 @@ class UploadedFileTest extends TestCase
 	{
 		$uploadedFile = $this->makeFile();
 
-		$this->assertTrue(true);
-		return;
-
-		// the moveTo() method uses the \move_uploaded_file() function but can only work when a file has actually been uploaded.
-		$uploadedFile->moveTo(__DIR__ . "/tmp");
+		$uploadedFile->moveTo(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename());
 
 		$this->assertTrue(
 			\file_exists(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename())
 		);
+	}
+
+	public function test_calling_move_to_more_than_once_throws_exception()
+	{
+		$uploadedFile = $this->makeFile();
+		$uploadedFile->moveTo(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename());
+
+		$this->expectException(RuntimeException::class);
+		$uploadedFile->moveTo(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename());
 	}
 
 	public function test_get_size()
@@ -80,5 +96,14 @@ class UploadedFileTest extends TestCase
 			"text/plain",
 			$uploadedFile->getClientMediaType()
 		);
+	}
+
+	public function test_getting_stream_after_moving_should_throw_exception()
+	{
+		$uploadedFile = $this->makeFile();
+		$uploadedFile->moveTo(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename());
+
+		$this->expectException(RuntimeException::class);
+		$uploadedFile->getStream();
 	}
 }
