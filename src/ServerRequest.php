@@ -5,6 +5,7 @@ namespace Capsule;
 use Capsule\Stream\BufferStream;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
 
 class ServerRequest extends Request implements ServerRequestInterface
@@ -45,25 +46,34 @@ class ServerRequest extends Request implements ServerRequestInterface
 	protected $attributes = [];
 
 	/**
+	 * Server parameters.
+	 *
+	 * @var array<string, mixed>
+	 */
+	protected $serverParams = [];
+
+	/**
 	 * ServerRequest constructor.
 	 *
 	 * @param string $method
-	 * @param Uri|string $uri
+	 * @param UriInterface|string $uri
 	 * @param object|array|string|null $body
 	 * @param array<string, mixed> $query
 	 * @param array<string, mixed> $headers
 	 * @param array<string, mixed> $cookies
 	 * @param array<UploadedFile> $files
+	 * @param array<string, mixed> $serverParams
 	 * @param string $version
 	 */
 	public function __construct(
 		string $method,
 		$uri,
-		$body = "",
+		$body = null,
 		array $query = [],
 		array $headers = [],
 		array $cookies = [],
 		array $files  = [],
+		array $serverParams = [],
 		string $version = "1.1")
 	{
 		parent::__construct($method, $uri, $this->createStreamFromBody($body), $headers, $version);
@@ -72,32 +82,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 		$this->queryParams = $query;
 		$this->uploadedFiles = $files;
 		$this->cookieParams = $cookies;
-	}
-
-	/**
-	 * Create a ServerRequest instance.
-	 *
-	 * @param string $method
-	 * @param Uri|string $uri
-	 * @param object|array|string|null $body
-	 * @param array<string, mixed> $query
-	 * @param array<string, mixed> $headers
-	 * @param array<string, mixed> $cookies
-	 * @param array<UploadedFile> $files
-	 * @param string $version
-	 * @return ServerRequest
-	 */
-	public static function create(
-		string $method,
-		$uri,
-		$body = "",
-		array $query = [],
-		array $headers = [],
-		array $cookies = [],
-		array $files  = [],
-		string $version = "1.1"): ServerRequest
-	{
-		return new static($method, $uri, $body, $query, $headers, $cookies, $files, $version);
+		$this->serverParams = $serverParams;
 	}
 
 	/**
@@ -169,17 +154,15 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public static function createFromGlobals(): ServerRequest
 	{
-		if( \preg_match("/(HTTPS?)\/([\d\.]+)/i", $_SERVER['SERVER_PROTOCOL'] ?? "", $match) == false ){
-			throw new \Exception('Cannot parse request.');
-		}
-
 		// Build out the URI
-		$uri = \strtolower($match[1]) . '://' .
+		$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http";
+
+		$uri = $scheme . "://" .
 		($_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'])) .
 		$_SERVER['REQUEST_URI'] ?? "/";
 
 		// Capture the version.
-		$version = $match[2];
+		\preg_match("/^HTTP\/([\d\.]+)$/i", $_SERVER['SERVER_PROTOCOL'] ?? "", $versionMatch);
 
 		// Get the request body first by getting raw input from php://input.
 		$body = \file_get_contents("php://input");
@@ -198,7 +181,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 			\array_change_key_case(\getallheaders()),
 			$_COOKIE,
 			$files ?? [],
-			$version ?? "1.1"
+			$_SERVER,
+			$versionMatch[2] ?? "1.1"
 		);
 	}
 
@@ -207,7 +191,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function getServerParams()
 	{
-		return $_SERVER ?? [];
+		return $this->serverParams;
 	}
 
 	/**

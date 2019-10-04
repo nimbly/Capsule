@@ -3,7 +3,6 @@
 namespace Capsule;
 
 use Capsule\Stream\BufferStream;
-use Capsule\Stream\FileStream;
 use Capsule\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -37,7 +36,7 @@ class Request extends MessageAbstract implements RequestInterface
      * @param string $method
      * @param UriInterface|string $uri
      * @param StreamInterface|string $body
-     * @param array $headers
+     * @param array<string, string> $headers
      * @param string $httpVersion
      */
     public function __construct(string $method, $uri, $body = null, array $headers = [], string $httpVersion = "1.1")

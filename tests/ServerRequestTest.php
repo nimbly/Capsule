@@ -44,6 +44,7 @@ class ServerRequestTest extends TestCase
 					UPLOAD_ERR_OK
 				)
 			],
+			[],
 			"1.1"
 		);
 	}
@@ -52,7 +53,7 @@ class ServerRequestTest extends TestCase
 	{
 		$uri = Uri::createFromString("http://example.org/foo/bar?q=search");
 
-		$request = ServerRequest::create("get", $uri);
+		$request = new ServerRequest("get", $uri);
 
 		$this->assertSame(
 			$uri,
@@ -62,7 +63,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_array_body()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			["email" => "test@example.com", "name" => "Testy Test"]
@@ -79,7 +80,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_object_body()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			(object) ["email" => "test@example.com", "name" => "Testy Test"]
@@ -96,7 +97,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_json_content_type()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			'{"name": "Testy Test", "email": "test@example.com"}',
@@ -117,7 +118,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_form_encoded_content_type()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			"name=Testy+Test&email=test@example.com",
@@ -138,7 +139,7 @@ class ServerRequestTest extends TestCase
 
 	public function test_create_with_no_content_type_header()
 	{
-		$request = ServerRequest::create(
+		$request = new ServerRequest(
 			"get",
 			"http://example.org/foo/bar?q=search",
 			"name=Testy+Test&email=test@example.com"
@@ -153,8 +154,25 @@ class ServerRequestTest extends TestCase
 	{
 		$request = $this->makeRequest();
 
+		$request = new ServerRequest(
+			"get",
+			"http://example.org/foo/bar?q=search",
+			null,
+			[],
+			[],
+			[],
+			[],
+			[
+				"SERVER_NAME" => "Capsule",
+				"SERVER_VERSION" => 1.0,
+			]
+		);
+
 		$this->assertEquals(
-			$_SERVER,
+			[
+				"SERVER_NAME" => "Capsule",
+				"SERVER_VERSION" => 1.0,
+			],
 			$request->getServerParams()
 		);
 	}
@@ -414,6 +432,11 @@ class ServerRequestTest extends TestCase
 				new UploadedFile('file1.json', 'text/plain', 'test.json', 100, UPLOAD_ERR_OK)
 			],
 			$request->getUploadedFiles()
+		);
+
+		$this->assertEquals(
+			$_SERVER,
+			$request->getServerParams()
 		);
 	}
 }
