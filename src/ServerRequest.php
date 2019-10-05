@@ -307,4 +307,50 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 		return $instance;
 	}
+
+	/**
+	 * Check for the presence of a value in either the parsed request body or the query params.
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
+	public function has(string $name): bool
+	{
+		return 	\array_key_exists($name, $this->queryParams) ||
+				\array_key_exists($name, (array) ($this->parsedBody ?? []));
+	}
+
+	/**
+	 * Get a request value from either the parsed request body or the query params.
+	 *
+	 * @param string $name
+	 * @return mixed|null
+	 */
+	public function get(string $name)
+	{
+		if( \is_array($this->parsedBody) &&
+			\array_key_exists($name, $this->parsedBody) ){
+			return $this->parsedBody[$name];
+		}
+
+		if( \is_object($this->parsedBody) &&
+			\property_exists($this->parsedBody, $name) ){
+			return $this->parsedBody->{$name};
+		}
+
+		return $this->queryParams[$name] ?? null;
+	}
+
+	/**
+	 * Get all request values from both the parsed request body and the query params.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function all(): array
+	{
+		return \array_merge(
+			(array) ($this->parsedBody ?? []),
+			$this->queryParams
+		);
+	}
 }

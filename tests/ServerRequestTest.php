@@ -439,4 +439,33 @@ class ServerRequestTest extends TestCase
 			$request->getServerParams()
 		);
 	}
+
+	public function test_has()
+	{
+		$request = $this->makeRequest();
+
+		$this->assertTrue($request->has('name'));
+		$this->assertTrue($request->has('query1'));
+	}
+
+	public function test_get()
+	{
+		$request = $this->makeRequest();
+
+		$this->assertEquals('value1', $request->get('query1'));
+		$this->assertEquals('test@example.com', $request->get('email'));
+	}
+
+	public function test_get_prefers_parsed_body()
+	{
+		$request = $this->makeRequest();
+		$request = $request->withQueryParams([
+			'email' => 'bob@example.com'
+		]);
+
+		$this->assertEquals(
+			'test@example.com',
+			$request->get('email')
+		);
+	}
 }

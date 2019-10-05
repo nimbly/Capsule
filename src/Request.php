@@ -29,6 +29,7 @@ class Request extends MessageAbstract implements RequestInterface
      * Request target form
      *
      * @var string
+	 * @psalm-suppress PropertyNotSetInConstructor
      */
     protected $requestTarget;
 

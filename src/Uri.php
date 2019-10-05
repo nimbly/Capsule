@@ -4,7 +4,9 @@ namespace Capsule;
 
 use Psr\Http\Message\UriInterface;
 
-
+/**
+ * @psalm-suppress MissingConstructor
+ */
 class Uri implements UriInterface
 {
     /**
