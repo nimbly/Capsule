@@ -456,6 +456,19 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals('test@example.com', $request->get('email'));
 	}
 
+	public function test_get_from_object_parsed_body()
+	{
+		$request = $this->makeRequest();
+
+		$request = $request->withParsedBody(
+			(object) [
+				"email" => "test@nimbly.io"
+			]
+		);
+
+		$this->assertEquals("test@nimbly.io", $request->get('email'));
+	}
+
 	public function test_get_prefers_parsed_body()
 	{
 		$request = $this->makeRequest();
@@ -466,6 +479,21 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals(
 			'test@example.com',
 			$request->get('email')
+		);
+	}
+
+	public function test_all()
+	{
+		$request = $this->makeRequest();
+
+		$this->assertEquals(
+			[
+				'name' => 'Test User',
+				'email' => 'test@example.com',
+				"query1" => "value1",
+				"query2" => "value2"
+			],
+			$request->all()
 		);
 	}
 }
