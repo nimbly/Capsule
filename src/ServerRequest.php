@@ -158,8 +158,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 		$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http";
 
 		$uri = $scheme . "://" .
-		($_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'])) .
-		$_SERVER['REQUEST_URI'] ?? "/";
+		($_SERVER['HTTP_HOST'] ?? (($_SERVER['SERVER_NAME'] ?? "") . ":" . ($_SERVER['SERVER_PORT'] ?? ""))) .
+		($_SERVER['REQUEST_URI'] ?? "/");
 
 		// Capture the version.
 		\preg_match("/^HTTP\/([\d\.]+)$/i", $_SERVER['SERVER_PROTOCOL'] ?? "", $versionMatch);
@@ -180,7 +180,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 			$_GET,
 			\array_change_key_case(\getallheaders()),
 			$_COOKIE,
-			$files ?? [],
+			$files,
 			$_SERVER,
 			$versionMatch[2] ?? "1.1"
 		);

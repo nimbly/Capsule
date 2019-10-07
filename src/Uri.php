@@ -12,14 +12,14 @@ class Uri implements UriInterface
     /**
      * URI scheme (http or https)
      *
-     * @var string
+     * @var string|null
      */
     protected $scheme;
 
     /**
      * Request host
      *
-     * @var string
+     * @var string|null
      */
     protected $host;
 
@@ -33,35 +33,35 @@ class Uri implements UriInterface
     /**
      * Username
      *
-     * @var string
+     * @var string|null
      */
     protected $username;
 
     /**
      * Password
      *
-     * @var string
+     * @var string|null
      */
     protected $password;
 
     /**
      * Path
      *
-     * @var string
+     * @var string|null
      */
     protected $path;
 
     /**
      * Query
      *
-     * @var string
+     * @var string|null
      */
     protected $query;
 
     /**
      * Fragment
      *
-     * @var string
+     * @var string|null
      */
 	protected $fragment;
 
@@ -252,7 +252,7 @@ class Uri implements UriInterface
             $url .= "{$this->username}:{$this->password}@";
         }
 
-        $url .= $this->host;
+        $url .= $this->host ?? "";
 
         if( $this->port ){
             $url .= ":{$this->port}";

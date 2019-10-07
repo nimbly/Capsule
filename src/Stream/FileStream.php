@@ -123,8 +123,11 @@ class FileStream implements StreamInterface
      */
     public function isWritable()
     {
+		/** @psalm-suppress PossiblyInvalidCast */
+		$mode = (string) $this->getMetadata('mode');
+
         return \in_array(
-			\strtolower($this->getMetadata('mode')),
+			\strtolower($mode),
 			$this->fileModes['writeable'])
 		;
     }
@@ -142,8 +145,11 @@ class FileStream implements StreamInterface
      */
     public function isReadable()
     {
+		/** @psalm-suppress PossiblyInvalidCast */
+		$mode = (string) $this->getMetadata('mode');
+
         return \in_array(
-			\strtolower($this->getMetadata('mode')),
+			\strtolower($mode),
 			$this->fileModes['readable']
 		);
     }

@@ -209,7 +209,7 @@ abstract class MessageAbstract implements MessageInterface
 
 		$this->headers = \array_merge(
 			['Host' => [$host]],
-			$this->headers ?? []
+			$this->headers
 		);
 	}
 
