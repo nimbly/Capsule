@@ -42,37 +42,7 @@ class ResponseTest extends TestCase
         $response = new Response(200);
         $newResponse = $response->withStatus(404);
         $this->assertNotSame($response, $newResponse);
-    }
-
-    public function test_1xx_responses_are_considered_successful()
-    {
-        $response = new Response(100);
-        $this->assertTrue($response->isSuccessful());
-    }
-
-    public function test_2xx_responses_are_considered_successful()
-    {
-        $response = new Response(201);
-        $this->assertTrue($response->isSuccessful());
-    }
-
-    public function test_3xx_responses_are_considered_successful()
-    {
-        $response = new Response(304);
-        $this->assertTrue($response->isSuccessful());
-    }
-
-    public function test_4xx_responses_are_considered_unsuccessful()
-    {
-        $response = new Response(422);
-        $this->assertFalse($response->isSuccessful());
-    }
-
-    public function test_5xx_responses_are_considered_unsuccessful()
-    {
-        $response = new Response(503);
-        $this->assertFalse($response->isSuccessful());
-    }
+	}
 
     public function test_constructor()
     {

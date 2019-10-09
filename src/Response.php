@@ -35,7 +35,7 @@ class Response extends MessageAbstract implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
@@ -43,7 +43,7 @@ class Response extends MessageAbstract implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): Response
     {
         $instance = clone $this;
         $instance->statusCode = (int) $code;
@@ -53,18 +53,8 @@ class Response extends MessageAbstract implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function getReasonPhrase()
+    public function getReasonPhrase(): string
     {
         return ResponseStatus::getPhrase($this->statusCode) ?? "";
-    }
-
-    /**
-     * Response is a successful one.
-     *
-     * @return boolean
-     */
-    public function isSuccessful()
-    {
-        return ($this->statusCode < 400);
     }
 }

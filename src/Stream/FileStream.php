@@ -46,7 +46,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getContents();
     }
@@ -54,7 +54,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function close()
+    public function close(): void
     {
         \fclose($this->resource);
     }
@@ -64,13 +64,14 @@ class FileStream implements StreamInterface
      */
     public function detach()
     {
-        $this->close();
+		$this->close();
+		return $this->resource;
     }
 
     /**
      * @inheritDoc
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         $fstat = \fstat($this->resource);
         return $fstat["size"] ?? null;
@@ -87,7 +88,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function eof()
+    public function eof(): bool
     {
         return \feof($this->resource);
     }
@@ -95,25 +96,23 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         return (bool) $this->getMetadata('seekable');
     }
 
     /**
      * @inheritDoc
-     * @return void
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         \fseek($this->resource, $offset, $whence);
     }
 
     /**
      * @inheritDoc
-     * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
         \rewind($this->resource);
     }
@@ -121,7 +120,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
 		/** @psalm-suppress PossiblyInvalidCast */
 		$mode = (string) $this->getMetadata('mode');
@@ -135,7 +134,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function write($string)
+    public function write($string): int
     {
         return \fwrite($this->resource, $string);
     }
@@ -143,7 +142,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
 		/** @psalm-suppress PossiblyInvalidCast */
 		$mode = (string) $this->getMetadata('mode');
@@ -157,7 +156,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function read($length)
+    public function read($length): string
     {
         return \fread($this->resource, $length);
     }
@@ -165,7 +164,7 @@ class FileStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function getContents()
+    public function getContents(): string
     {
         $buffer = "";
 

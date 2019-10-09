@@ -58,7 +58,7 @@ class Request extends MessageAbstract implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withMethod($method) : Request
+    public function withMethod($method): Request
     {
         $instance = clone $this;
         $instance->method = \strtoupper($method);
@@ -68,7 +68,7 @@ class Request extends MessageAbstract implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -76,7 +76,7 @@ class Request extends MessageAbstract implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function getUri()
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }
@@ -84,7 +84,7 @@ class Request extends MessageAbstract implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): Request
     {
         $instance = clone $this;
 		$instance->uri = $uri;
@@ -100,7 +100,7 @@ class Request extends MessageAbstract implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function getRequestTarget()
+    public function getRequestTarget(): string
     {
 		if( !empty($this->requestTarget) ){
 			return $this->requestTarget;
@@ -122,7 +122,7 @@ class Request extends MessageAbstract implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): Request
     {
         $instance = clone $this;
         $instance->requestTarget = $requestTarget;

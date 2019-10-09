@@ -43,7 +43,7 @@ abstract class MessageAbstract implements MessageInterface
      * @inheritDoc
 	 * @return string
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->version;
     }
@@ -51,7 +51,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * @inheritDoc
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): self
     {
         if( !\in_array($version, $this->allowedVersions) ){
             throw new \Exception("Invalid protocol version {$version}");
@@ -83,7 +83,7 @@ abstract class MessageAbstract implements MessageInterface
      * @inheritDoc
 	 * @return array<string, array<string>>
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -92,7 +92,7 @@ abstract class MessageAbstract implements MessageInterface
      * @inheritDoc
 	 * @return boolean
      */
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
         return ($this->findHeaderKey($name) !== null);
     }
@@ -100,7 +100,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * @inheritDoc
      */
-    public function getHeader($name)
+    public function getHeader($name): array
     {
         if( ($key = $this->findHeaderKey($name)) !== null ){
             return $this->headers[$key];
@@ -113,7 +113,7 @@ abstract class MessageAbstract implements MessageInterface
      * @inheritDoc
 	 * @return string
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         $header = $this->getHeader($name);
 
@@ -127,7 +127,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * @inheritDoc
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): self
     {
 		$instance = clone $this;
 
@@ -142,7 +142,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * @inheritDoc
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): self
     {
         if( ($key = $this->findHeaderKey($name)) === null ){
             $key = $name;
@@ -165,7 +165,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * @inheritDoc
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): self
     {
         if( ($key = $this->findHeaderKey($name)) === null ){
             return $this;
@@ -224,7 +224,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * @inheritDoc
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): self
     {
         $instance = clone $this;
         $instance->body = $body;

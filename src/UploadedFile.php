@@ -3,6 +3,7 @@
 namespace Capsule;
 
 use Capsule\Stream\FileStream;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 
@@ -89,7 +90,7 @@ class UploadedFile implements UploadedFileInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getStream()
+	public function getStream(): StreamInterface
 	{
 		if( empty($this->stream) ){
 
@@ -113,7 +114,7 @@ class UploadedFile implements UploadedFileInterface
 	 * @inheritDoc
 	 * @return void
 	 */
-	public function moveTo($targetPath)
+	public function moveTo($targetPath): void
 	{
 		if( !\file_exists($this->tempFilename) ){
 			throw new RuntimeException("File does not exist.");
@@ -134,14 +135,13 @@ class UploadedFile implements UploadedFileInterface
 			if( \move_uploaded_file($this->tempFilename, $targetPath) === false ){
 				throw new RuntimeException("Failed to move uploaded file to {$targetPath}.");
 			}
-
 		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getSize()
+	public function getSize(): ?int
 	{
 		return $this->size;
 	}
@@ -149,7 +149,7 @@ class UploadedFile implements UploadedFileInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getError()
+	public function getError(): int
 	{
 		return $this->error;
 	}
@@ -157,7 +157,7 @@ class UploadedFile implements UploadedFileInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getClientFilename()
+	public function getClientFilename(): ?string
 	{
 		return $this->clientFilename;
 	}
@@ -165,7 +165,7 @@ class UploadedFile implements UploadedFileInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getClientMediaType()
+	public function getClientMediaType(): ?string
 	{
 		return $this->clientMediaType;
 	}

@@ -28,7 +28,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getContents();
     }
@@ -47,13 +47,14 @@ class BufferStream implements StreamInterface
      */
     public function detach()
     {
-        return $this->close();
+		$this->close();
+		return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         return \strlen($this->buffer);
     }
@@ -61,7 +62,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function tell()
+    public function tell(): int
     {
         return 0;
     }
@@ -69,7 +70,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function eof()
+    public function eof(): bool
     {
         return (\strlen($this->buffer) === 0);
     }
@@ -77,7 +78,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         return false;
     }
@@ -86,7 +87,7 @@ class BufferStream implements StreamInterface
      * @inheritDoc
 	 * @return void
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         throw new RuntimeException("A BufferStream is not seekable.");
     }
@@ -95,7 +96,7 @@ class BufferStream implements StreamInterface
      * @inheritDoc
      * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->seek(0);
     }
@@ -103,7 +104,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return true;
     }
@@ -111,7 +112,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function write($string)
+    public function write($string): int
     {
         $this->buffer .= $string;
         return \strlen($string);
@@ -120,7 +121,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return true;
     }
@@ -128,7 +129,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function read($length)
+    public function read($length): string
     {
         if( $length >= \strlen($this->buffer) ){
             return $this->getContents();
@@ -142,7 +143,7 @@ class BufferStream implements StreamInterface
     /**
      * @inheritDoc
      */
-    public function getContents()
+    public function getContents(): string
     {
         $buffer = $this->buffer;
         $this->buffer = "";
