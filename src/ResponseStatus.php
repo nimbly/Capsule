@@ -153,10 +153,6 @@ class ResponseStatus
      */
     public static function getPhrase(int $code): ?string
     {
-        if( \array_key_exists($code, self::$phrases) ){
-            return self::$phrases[$code];
-        }
-
-        return null;
+		return self::$phrases[$code] ?? null;
     }
 }

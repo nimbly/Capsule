@@ -54,7 +54,7 @@ abstract class MessageAbstract implements MessageInterface
     public function withProtocolVersion($version): self
     {
         if( !\in_array($version, $this->allowedVersions) ){
-            throw new \Exception("Invalid protocol version {$version}");
+            throw new RuntimeException("Invalid protocol version {$version}");
         }
 
         $instance = clone $this;
@@ -66,7 +66,6 @@ abstract class MessageAbstract implements MessageInterface
      * Find a header by its case-insensitive name.
      *
      * @param string $name
-     * @return string|null
      */
     private function findHeaderKey(string $name): ?string
     {
@@ -90,7 +89,6 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
-	 * @return boolean
      */
     public function hasHeader($name): bool
     {
@@ -111,7 +109,6 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
-	 * @return string
      */
     public function getHeaderLine($name): string
     {
