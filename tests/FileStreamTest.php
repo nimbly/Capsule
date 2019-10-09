@@ -12,9 +12,9 @@ class FileStreamTest extends TestCase
 {
     protected function getFileStream(): FileStream
     {
-        $fh = fopen("php://temp", "w+");
-        fwrite($fh, "Capsule!");
-        fseek($fh, 0);
+        $fh = \fopen("php://temp", "w+");
+        \fwrite($fh, "Capsule!");
+        \fseek($fh, 0);
 
         return new FileStream($fh);
     }
@@ -33,20 +33,20 @@ class FileStreamTest extends TestCase
 
     public function test_close_closes_file()
     {
-        $file = fopen("php://temp", "w+");
+        $file = \fopen("php://temp", "w+");
         $fileStream = new FileStream($file);
         $fileStream->close();
 
-        $this->assertTrue(!is_resource($file));
+        $this->assertTrue(!\is_resource($file));
     }
 
     public function test_detach_closes_file()
     {
-        $file = fopen("php://temp", "w+");
+        $file = \fopen("php://temp", "w+");
         $fileStream = new FileStream($file);
         $fileStream->detach();
 
-        $this->assertTrue(!is_resource($file));
+        $this->assertTrue(!\is_resource($file));
     }
 
     public function test_getsize_returns_string_length_of_file()
@@ -106,7 +106,7 @@ class FileStreamTest extends TestCase
 
     public function test_write()
     {
-        $fileStream = new FileStream(fopen("php://temp", "w+"));
+        $fileStream = new FileStream(\fopen("php://temp", "w+"));
         $fileStream->write("I love Capsule!");
         $fileStream->rewind();
 
@@ -154,7 +154,7 @@ class FileStreamTest extends TestCase
     public function test_get_meta_data_returns_array()
     {
         $fileStream = $this->getFileStream();
-        $this->assertTrue(is_array($fileStream->getMetadata()));
+        $this->assertTrue(\is_array($fileStream->getMetadata()));
     }
 
     public function test_get_unknown_meta_throws()
