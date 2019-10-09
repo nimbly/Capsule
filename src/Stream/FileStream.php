@@ -3,7 +3,7 @@
 namespace Capsule\Stream;
 
 use Psr\Http\Message\StreamInterface;
-
+use RuntimeException;
 
 class FileStream implements StreamInterface
 {
@@ -82,7 +82,11 @@ class FileStream implements StreamInterface
      */
     public function tell(): int
     {
-        return \ftell($this->resource);
+        if( ($position = \ftell($this->resource)) === false ){
+			throw new RuntimeException("Could not tell position in file.");
+		}
+
+		return $position;
     }
 
     /**
@@ -106,7 +110,9 @@ class FileStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
-        \fseek($this->resource, $offset, $whence);
+        if( \fseek($this->resource, $offset, $whence) !== 0 ){
+			throw new RuntimeException("Could not seek file.");
+		}
     }
 
     /**
@@ -114,7 +120,9 @@ class FileStream implements StreamInterface
      */
     public function rewind(): void
     {
-        \rewind($this->resource);
+        if( \rewind($this->resource) === false ){
+			throw new RuntimeException("Could not rewind file.");
+		}
     }
 
     /**
@@ -136,7 +144,11 @@ class FileStream implements StreamInterface
      */
     public function write($string): int
     {
-        return \fwrite($this->resource, $string);
+        if( ($bytes = \fwrite($this->resource, $string)) === false ){
+			throw new RuntimeException("Could not write to file.");
+		}
+
+		return $bytes;
     }
 
     /**
@@ -158,7 +170,11 @@ class FileStream implements StreamInterface
      */
     public function read($length): string
     {
-        return \fread($this->resource, $length);
+        if( ($data = \fread($this->resource, $length)) === false ){
+			throw new RuntimeException("Could not read from file.");
+		}
+
+		return $data;
     }
 
     /**
@@ -184,12 +200,8 @@ class FileStream implements StreamInterface
             return \stream_get_meta_data($this->resource);
         }
 
-        $meta = \stream_get_meta_data($this->resource);
+		$meta = \stream_get_meta_data($this->resource);
 
-        if( \array_key_exists($key, $meta) ){
-            return $meta[$key];
-        }
-
-        throw new \Exception("Unknown meta data key.");
+		return $meta[$key] ?? null;
     }
 }

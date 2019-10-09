@@ -148,6 +148,6 @@ class BufferStreamTest extends TestCase
     public function test_get_meta_data_returns_nothing()
     {
         $bufferStream = new BufferStream("Capsule!");
-        $this->assertEquals(null, $bufferStream->getMetadata());
+        $this->assertEquals([], $bufferStream->getMetadata());
     }
 }

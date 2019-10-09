@@ -85,7 +85,6 @@ class BufferStream implements StreamInterface
 
     /**
      * @inheritDoc
-	 * @return void
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
@@ -94,7 +93,6 @@ class BufferStream implements StreamInterface
 
     /**
      * @inheritDoc
-     * @return void
      */
     public function rewind(): void
     {
@@ -155,6 +153,10 @@ class BufferStream implements StreamInterface
      */
     public function getMetadata($key = null)
     {
-        return null;
+		if( $key ){
+			return null;
+		}
+
+        return [];
     }
 }
