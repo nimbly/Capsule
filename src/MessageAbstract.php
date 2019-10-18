@@ -58,7 +58,7 @@ abstract class MessageAbstract implements MessageInterface
         }
 
         $instance = clone $this;
-        $instance->version = $version;
+        $instance->version = (string) $version;
         return $instance;
     }
 
