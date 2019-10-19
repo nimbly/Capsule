@@ -87,7 +87,7 @@ class ServerRequestTest extends TestCase
 		);
 
 		$this->assertEquals(
-			[
+			(object) [
 				"email" => "test@example.com",
 				"name" => "Testy Test"
 			],
@@ -369,7 +369,7 @@ class ServerRequestTest extends TestCase
 		$_SERVER['REQUEST_METHOD'] = "POST";
 		$_SERVER['REQUEST_URI'] = "/foo?query1=value1";
 		$_SERVER['HTTP_HOST'] = "capsule.org";
-		$_SERVER['HTTP_CONTENT_TYPE'] = 'application/json';
+		$_SERVER['HTTP_CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
 		$_SERVER['HTTP_X_FORWARDED_BY'] = '5.6.7.8';
 		$_GET = ["query1" => "value1"];
 		$_POST = ["post1" => "value1"];
@@ -403,7 +403,7 @@ class ServerRequestTest extends TestCase
 		);
 
 		$this->assertEquals(
-			"application/json",
+			"application/x-www-form-urlencoded",
 			$request->getHeaderLine("Content-Type")
 		);
 

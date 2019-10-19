@@ -56,8 +56,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * ServerRequest constructor.
 	 *
 	 * @param string $method
-	 * @param UriInterface|string $uri
-	 * @param object|array|string|null $body
+	 * @param string|UriInterface $uri
+	 * @param string|array|object|null $body
 	 * @param array<string, mixed> $query
 	 * @param array<string, mixed> $headers
 	 * @param array<string, mixed> $cookies
@@ -76,65 +76,46 @@ class ServerRequest extends Request implements ServerRequestInterface
 		array $serverParams = [],
 		string $version = "1.1")
 	{
-		parent::__construct($method, $uri, $this->createStreamFromBody($body), $headers, $version);
+		parent::__construct($method, $uri, \is_string($body) ? new BufferStream($body) : null, $headers, $version);
 
-		$this->parsedBody = $this->parseBody($body);
 		$this->queryParams = $query;
 		$this->uploadedFiles = $files;
 		$this->cookieParams = $cookies;
 		$this->serverParams = $serverParams;
+		$this->parsedBody = $this->parseRequestBody($body);
 	}
 
 	/**
-	 * Create a StreamInterface instance from the Request body.
+	 * Attempt to parse the request body.
 	 *
 	 * @param mixed $body
-	 * @return StreamInterface
+	 * @return mixed
 	 */
-	private function createStreamFromBody($body): StreamInterface
+	private function parseRequestBody($body)
 	{
-		if( \is_array($body) ){
-			$stream = new BufferStream(\http_build_query($body));
-		}
-		elseif( \is_string($body) ) {
-			$stream = new BufferStream($body);
-		}
-		elseif( \is_object($body) ){
-			$stream = new BufferStream(\json_encode((array) $body));
-		}
-		else {
-			$stream = new BufferStream;
+		// Body has already been parsed.
+		if( \is_array($body) || \is_object($body) ){
+			return $body;
 		}
 
-		return $stream;
-	}
+		// String content body - let's try and parse it.
+		if( \is_string($body) && $this->hasHeader('Content-Type') ) {
 
-	/**
-	 * Parse the body of the ServerRequest into something useable (array or \stdClass).
-	 *
-	 * @param mixed $body
-	 * @return null|array|object
-	 */
-	private function parseBody($body)
-	{
-		if( \is_string($body) ){
-			// Use the Content-Type header to inform the parsing.
-			if( ($contentType = $this->getHeader('Content-Type')) ){
+			$contentType = \strtolower($this->getHeaderLine('Content-Type'));
 
-				if( \stripos($contentType[0], 'application/json') !== false ){
-					return (array) \json_decode($body);
+			if( \in_array($contentType, ['application/x-www-form-urlencoded', 'multipart/form-data']) ){
+
+				if( $this->getMethod() === "POST" && !empty($_POST) ){
+					return $_POST;
 				}
-				elseif( \stripos($contentType[0], 'application/x-www-form-urlencoded') !== false ||
-						\stripos($contentType[0], 'multipart/form-data') !== false ){
-					\parse_str($body, $parsedBody);
-					return $parsedBody;
-				}
+
+				\parse_str($body, $parsedBody);
+				return $parsedBody;
 			}
-		}
 
-		elseif( \is_array($body) ||
-				\is_object($body)) {
-			return (array) $body;
+			elseif( \stristr($contentType, 'application/json') !== false ){
+				return \json_decode($body, true);
+			}
 		}
 
 		return null;
@@ -265,7 +246,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	public function withParsedBody($data): ServerRequest
 	{
 		$instance = clone $this;
-		$instance->parsedBody = (array) $data;
+		$instance->parsedBody = $data;
 
 		return $instance;
 	}

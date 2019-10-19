@@ -176,14 +176,19 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * Mass assign headers.
      *
-     * @param array<string, string> $headers
+     * @param array<string, string>|array<string, array<string>> $headers
 	 * @throws RuntimeException
      * @return void
      */
     protected function setHeaders(array $headers): void
     {
         foreach( $headers as $name => $value ){
-            $this->headers[$name][] = $value;
+
+			if( !\is_array($value) ){
+				$value = [$value];
+			}
+
+            $this->headers[$name] = $value;
 		}
 	}
 

@@ -6,6 +6,7 @@ use Capsule\Factory;
 use Capsule\Request;
 use Capsule\Response;
 use Capsule\ServerRequest;
+use Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,6 +17,7 @@ use PHPUnit\Framework\TestCase;
  * @covers Capsule\Uri
  * @covers Capsule\MessageAbstract
  * @covers Capsule\Stream\BufferStream
+ * @covers Capsule\UploadedFile
  */
 class FactoryTest extends TestCase
 {
@@ -53,5 +55,27 @@ class FactoryTest extends TestCase
 			new Response(200),
 			$response
 		);
+	}
+
+	public function test_server_request_from_psr7_factory()
+	{
+		$factory = new Factory;
+
+		$serverRequest = $factory->createServerRequestFromPsr7(
+			new ServerRequest(
+				"post",
+				"http://example.org",
+				['body1' => 'value1'],
+				['query1' => 'value1'],
+				['Content-Type' => 'application/json'],
+				['cookie1' => 'value1'],
+				[new UploadedFile('client_filename.txt', 'text/plain', 'tmp_filename', 8)],
+				['server_param1' => 'value1']
+			)
+		);
+
+		$this->assertEquals("POST", $serverRequest->getMethod());
+		$this->assertEquals("http://example.org", (string) $serverRequest->getUri());
+		$this->assertEquals(["body1" => "value1"], $serverRequest->getParsedBody());
 	}
 }

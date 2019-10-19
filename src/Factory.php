@@ -34,4 +34,25 @@ class Factory implements RequestFactoryInterface, ServerRequestFactoryInterface,
 	{
 		return new Response($code);
 	}
+
+	/**
+	 * Create a Capsule ServerRequest instance from another PSR-7 ServerRequestInterface instance.
+	 *
+	 * @param ServerRequestInterface $serverRequest
+	 * @return ServerRequest
+	 */
+	public function createServerRequestFromPsr7(ServerRequestInterface $psr7ServerRequest): ServerRequest
+	{
+		return new ServerRequest(
+			$psr7ServerRequest->getMethod(),
+			$psr7ServerRequest->getUri(),
+			$psr7ServerRequest->getParsedBody() ?? $psr7ServerRequest->getBody(),
+			$psr7ServerRequest->getQueryParams(),
+			$psr7ServerRequest->getHeaders(),
+			$psr7ServerRequest->getCookieParams(),
+			$psr7ServerRequest->getUploadedFiles(),
+			$psr7ServerRequest->getServerParams(),
+			$psr7ServerRequest->getProtocolVersion()
+		);
+	}
 }
