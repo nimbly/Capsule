@@ -1,6 +1,6 @@
 {
     "name": "nimbly/capsule",
-    "description": "PSR-7 implementation",
+    "description": "Capsule is a simple PSR-7 HTTP message and PSR-17 HTTP factory implementation.",
     "type": "library",
     "require": {
         "php": ">=7.2",
