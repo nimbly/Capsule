@@ -19,7 +19,11 @@ class ResponseTest extends TestCase
     public function test_reason_phrase_set_on_constructor()
     {
         $response = new Response(200);
-        $this->assertNotEmpty($response->getReasonPhrase());
+
+		$this->assertEquals(
+			ResponseStatus::getPhrase(ResponseStatus::OK),
+			$response->getReasonPhrase()
+		);
     }
 
     public function test_with_status_code_saves_data()
@@ -28,7 +32,7 @@ class ResponseTest extends TestCase
         $response = $response->withStatus(404, "Page Not Found");
 
         $this->assertEquals(404, $response->getStatusCode());
-        $this->assertEquals("Not Found", $response->getReasonPhrase());
+        $this->assertEquals("Page Not Found", $response->getReasonPhrase());
     }
 
     public function test_with_status_code_resolves_phrase_if_none_given()

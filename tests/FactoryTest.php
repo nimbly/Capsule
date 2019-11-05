@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @covers Capsule\MessageAbstract
  * @covers Capsule\Stream\BufferStream
  * @covers Capsule\UploadedFile
+ * @covers Capsule\ResponseStatus
  */
 class FactoryTest extends TestCase
 {
