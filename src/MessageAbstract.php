@@ -50,6 +50,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withProtocolVersion($version): self
     {
@@ -123,6 +124,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withHeader($name, $value): self
     {
@@ -138,6 +140,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withAddedHeader($name, $value): self
     {
@@ -161,6 +164,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withoutHeader($name): self
     {
@@ -225,6 +229,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withBody(StreamInterface $body): self
     {

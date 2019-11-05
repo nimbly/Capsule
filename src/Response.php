@@ -14,7 +14,14 @@ class Response extends MessageAbstract implements ResponseInterface
      *
      * @var int
      */
-    protected $statusCode;
+	protected $statusCode;
+
+	/**
+	 * Response reason phrase.
+	 *
+	 * @var string
+	 */
+	protected $reasonPhrase;
 
     /**
      * Response constructor.
@@ -24,9 +31,10 @@ class Response extends MessageAbstract implements ResponseInterface
      * @param array<string, string> $headers
      * @param string $httpVersion
      */
-    public function __construct(int $statusCode, $body = null, array $headers = [], $httpVersion = "1.1")
+    public function __construct(int $statusCode, $body = null, array $headers = [], string $httpVersion = "1.1")
     {
 		$this->statusCode = $statusCode;
+		$this->reasonPhrase = ResponseStatus::getPhrase($statusCode) ?? "";
         $this->body = ($body instanceof StreamInterface) ? $body : new BufferStream((string) $body);
         $this->setHeaders($headers);
         $this->version = $httpVersion;
@@ -42,11 +50,13 @@ class Response extends MessageAbstract implements ResponseInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withStatus($code, $reasonPhrase = ''): Response
     {
         $instance = clone $this;
-        $instance->statusCode = (int) $code;
+		$instance->statusCode = (int) $code;
+		$instance->reasonPhrase = $reasonPhrase ? $reasonPhrase : ResponseStatus::getPhrase((int) $code) ?? "";
         return $instance;
     }
 
@@ -55,6 +65,6 @@ class Response extends MessageAbstract implements ResponseInterface
      */
     public function getReasonPhrase(): string
     {
-        return ResponseStatus::getPhrase($this->statusCode) ?? "";
+        return $this->reasonPhrase;
     }
 }

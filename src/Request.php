@@ -57,6 +57,7 @@ class Request extends MessageAbstract implements RequestInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withMethod($method): Request
     {
@@ -83,6 +84,7 @@ class Request extends MessageAbstract implements RequestInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false): Request
     {
@@ -121,6 +123,7 @@ class Request extends MessageAbstract implements RequestInterface
 
     /**
      * @inheritDoc
+	 * @return static
      */
     public function withRequestTarget($requestTarget): Request
     {

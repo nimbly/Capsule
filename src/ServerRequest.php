@@ -184,6 +184,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @return static
 	 */
 	public function withCookieParams(array $cookies): ServerRequest
 	{
@@ -203,6 +204,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @return static
 	 */
 	public function withQueryParams(array $query): ServerRequest
 	{
@@ -222,6 +224,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @return static
 	 */
 	public function withUploadedFiles(array $uploadedFiles): ServerRequest
 	{
@@ -241,6 +244,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @return static
 	 */
 	public function withParsedBody($data): ServerRequest
 	{
@@ -268,6 +272,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @return static
 	 */
 	public function withAttribute($name, $value): ServerRequest
 	{
@@ -279,6 +284,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @return static
 	 */
 	public function withoutAttribute($name): ServerRequest
 	{
