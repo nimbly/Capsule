@@ -7,8 +7,6 @@
 
 Capsule is a simple [PSR-7](https://www.php-fig.org/psr/psr-7/) HTTP message interface and [PSR-17](https://www.php-fig.org/psr/psr-17) HTTP factory implementation.
 
-**Note:** This library is simply an HTTP Request, ServerRequest, and Response message interface implementation. If you are looking for an HTTP client, checkout [nimbly/Shuttle](https://github.com/nimbly/shuttle). Shuttle is a [PSR-18](https://www.php-fig.org/psr/psr-18/) HTTP client utilizing Capsule as its HTTP message implementation.
-
 ## Install
 ```bash
 composer require nimbly/capsule
@@ -28,9 +26,7 @@ $response = $httpClient->sendRequest($request);
 
 ### ServerRequest
 
-The ```ServerRequest``` object represents an *incoming* request into your application, typically to be used with a PSR-7 compliant framework.
-
-You can create a new ServerRequest instance to have full control over the object.
+The ```ServerRequest``` object represents an *incoming* request into your application, to be used with a PSR-7 compliant HTTP framework.
 
 ```php
 $serverRequest = new ServerRequest("get", "https://example.org/books", '{"foo": "bar"}', ["p" => 1], ["Content-Type" => "application/json"]);
@@ -38,7 +34,9 @@ $serverRequest = new ServerRequest("get", "https://example.org/books", '{"foo": 
 $response = $application->dispatch($serverRequest);
 ```
 
-Better yet &ndash; use the ```createFromGlobals()``` static method to have an instance created for you automatically using PHP's global variables ($_SERVER, $_POST, $_GET, $_FILES, $_COOKIES).
+#### Creating from globals
+
+Typically, you will want to create a `ServerRequest` instance from the PHP globals space (`$_SERVER`, `$_POST`, `$_GET`, `$_FILES`, and `$_COOKIES`) for your incoming requests. Use the `createFromGlobals()` static method to have an instance created for you automatically.
 
 ```php
 $serverRequest = ServerRequest::createFromGlobals();
@@ -56,7 +54,7 @@ $response = new Response(200, \json_encode(["foo" => "bar"]), ['Content-Type' =>
 
 ## HTTP Factory (PSR-17)
 
-Factory class to be used to create ```Request```, ```ServerRequest```, and ```ServerResponse``` instances.
+Capsule includes a PSR-17 factory class to be used to create ```Request```, ```ServerRequest```, and ```ServerResponse``` instances.
 
 ```php
 $factory = new Factory;
