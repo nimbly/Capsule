@@ -82,7 +82,9 @@ class FileStream implements StreamInterface
      */
     public function tell(): int
     {
-        if( ($position = \ftell($this->resource)) === false ){
+        $position = \ftell($this->resource);
+
+        if( $position === false ){
 			throw new RuntimeException("Could not tell position in file.");
 		}
 
@@ -144,7 +146,9 @@ class FileStream implements StreamInterface
      */
     public function write($string): int
     {
-        if( ($bytes = \fwrite($this->resource, $string)) === false ){
+        $bytes = \fwrite($this->resource, $string);
+
+        if( $bytes === false ){
 			throw new RuntimeException("Could not write to file.");
 		}
 
@@ -170,7 +174,9 @@ class FileStream implements StreamInterface
      */
     public function read($length): string
     {
-        if( ($data = \fread($this->resource, $length)) === false ){
+        $data = \fread($this->resource, $length);
+
+        if( $data === false ){
 			throw new RuntimeException("Could not read from file.");
 		}
 
