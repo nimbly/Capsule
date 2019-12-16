@@ -72,7 +72,7 @@ class BufferStream implements StreamInterface
      */
     public function eof(): bool
     {
-        return (\strlen($this->buffer) === 0);
+        return \strlen($this->buffer) === 0;
     }
 
     /**

@@ -2,14 +2,14 @@
 
 namespace Capsule\Tests;
 
-use Capsule\Stream\FileStream;
+use Capsule\Stream\ResourceStream;
 use Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
  * @covers Capsule\UploadedFile
- * @covers Capsule\Stream\FileStream
+ * @covers Capsule\Stream\ResourceStream
  */
 class UploadedFileTest extends TestCase
 {
@@ -25,20 +25,19 @@ class UploadedFileTest extends TestCase
 			\unlink(__DIR__ . "/tmp/test.json");
 		}
 
-		return UploadedFile::createFromGlobal([
-			"name" => "test.json",
-			"tmp_name" => __DIR__ . "/tmp/tmp_upload",
-			"type" => "text/plain",
-			"size" => \filesize(__DIR__ . "/tmp/tmp_upload"),
-			"error" => UPLOAD_ERR_OK
-		]);
+		return new UploadedFile(
+			__DIR__ . "/tmp/tmp_upload",
+			"test.json",
+			"text/plain",
+			\filesize(__DIR__ . "/tmp/tmp_upload")
+		);
 	}
 
 	public function test_get_stream()
 	{
 		$uploadedFile = $this->makeFile();
 
-		$this->assertTrue($uploadedFile->getStream() instanceof FileStream);
+		$this->assertTrue($uploadedFile->getStream() instanceof ResourceStream);
 	}
 
 	public function test_move_to()

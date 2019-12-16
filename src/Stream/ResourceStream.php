@@ -5,7 +5,7 @@ namespace Capsule\Stream;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
-class FileStream implements StreamInterface
+class ResourceStream implements StreamInterface
 {
     /**
      * Array of file modes broken into readable and writeable.
@@ -29,12 +29,12 @@ class FileStream implements StreamInterface
     /**
      * Stream resource.
      *
-     * @var resource
+     * @var resource|null
      */
     protected $resource;
 
     /**
-     * FileStream constructor.
+     * ResourceStream constructor.
      *
      * @param resource $resource
      */
@@ -49,14 +49,17 @@ class FileStream implements StreamInterface
     public function __toString(): string
     {
         return $this->getContents();
-    }
+	}
 
     /**
      * @inheritDoc
      */
     public function close(): void
     {
-        \fclose($this->resource);
+		if( !empty($this->resource) ){
+			\fclose($this->resource);
+			$this->resource = null;
+		}
     }
 
     /**
@@ -64,8 +67,10 @@ class FileStream implements StreamInterface
      */
     public function detach()
     {
-		$this->close();
-		return $this->resource;
+		$resource = $this->resource;
+		$this->resource = null;
+
+		return $resource;
     }
 
     /**
@@ -73,6 +78,10 @@ class FileStream implements StreamInterface
      */
     public function getSize(): ?int
     {
+		if( empty($this->resource) ){
+			return null;
+		}
+
         $fstat = \fstat($this->resource);
         return $fstat["size"] ?? null;
     }
@@ -82,6 +91,10 @@ class FileStream implements StreamInterface
      */
     public function tell(): int
     {
+		if( empty($this->resource) ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         $position = \ftell($this->resource);
 
         if( $position === false ){
@@ -96,6 +109,10 @@ class FileStream implements StreamInterface
      */
     public function eof(): bool
     {
+		if( empty($this->resource) ){
+			return true;
+		}
+
         return \feof($this->resource);
     }
 
@@ -104,6 +121,10 @@ class FileStream implements StreamInterface
      */
     public function isSeekable(): bool
     {
+		if( empty($this->resource) ){
+			return false;
+		}
+
         return (bool) $this->getMetadata('seekable');
     }
 
@@ -112,6 +133,10 @@ class FileStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
+		if( empty($this->resource) ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         if( \fseek($this->resource, $offset, $whence) !== 0 ){
 			throw new RuntimeException("Could not seek file.");
 		}
@@ -122,6 +147,10 @@ class FileStream implements StreamInterface
      */
     public function rewind(): void
     {
+		if( empty($this->resource) ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         if( \rewind($this->resource) === false ){
 			throw new RuntimeException("Could not rewind file.");
 		}
@@ -132,6 +161,10 @@ class FileStream implements StreamInterface
      */
     public function isWritable(): bool
     {
+		if( empty($this->resource) ){
+			return false;
+		}
+
 		/** @psalm-suppress PossiblyInvalidCast */
 		$mode = (string) $this->getMetadata('mode');
 
@@ -146,6 +179,10 @@ class FileStream implements StreamInterface
      */
     public function write($string): int
     {
+		if( empty($this->resource) ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         $bytes = \fwrite($this->resource, $string);
 
         if( $bytes === false ){
@@ -160,6 +197,10 @@ class FileStream implements StreamInterface
      */
     public function isReadable(): bool
     {
+		if( empty($this->resource) ){
+			return false;
+		}
+
 		/** @psalm-suppress PossiblyInvalidCast */
 		$mode = (string) $this->getMetadata('mode');
 
@@ -174,6 +215,10 @@ class FileStream implements StreamInterface
      */
     public function read($length): string
     {
+		if( empty($this->resource) ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         $data = \fread($this->resource, $length);
 
         if( $data === false ){
@@ -188,13 +233,17 @@ class FileStream implements StreamInterface
      */
     public function getContents(): string
     {
-        $buffer = "";
+		if( empty($this->resource) ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
 
-        while( !$this->eof() ){
-            $buffer .= $this->read(1024);
-        }
+		$contents = \stream_get_contents($this->resource);
 
-        return $buffer;
+		if( $contents === false ){
+			throw new RuntimeException("Cannot read from stream.");
+		}
+
+        return $contents;
     }
 
     /**
@@ -202,6 +251,10 @@ class FileStream implements StreamInterface
      */
     public function getMetadata($key = null)
     {
+		if( empty($this->resource) ){
+			return null;
+		}
+
         if( empty($key) ){
             return \stream_get_meta_data($this->resource);
         }

@@ -121,52 +121,6 @@ class ServerRequest extends Request implements ServerRequestInterface
 	}
 
 	/**
-	 * Create a ServerRequest instance from the PHP globals space.
-	 *
-	 * Uses values from:
-	 * 	$_SERVER
-	 * 	$_FILES
-	 * 	$_COOKIE
-	 * 	$_POST
-	 * 	$_GET
-	 *
-	 * @return ServerRequest
-	 */
-	public static function createFromGlobals(): ServerRequest
-	{
-		// Build out the URI
-		$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http";
-
-		$uri = $scheme . "://" .
-		($_SERVER['HTTP_HOST'] ?? (($_SERVER['SERVER_NAME'] ?? "") . ":" . ($_SERVER['SERVER_PORT'] ?? ""))) .
-		($_SERVER['REQUEST_URI'] ?? "/");
-
-		// Capture the version.
-		\preg_match("/^HTTP\/([\d\.]+)$/i", $_SERVER['SERVER_PROTOCOL'] ?? "", $versionMatch);
-
-		// Get the request body first by getting raw input from php://input.
-		$body = \file_get_contents("php://input");
-
-		// Process the uploaded files into an array<UploadedFile>.
-		$files = [];
-		foreach( $_FILES as $name => $file ){
-			$files[$name] = UploadedFile::createFromGlobal($file);
-		}
-
-		return new static(
-			$_SERVER['REQUEST_METHOD'],
-			$uri,
-			!empty($body) ? $body : $_POST,
-			$_GET,
-			\array_change_key_case(\getallheaders()),
-			$_COOKIE,
-			$files,
-			$_SERVER,
-			$versionMatch[2] ?? "1.1"
-		);
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	public function getServerParams(): array

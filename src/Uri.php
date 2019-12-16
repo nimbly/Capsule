@@ -65,32 +65,6 @@ class Uri implements UriInterface
      */
 	protected $fragment;
 
-	/**
-	 * Create a Uri instance from a string.
-	 *
-	 * @param string $url
-	 * @return Uri
-	 */
-	public static function createFromString(string $url): Uri
-	{
-		// Parse the URL
-		if( ($urlPart = \parse_url($url)) === false ){
-			throw new \Exception("Malformed URL string.");
-		}
-
-		$uri = new static;
-		$uri->scheme = !empty($urlPart['scheme']) ? \strtolower($urlPart['scheme']) : "http";
-		$uri->username = $urlPart['user'] ?? "";
-		$uri->password = $urlPart['pass'] ?? "";
-		$uri->host = !empty($urlPart['host']) ? \strtolower($urlPart['host']) : "";
-		$uri->port = !empty($urlPart['port']) ? (int) $urlPart['port'] : null;
-		$uri->path = $urlPart['path'] ?? "";
-		$uri->query = $urlPart['query'] ?? "";
-		$uri->fragment = $urlPart['fragment'] ?? "";
-
-		return $uri;
-	}
-
     /**
      * @inheritDoc
      */

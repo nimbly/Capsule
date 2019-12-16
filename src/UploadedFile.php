@@ -2,7 +2,7 @@
 
 namespace Capsule;
 
-use Capsule\Stream\FileStream;
+use Capsule\Stream\ResourceStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
@@ -11,37 +11,37 @@ use RuntimeException;
 class UploadedFile implements UploadedFileInterface
 {
 	/**
-	 * File stream for contents.
+	 * Stream for contents.
 	 *
-	 * @var FileStream|null
+	 * @var StreamInterface|null
 	 */
 	protected $stream;
 
 	/**
+	 * Path to file on disk.
+	 *
+	 * @var string|null
+	 */
+	protected $file;
+
+	/**
 	 * Name of file as client uploaded it.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $clientFilename;
 
 	/**
 	 * Media (mime) type of file.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $clientMediaType;
 
 	/**
-	 * Temporary file name as stored on disk.
-	 *
-	 * @var string
-	 */
-	protected $tempFilename;
-
-	/**
 	 * File size (in bytes).
 	 *
-	 * @var int
+	 * @var int|null
 	 */
 	protected $size;
 
@@ -53,38 +53,50 @@ class UploadedFile implements UploadedFileInterface
 	protected $error;
 
 	/**
+	 * Flag on whether file has already been moved.
+	 *
+	 * @var boolean
+	 */
+	private $fileMoved = false;
+
+	/**
 	 * UploadedFile constructor.
 	 *
-	 * @param string $clientFilename
-	 * @param string $clientMediaType
-	 * @param string $tempFilename
-	 * @param integer $size
+	 * @param StreamInterface|string $contents
+	 * @param string|null $clientFilename
+	 * @param string|null $clientMediaType
+	 * @param integer|null $size
 	 * @param integer $error
 	 */
-	public function __construct(string $clientFilename, string $clientMediaType, string $tempFilename, int $size, int $error = UPLOAD_ERR_OK)
+	public function __construct($contents, ?string $clientFilename = null, ?string $clientMediaType = null, ?int $size = null, int $error = UPLOAD_ERR_OK)
 	{
+		if( $contents instanceof StreamInterface ){
+			$this->stream = $contents;
+		}
+		elseif( \is_string($contents) ){
+			$this->file = $contents;
+		}
+		else {
+			throw new RuntimeException("UploadedFile contents must either be a StreamInterface instance or a path to a file.");
+		}
+
 		$this->clientFilename = $clientFilename;
 		$this->clientMediaType = $clientMediaType;
-		$this->tempFilename = $tempFilename;
 		$this->size = $size;
 		$this->error = $error;
 	}
 
 	/**
-	 * Create an UploadedFile instance from a single $_FILES element.
+	 * Validate the underlying file/stream is in a state to be operated on .
 	 *
-	 * @param array $file
-	 * @return UploadedFile
+	 * @throws RuntimeException
+	 * @return void
 	 */
-	public static function createFromGlobal(array $file): UploadedFile
+	private function validateStream(): void
 	{
-		return new static(
-			$file['name'] ?? 'filename',
-			$file['type'] ?? 'text/plain',
-			$file['tmp_name'] ?? 'tmp_file',
-			(int) ($file['size'] ?? 0),
-			(int) ($file['error'] ?? UPLOAD_ERR_OK)
-		);
+		if( $this->error !== UPLOAD_ERR_OK || $this->fileMoved ){
+			throw new RuntimeException("Underlying stream is not operable.");
+		}
 	}
 
 	/**
@@ -92,22 +104,19 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	public function getStream(): StreamInterface
 	{
-		if( empty($this->stream) ){
+		$this->validateStream();
 
-			if( !\file_exists($this->tempFilename) ){
-				throw new RuntimeException("File not found.");
-			}
-
-			$fh = \fopen($this->tempFilename, "r");
-
-			if( empty($fh) ){
-				throw new RuntimeException("Could not open file for reading.");
-			}
-
-			$this->stream = new FileStream($fh);
+		if( $this->stream ){
+			return $this->stream;
 		}
 
-		return $this->stream;
+		if( empty($this->file) ){
+			throw new RuntimeException("Cannot get stream from an empty file.");
+		}
+
+		return new ResourceStream(
+			\fopen($this->file, "r")
+		);
 	}
 
 	/**
@@ -116,24 +125,33 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	public function moveTo($targetPath): void
 	{
-		if( !\file_exists($this->tempFilename) ){
-			throw new RuntimeException("File does not exist.");
+		$this->validateStream();
+
+		if( empty($targetPath) ){
+			throw new RuntimeException("Target file cannot be empty.");
 		}
 
-		if( \php_sapi_name() === 'cli' ){
+		if( $this->file ){
 
-			if( \rename($this->tempFilename, $targetPath) === false ){
-				throw new RuntimeException("Failed to move uploaded file to {$targetPath}.");
+			$this->fileMoved = \php_sapi_name() == 'cli' ?
+				\rename($this->file, $targetPath) :
+				\move_uploaded_file($this->file, $targetPath);
+
+		}
+		elseif( $this->stream ) {
+
+			$fh = \fopen($targetPath, "w+");
+
+			if( empty($fh) ){
+				throw new RuntimeException("Target file cannot be written to.");
 			}
 
-		} else {
+			$targetStream = new ResourceStream($fh);
 
-			if( \is_uploaded_file($this->tempFilename) === false ){
-				throw new RuntimeException("File is not an uploaded file.");
-			}
-
-			if( \move_uploaded_file($this->tempFilename, $targetPath) === false ){
-				throw new RuntimeException("Failed to move uploaded file to {$targetPath}.");
+			while( !$this->stream->eof() ){
+				$targetStream->write(
+					$this->stream->read(8192)
+				);
 			}
 		}
 	}

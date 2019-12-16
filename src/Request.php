@@ -2,6 +2,7 @@
 
 namespace Capsule;
 
+use Capsule\Factory\UriFactory;
 use Capsule\Stream\BufferStream;
 use Capsule\Uri;
 use Psr\Http\Message\RequestInterface;
@@ -43,7 +44,7 @@ class Request extends MessageAbstract implements RequestInterface
     public function __construct(string $method, $uri, $body = null, array $headers = [], string $httpVersion = "1.1")
     {
         $this->method = \strtoupper((string) $method);
-        $this->uri = $uri instanceof UriInterface ? $uri : Uri::createFromString((string) $uri);
+        $this->uri = $uri instanceof UriInterface ? $uri : UriFactory::createFromString((string) $uri);
         $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
 
 		$this->setHeaders($headers);

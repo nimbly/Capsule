@@ -2,17 +2,17 @@
 
 namespace Capsule\Tests;
 
+use Capsule\Factory\UriFactory;
 use Capsule\Request;
-use Capsule\Stream\BufferStream;
-use Capsule\Uri;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 
 /**
  * @covers Capsule\Request
+ * @covers Capsule\Factory\UriFactory
  * @covers Capsule\Uri
  * @covers Capsule\Stream\BufferStream
- * @covers Capsule\Stream\FileStream
+ * @covers Capsule\Stream\ResourceStream
  * @covers Capsule\MessageAbstract
  */
 class RequestTest extends TestCase
@@ -34,7 +34,7 @@ class RequestTest extends TestCase
 
     public function test_with_uri_saves_data()
     {
-        $uri = Uri::createFromString("https://www.example.com");
+        $uri = UriFactory::createFromString("https://www.example.com");
         $request = new Request('get', $uri);
         $this->assertSame($uri, $request->getUri());
     }
@@ -42,7 +42,7 @@ class RequestTest extends TestCase
     public function test_with_uri_is_immutable()
     {
         $request = new Request('get', '/foo');
-        $newRequest = $request->withUri(Uri::createFromString("https://example.com"));
+        $newRequest = $request->withUri(UriFactory::createFromString("https://example.com"));
 
 		$this->assertNotSame($request->getUri(), $newRequest->getUri());
         $this->assertNotSame($request, $newRequest);
