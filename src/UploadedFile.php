@@ -111,12 +111,14 @@ class UploadedFile implements UploadedFileInterface
 		}
 
 		if( empty($this->file) ){
-			throw new RuntimeException("Cannot get stream from an empty file.");
+			throw new RuntimeException("Cannot open file for streaming.");
 		}
 
-		return new ResourceStream(
+		$this->stream = new ResourceStream(
 			\fopen($this->file, "r")
 		);
+
+		return $this->stream;
 	}
 
 	/**

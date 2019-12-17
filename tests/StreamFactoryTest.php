@@ -4,6 +4,7 @@ namespace Capsule\Stream;
 
 use Capsule\Factory\StreamFactory;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @covers Capsule\Factory\StreamFactory
@@ -34,6 +35,14 @@ class StreamFactoryTest extends TestCase
 
 		$this->assertInstanceOf(ResourceStream::class, $stream);
 		$this->assertEquals("test_create_stream_from_file", $stream->getContents());
+	}
+
+	public function test_create_stream_from_file_that_fails()
+	{
+		$streamFactory = new StreamFactory;
+
+		$this->expectException(RuntimeException::class);
+		$streamFactory->createStreamFromFile("foo");
 	}
 
 	public function test_create_stream_from_resource()

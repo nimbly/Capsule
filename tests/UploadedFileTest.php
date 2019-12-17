@@ -2,6 +2,7 @@
 
 namespace Capsule\Tests;
 
+use Capsule\Stream\BufferStream;
 use Capsule\Stream\ResourceStream;
 use Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
@@ -10,6 +11,7 @@ use RuntimeException;
 /**
  * @covers Capsule\UploadedFile
  * @covers Capsule\Stream\ResourceStream
+ * @covers Capsule\Stream\BufferStream
  */
 class UploadedFileTest extends TestCase
 {
@@ -33,11 +35,36 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_get_stream()
+	public function test_constructor_with_invalid_upload_content()
+	{
+		$this->expectException(RuntimeException::class);
+		new UploadedFile(new \stdClass);
+	}
+
+	public function test_get_stream_from_stream()
+	{
+		$stream = new BufferStream("Capsule!");
+		$uploadedFile = new UploadedFile($stream);
+
+		$this->assertSame(
+			$stream,
+			$uploadedFile->getStream()
+		);
+	}
+
+	public function test_get_stream_from_file()
 	{
 		$uploadedFile = $this->makeFile();
 
 		$this->assertTrue($uploadedFile->getStream() instanceof ResourceStream);
+	}
+
+	public function test_get_stream_from_empty_file()
+	{
+		$uploadedFile = new UploadedFile("");
+
+		$this->expectException(RuntimeException::class);
+		$uploadedFile->getStream();
 	}
 
 	public function test_move_to()
@@ -49,6 +76,14 @@ class UploadedFileTest extends TestCase
 		$this->assertTrue(
 			\file_exists(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename())
 		);
+	}
+
+	public function test_move_to_invalid_target_path()
+	{
+		$uploadedFile = $this->makeFile();
+
+		$this->expectException(RuntimeException::class);
+		$uploadedFile->moveTo("");
 	}
 
 	public function test_calling_move_to_more_than_once_throws_exception()
