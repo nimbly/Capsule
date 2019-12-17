@@ -4,7 +4,6 @@ namespace Capsule;
 
 use Capsule\Factory\UriFactory;
 use Capsule\Stream\BufferStream;
-use Capsule\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
