@@ -5,6 +5,7 @@ namespace Capsule\Factory;
 use Capsule\Uri;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
+use RuntimeException;
 
 class UriFactory implements UriFactoryInterface
 {
@@ -20,13 +21,16 @@ class UriFactory implements UriFactoryInterface
 	 * Create a Uri instance from a string.
 	 *
 	 * @param string $uri
+	 * @throws RuntimeException
 	 * @return Uri
 	 */
 	public static function createFromString(string $uri): UriInterface
 	{
-		// Parse the URL
-		if( ($uriPart = \parse_url($uri)) === false ){
-			throw new \Exception("Malformed URL string.");
+		// Parse the URI
+		$uriPart = \parse_url($uri);
+
+		if( $uriPart === false ){
+			throw new RuntimeException("Malformed URL string.");
 		}
 
 		return (new Uri)
