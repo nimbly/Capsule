@@ -29,14 +29,15 @@ class Response extends MessageAbstract implements ResponseInterface
      * @param int $statusCode
      * @param StreamInterface|string $body
      * @param array<string, string> $headers
+	 * @param string|null $reasonPhrase
      * @param string $httpVersion
      */
-    public function __construct(int $statusCode, $body = null, array $headers = [], string $httpVersion = "1.1")
+    public function __construct(int $statusCode, $body = null, array $headers = [], ?string $reasonPhrase = null, string $httpVersion = "1.1")
     {
 		$this->statusCode = $statusCode;
-		$this->reasonPhrase = ResponseStatus::getPhrase($statusCode) ?? "";
-        $this->body = ($body instanceof StreamInterface) ? $body : new BufferStream((string) $body);
-        $this->setHeaders($headers);
+        $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
+		$this->setHeaders($headers);
+		$this->reasonPhrase = $reasonPhrase ?: ResponseStatus::getPhrase($statusCode) ?? "";
         $this->version = $httpVersion;
     }
 
