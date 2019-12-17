@@ -14,7 +14,7 @@ class ResponseStatusTest extends TestCase
 {
     public function test_supported_response_code_returns_phrase()
     {
-        $this->assertNotNull(ResponseStatus::getPhrase(201));
+        $this->assertNotNull(ResponseStatus::getPhrase(ResponseStatus::CREATED));
     }
 
     public function test_unsupported_response_code_returns_null()

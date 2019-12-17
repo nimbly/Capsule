@@ -20,21 +20,21 @@ class ResponseFactoryTest extends TestCase
 	{
 		$responseFactory = new ResponseFactory;
 
-		$response = $responseFactory->createResponse(200);
+		$response = $responseFactory->createResponse(ResponseStatus::OK);
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals(ResponseStatus::getPhrase(200), $response->getReasonPhrase());
+		$this->assertEquals(ResponseStatus::OK, $response->getStatusCode());
+		$this->assertEquals(ResponseStatus::getPhrase(ResponseStatus::OK), $response->getReasonPhrase());
 	}
 
 	public function test_create_response_with_reasonphrase()
 	{
 		$responseFactory = new ResponseFactory;
 
-		$response = $responseFactory->createResponse(404, "Resource not found");
+		$response = $responseFactory->createResponse(ResponseStatus::NOT_FOUND, "Resource not found");
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals(404, $response->getStatusCode());
+		$this->assertEquals(ResponseStatus::NOT_FOUND, $response->getStatusCode());
 		$this->assertEquals("Resource not found", $response->getReasonPhrase());
 	}
 }
