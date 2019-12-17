@@ -4,6 +4,7 @@ namespace Capsule\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Capsule\Stream\ResourceStream;
+use RuntimeException;
 
 /**
  * @covers Capsule\Stream\ResourceStream
@@ -21,21 +22,21 @@ class ResourceStreamTest extends TestCase
 
     public function test_constructor_applies_data()
     {
-        $ResourceStream = $this->getResourceStream();
-        $this->assertEquals("Capsule!", $ResourceStream->getContents());
+        $resourceStream = $this->getResourceStream();
+        $this->assertEquals("Capsule!", $resourceStream->getContents());
     }
 
     public function test_casting_to_string_returns_contents()
     {
-        $ResourceStream = $this->getResourceStream();
-        $this->assertEquals("Capsule!", (string) $ResourceStream);
+        $resourceStream = $this->getResourceStream();
+        $this->assertEquals("Capsule!", (string) $resourceStream);
     }
 
     public function test_close_closes_file()
     {
         $file = \fopen("php://temp", "w+");
-        $ResourceStream = new ResourceStream($file);
-        $ResourceStream->close();
+        $resourceStream = new ResourceStream($file);
+        $resourceStream->close();
 
         $this->assertTrue(!\is_resource($file));
     }
@@ -43,130 +44,224 @@ class ResourceStreamTest extends TestCase
     public function test_detach_returns_file_resource()
     {
         $file = \fopen("php://temp", "w+");
-        $ResourceStream = new ResourceStream($file);
+        $resourceStream = new ResourceStream($file);
 
         $this->assertSame(
 			$file,
-			$ResourceStream->detach()
+			$resourceStream->detach()
 		);
     }
 
-    public function test_getsize_returns_string_length_of_file()
+    public function test_get_size_returns_length_of_file()
     {
-        $ResourceStream = $this->getResourceStream();
+        $resourceStream = $this->getResourceStream();
 
-        $this->assertEquals(8, $ResourceStream->getSize());
-    }
+        $this->assertEquals(8, $resourceStream->getSize());
+	}
 
-    public function test_tell_of_ResourceStream_returns_position()
+	public function test_get_size_returns_null_for_empty_resource()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->assertNull($resourceStream->getSize());
+	}
+
+    public function test_tell_on_resource_returns_position()
     {
-        $ResourceStream = $this->getResourceStream();
-        $ResourceStream->read(2);
-        $this->assertEquals(2, $ResourceStream->tell());
-    }
+        $resourceStream = $this->getResourceStream();
+        $resourceStream->read(2);
+        $this->assertEquals(2, $resourceStream->tell());
+	}
+
+	public function test_tell_on_empty_resource_throws_exception()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->expectException(RuntimeException::class);
+		$resourceStream->tell();
+	}
 
     public function test_eof_when_stream_is_empty()
     {
-        $ResourceStream = $this->getResourceStream();
-        $ResourceStream->getContents();
-        $this->assertTrue($ResourceStream->eof());
+        $resourceStream = $this->getResourceStream();
+        $resourceStream->getContents();
+        $this->assertTrue($resourceStream->eof());
     }
 
     public function test_is_seekable()
     {
-        $ResourceStream = $this->getResourceStream();
-        $this->assertTrue($ResourceStream->isSeekable());
-    }
+        $resourceStream = $this->getResourceStream();
+        $this->assertTrue($resourceStream->isSeekable());
+	}
+
+	public function test_is_seekable_on_empty_resource_returns_false()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->assertFalse($resourceStream->isSeekable());
+	}
 
     public function test_seek()
     {
-        $ResourceStream = $this->getResourceStream();
-        $ResourceStream->seek(2);
-        $this->assertEquals("psule!", $ResourceStream->getContents());
-    }
+        $resourceStream = $this->getResourceStream();
+        $resourceStream->seek(2);
+        $this->assertEquals("psule!", $resourceStream->getContents());
+	}
+
+	public function test_seek_on_empty_resource_throws_exception()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->expectException(RuntimeException::class);
+		$resourceStream->seek(0);
+	}
 
     public function test_rewind()
     {
-        $ResourceStream = $this->getResourceStream();
-        $ResourceStream->seek(8);
-        $ResourceStream->rewind();
-        $this->assertEquals("Capsule!", $ResourceStream->getContents());
-    }
+        $resourceStream = $this->getResourceStream();
+        $resourceStream->seek(8);
+        $resourceStream->rewind();
+        $this->assertEquals("Capsule!", $resourceStream->getContents());
+	}
+
+	public function test_rewind_on_empty_resource_throws_exception()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->expectException(RuntimeException::class);
+		$resourceStream->rewind();
+	}
 
     public function test_is_writeable()
     {
-        $ResourceStream = $this->getResourceStream();
-        $this->assertTrue($ResourceStream->isWritable());
-    }
+        $resourceStream = $this->getResourceStream();
+        $this->assertTrue($resourceStream->isWritable());
+	}
+
+	public function test_is_writable_on_empty_resource_returns_false()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->assertFalse($resourceStream->isWritable());
+	}
 
     public function test_write_returns_bytes_written()
     {
-        $ResourceStream = $this->getResourceStream();
-        $bytesWritten = $ResourceStream->write("Capsule!");
+        $resourceStream = $this->getResourceStream();
+        $bytesWritten = $resourceStream->write("Capsule!");
         $this->assertEquals(8, $bytesWritten);
     }
 
     public function test_write()
     {
-        $ResourceStream = new ResourceStream(\fopen("php://temp", "w+"));
-        $ResourceStream->write("I love Capsule!");
-        $ResourceStream->rewind();
+        $resourceStream = new ResourceStream(\fopen("php://temp", "w+"));
+        $resourceStream->write("I love Capsule!");
+        $resourceStream->rewind();
 
-        $this->assertEquals("I love Capsule!", $ResourceStream->getContents());
-    }
+        $this->assertEquals("I love Capsule!", $resourceStream->getContents());
+	}
+
+	public function test_write_on_empty_resource_throws_exception()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->expectException(RuntimeException::class);
+		$resourceStream->write("Capsule!");
+	}
 
     public function test_is_readable()
     {
-        $ResourceStream = $this->getResourceStream();
-        $this->assertTrue($ResourceStream->isReadable());
-    }
+        $resourceStream = $this->getResourceStream();
+        $this->assertTrue($resourceStream->isReadable());
+	}
+
+	public function test_is_readable_on_empty_resource_returns_false()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->assertFalse($resourceStream->isReadable());
+	}
 
     public function test_reading_more_bytes_than_available()
     {
-        $ResourceStream = $this->getResourceStream();
-        $data = $ResourceStream->read(25);
+        $resourceStream = $this->getResourceStream();
+        $data = $resourceStream->read(25);
 
         $this->assertEquals("Capsule!", $data);
     }
 
     public function test_reading_fewer_bytes_than_available()
     {
-        $ResourceStream = $this->getResourceStream();
-        $data = $ResourceStream->read(2);
+        $resourceStream = $this->getResourceStream();
+        $data = $resourceStream->read(2);
 
         $this->assertEquals("Ca", $data);
     }
 
     public function test_reading_bytes_removes_from_stream()
     {
-        $ResourceStream = $this->getResourceStream();
-        $ResourceStream->read(2);
-        $data = $ResourceStream->read(6);
+        $resourceStream = $this->getResourceStream();
+        $resourceStream->read(2);
+        $data = $resourceStream->read(6);
 
         $this->assertEquals("psule!", $data);
-    }
+	}
+
+	public function test_read_on_empty_resource_throws_exception()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->expectException(RuntimeException::class);
+		$resourceStream->read(1);
+	}
 
     public function test_get_contents_returns_entire_buffer()
     {
-        $ResourceStream = $this->getResourceStream();
-        $data = $ResourceStream->getContents();
+        $resourceStream = $this->getResourceStream();
+        $data = $resourceStream->getContents();
         $this->assertEquals("Capsule!", $data);
-    }
+	}
 
-    public function test_get_meta_data_returns_array()
+	public function test_get_contents_on_empty_resource_throws_exception()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->expectException(RuntimeException::class);
+		$resourceStream->getContents();
+	}
+
+    public function test_get_metadata_returns_array()
     {
-        $ResourceStream = $this->getResourceStream();
+        $resourceStream = $this->getResourceStream();
         $this->assertTrue(
-			\is_array($ResourceStream->getMetadata())
+			\is_array($resourceStream->getMetadata())
 		);
     }
 
-    public function test_get_unknown_meta_returns_null()
+    public function test_get_unknown_metadata_returns_null()
     {
-        $ResourceStream = $this->getResourceStream();
+        $resourceStream = $this->getResourceStream();
 
 		$this->assertNull(
-			$ResourceStream->getMetadata("foo")
+			$resourceStream->getMetadata("foo")
 		);
-    }
+	}
+
+	public function test_get_metadata_on_empty_resource_returns_null()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->assertNull($resourceStream->getMetadata());
+	}
 }
