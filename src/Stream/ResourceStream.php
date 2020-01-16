@@ -170,8 +170,8 @@ class ResourceStream implements StreamInterface
 
         return \in_array(
 			\strtolower($mode),
-			$this->fileModes['writeable'])
-		;
+			$this->fileModes['writeable']
+		);
     }
 
     /**

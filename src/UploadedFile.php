@@ -73,6 +73,7 @@ class UploadedFile implements UploadedFileInterface
 		if( $contents instanceof StreamInterface ){
 			$this->stream = $contents;
 		}
+		/** @psalm-suppress RedundantConditionGivenDocblockType */
 		elseif( \is_string($contents) ){
 			$this->file = $contents;
 		}
