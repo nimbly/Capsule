@@ -216,7 +216,8 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals(
 			[
 				"query1" => "value1",
-				"query2" => "value2"
+				"query2" => "value2",
+				"q" => "search"
 			],
 			$request->getQueryParams()
 		);
@@ -415,7 +416,8 @@ class ServerRequestTest extends TestCase
 				'name' => 'Test User',
 				'email' => 'test@example.com',
 				"query1" => "value1",
-				"query2" => "value2"
+				"query2" => "value2",
+				"q" => "search"
 			],
 			$request->all()
 		);
