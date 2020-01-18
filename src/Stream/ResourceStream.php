@@ -101,7 +101,7 @@ class ResourceStream implements StreamInterface
         $position = \ftell($this->resource);
 
         if( $position === false ){
-			throw new RuntimeException("Could not tell position in file.");
+			throw new RuntimeException("Could not tell position in resource.");
 		}
 
 		return $position;
@@ -141,7 +141,7 @@ class ResourceStream implements StreamInterface
 		}
 
         if( \fseek($this->resource, $offset, $whence) !== 0 ){
-			throw new RuntimeException("Could not seek file.");
+			throw new RuntimeException("Could not seek resource.");
 		}
     }
 
@@ -155,7 +155,7 @@ class ResourceStream implements StreamInterface
 		}
 
         if( \rewind($this->resource) === false ){
-			throw new RuntimeException("Could not rewind file.");
+			throw new RuntimeException("Could not rewind resource.");
 		}
     }
 
@@ -189,7 +189,7 @@ class ResourceStream implements StreamInterface
         $bytes = \fwrite($this->resource, $string);
 
         if( $bytes === false ){
-			throw new RuntimeException("Could not write to file.");
+			throw new RuntimeException("Could not write to resource.");
 		}
 
 		return $bytes;
@@ -225,7 +225,7 @@ class ResourceStream implements StreamInterface
         $data = \fread($this->resource, $length);
 
         if( $data === false ){
-			throw new RuntimeException("Could not read from file.");
+			throw new RuntimeException("Could not read from resource.");
 		}
 
 		return $data;

@@ -412,6 +412,19 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals("test@nimbly.io", $request->getRequestParam('email'));
 	}
 
+	public function test_get_request_param_returns_null_if_not_found()
+	{
+		$request = $this->makeRequest();
+
+		$request = $request->withParsedBody(
+			[
+				"email" => "test@nimbly.io"
+			]
+		);
+
+		$this->assertNull($request->getRequestParam('id'));
+	}
+
 	public function test_only_request_params()
 	{
 		$request = $this->makeRequest();

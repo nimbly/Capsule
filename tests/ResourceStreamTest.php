@@ -88,7 +88,15 @@ class ResourceStreamTest extends TestCase
         $resourceStream = $this->getResourceStream();
         $resourceStream->getContents();
         $this->assertTrue($resourceStream->eof());
-    }
+	}
+
+	public function test_eof_returns_true_on_detached_resource()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->assertTrue($resourceStream->eof());
+	}
 
     public function test_is_seekable()
     {

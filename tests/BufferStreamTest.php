@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Capsule\Stream\BufferStream;
 use ReflectionClass;
 use RuntimeException;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * @covers Capsule\Stream\BufferStream
@@ -149,6 +150,14 @@ class BufferStreamTest extends TestCase
         $bufferStream = new BufferStream;
 
         $this->assertTrue($bufferStream->isReadable());
+	}
+
+	public function test_is_readable_on_detached_buffer_returns_false()
+    {
+        $bufferStream = new BufferStream;
+		$bufferStream->detach();
+
+        $this->assertFalse($bufferStream->isReadable());
 	}
 
 	public function test_read_on_detached_buffer_throws_runtime_exception()
