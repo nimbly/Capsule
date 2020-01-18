@@ -4,7 +4,6 @@
     "type": "library",
     "require": {
         "php": ">=7.2",
-		"ext-json": "*",
         "psr/http-message": "^1.0",
         "psr/http-factory": "^1.0"
     },
@@ -19,7 +18,7 @@
     "authors": [
         {
             "name": "Brent Scheffler",
-            "email": "brent@nimbly.io"
+            "email": "brent@brentscheffler.com"
         }
     ],
     "autoload": {
