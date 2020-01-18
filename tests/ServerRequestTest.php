@@ -23,7 +23,8 @@ class ServerRequestTest extends TestCase
 		return new ServerRequest(
 			"GET",
 			"http://example.org/foo/bar?q=search",
-			'{"name": "Test User", "email": "test@example.com"}',
+			['name' => "Test User", "email" => "test@example.com"],
+			//'{"name": "Test User", "email": "test@example.com"}',
 			[
 				"query1" => "value1",
 				"query2" => "value2"
@@ -92,61 +93,6 @@ class ServerRequestTest extends TestCase
 				"email" => "test@example.com",
 				"name" => "Testy Test"
 			],
-			$request->getParsedBody()
-		);
-	}
-
-	public function test_create_with_json_content_type()
-	{
-		$request = new ServerRequest(
-			"get",
-			"http://example.org/foo/bar?q=search",
-			'{"name": "Testy Test", "email": "test@example.com"}',
-			[],
-			[
-				'Content-Type' => 'application/json'
-			]
-		);
-
-		$this->assertEquals(
-			[
-				"name" => "Testy Test",
-				"email" => "test@example.com"
-			],
-			$request->getParsedBody()
-		);
-	}
-
-	public function test_create_with_form_encoded_content_type()
-	{
-		$request = new ServerRequest(
-			"get",
-			"http://example.org/foo/bar?q=search",
-			"name=Testy+Test&email=test@example.com",
-			[],
-			[
-				'Content-Type' => 'application/x-www-form-urlencoded'
-			]
-		);
-
-		$this->assertEquals(
-			[
-				"name" => "Testy Test",
-				"email" => "test@example.com"
-			],
-			$request->getParsedBody()
-		);
-	}
-
-	public function test_create_with_no_content_type_header()
-	{
-		$request = new ServerRequest(
-			"get",
-			"http://example.org/foo/bar?q=search",
-			"name=Testy+Test&email=test@example.com"
-		);
-
-		$this->assertNull(
 			$request->getParsedBody()
 		);
 	}

@@ -3,7 +3,9 @@
 namespace Capsule;
 
 use Capsule\Stream\BufferStream;
+use PDO;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -76,52 +78,25 @@ class ServerRequest extends Request implements ServerRequestInterface
 		array $serverParams = [],
 		string $version = "1.1")
 	{
-		parent::__construct($method, $uri, \is_string($body) ? new BufferStream($body) : null, $headers, $version);
+
+		if( !$body instanceof StreamInterface ){
+			if( \is_string($body) ){
+				$body = new BufferStream($body);
+			}
+			elseif( \is_array($body) || \is_object($body) ){
+				$this->parsedBody = $body;
+			}
+		}
+
+		parent::__construct($method, $uri, $body instanceof StreamInterface ? $body : null, $headers, $version);
 
 		// Allow assigning query params to the server request via the URI.
 		\parse_str($this->getUri()->getQuery(), $queryParams);
 
-		$this->queryParams = \array_merge($query, $queryParams ?: []);
+		$this->queryParams = \array_merge($queryParams ?: [], $query);
 		$this->uploadedFiles = $files;
 		$this->cookieParams = $cookies;
 		$this->serverParams = $serverParams;
-		$this->parsedBody = $this->parseRequestBody($body);
-	}
-
-	/**
-	 * Attempt to parse the request body.
-	 *
-	 * @param mixed $body
-	 * @return mixed
-	 */
-	private function parseRequestBody($body)
-	{
-		// Body has already been parsed.
-		if( \is_array($body) || \is_object($body) ){
-			return $body;
-		}
-
-		// String content body - let's try and parse it.
-		if( \is_string($body) && $this->hasHeader('Content-Type') ) {
-
-			$contentType = \strtolower($this->getHeaderLine('Content-Type'));
-
-			if( \in_array($contentType, ['application/x-www-form-urlencoded', 'multipart/form-data']) ){
-
-				if( $this->getMethod() === "POST" && !empty($_POST) ){
-					return $_POST;
-				}
-
-				\parse_str($body, $parsedBody);
-				return $parsedBody;
-			}
-
-			elseif( \stristr($contentType, 'application/json') !== false ){
-				return \json_decode($body, true);
-			}
-		}
-
-		return null;
 	}
 
 	/**
