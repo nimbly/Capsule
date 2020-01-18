@@ -5,13 +5,14 @@ namespace Capsule\Stream;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
-
 class BufferStream implements StreamInterface
 {
     /**
      * The buffer contents.
+	 *
+	 * When buffer is *null*, the stream has been "detached."
      *
-     * @var string
+     * @var string|null
      */
     protected $buffer = "";
 
@@ -20,7 +21,7 @@ class BufferStream implements StreamInterface
      *
      * @param string $data
      */
-    public function __construct($data = "")
+    public function __construct(string $data = "")
     {
         $this->buffer = $data;
     }
@@ -47,7 +48,7 @@ class BufferStream implements StreamInterface
      */
     public function detach()
     {
-		$this->close();
+		$this->buffer = null;
 		return null;
     }
 
@@ -56,6 +57,10 @@ class BufferStream implements StreamInterface
      */
     public function getSize(): ?int
     {
+		if( $this->buffer === null ){
+			return null;
+		}
+
         return \strlen($this->buffer);
     }
 
@@ -64,6 +69,10 @@ class BufferStream implements StreamInterface
      */
     public function tell(): int
     {
+		if( $this->buffer === null ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         return 0;
     }
 
@@ -72,7 +81,7 @@ class BufferStream implements StreamInterface
      */
     public function eof(): bool
     {
-        return \strlen($this->buffer) === 0;
+        return $this->buffer === null || \strlen($this->buffer) === 0;
     }
 
     /**
@@ -104,6 +113,10 @@ class BufferStream implements StreamInterface
      */
     public function isWritable(): bool
     {
+		if( $this->buffer === null ){
+			return false;
+		}
+
         return true;
     }
 
@@ -112,6 +125,10 @@ class BufferStream implements StreamInterface
      */
     public function write($string): int
     {
+		if( $this->buffer === null ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         $this->buffer .= $string;
         return \strlen($string);
     }
@@ -121,6 +138,10 @@ class BufferStream implements StreamInterface
      */
     public function isReadable(): bool
     {
+		if( $this->buffer === null ){
+			return false;
+		}
+
         return true;
     }
 
@@ -129,6 +150,10 @@ class BufferStream implements StreamInterface
      */
     public function read($length): string
     {
+		if( $this->buffer === null ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         if( $length >= \strlen($this->buffer) ){
             return $this->getContents();
         }
@@ -143,6 +168,10 @@ class BufferStream implements StreamInterface
      */
     public function getContents(): string
     {
+		if( $this->buffer === null ){
+			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
         $buffer = $this->buffer;
         $this->buffer = "";
         return $buffer;

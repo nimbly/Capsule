@@ -13,22 +13,22 @@ class ResourceStreamTest extends TestCase
 {
     protected function getResourceStream(): ResourceStream
     {
-        $fh = \fopen("php://temp", "w+");
-        \fwrite($fh, "Capsule!");
-        \fseek($fh, 0);
+		$fh = \fopen("php://temp", "w+");
+		\fwrite($fh, 'Capsule!');
+		\fseek($fh, 0);
 
         return new ResourceStream($fh);
     }
 
     public function test_constructor_applies_data()
     {
-        $resourceStream = $this->getResourceStream();
+		$resourceStream = $this->getResourceStream();
         $this->assertEquals("Capsule!", $resourceStream->getContents());
     }
 
     public function test_casting_to_string_returns_contents()
     {
-        $resourceStream = $this->getResourceStream();
+		$resourceStream = $this->getResourceStream();
         $this->assertEquals("Capsule!", (string) $resourceStream);
     }
 
@@ -59,7 +59,7 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals(8, $resourceStream->getSize());
 	}
 
-	public function test_get_size_returns_null_for_empty_resource()
+	public function test_get_size_returns_null_for_detached_resource()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -74,7 +74,7 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals(2, $resourceStream->tell());
 	}
 
-	public function test_tell_on_empty_resource_throws_exception()
+	public function test_tell_on_detached_resource_throws_runtime_exception()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -96,7 +96,7 @@ class ResourceStreamTest extends TestCase
         $this->assertTrue($resourceStream->isSeekable());
 	}
 
-	public function test_is_seekable_on_empty_resource_returns_false()
+	public function test_is_seekable_on_detached_resource_returns_false()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -111,7 +111,7 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals("psule!", $resourceStream->getContents());
 	}
 
-	public function test_seek_on_empty_resource_throws_exception()
+	public function test_seek_on_detached_resource_throws_runtime_exception()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -128,7 +128,7 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals("Capsule!", $resourceStream->getContents());
 	}
 
-	public function test_rewind_on_empty_resource_throws_exception()
+	public function test_rewind_on_detached_resource_throws_runtime_exception()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -143,7 +143,7 @@ class ResourceStreamTest extends TestCase
         $this->assertTrue($resourceStream->isWritable());
 	}
 
-	public function test_is_writable_on_empty_resource_returns_false()
+	public function test_is_writable_on_detached_resource_returns_false()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -167,7 +167,7 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals("I love Capsule!", $resourceStream->getContents());
 	}
 
-	public function test_write_on_empty_resource_throws_exception()
+	public function test_write_on_detached_resource_throws_runtime_exception()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -182,7 +182,7 @@ class ResourceStreamTest extends TestCase
         $this->assertTrue($resourceStream->isReadable());
 	}
 
-	public function test_is_readable_on_empty_resource_returns_false()
+	public function test_is_readable_on_detached_resource_returns_false()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -208,14 +208,16 @@ class ResourceStreamTest extends TestCase
 
     public function test_reading_bytes_removes_from_stream()
     {
-        $resourceStream = $this->getResourceStream();
+		$resourceStream = $this->getResourceStream();
+
+
         $resourceStream->read(2);
         $data = $resourceStream->read(6);
 
         $this->assertEquals("psule!", $data);
 	}
 
-	public function test_read_on_empty_resource_throws_exception()
+	public function test_read_on_detached_resource_throws_runtime_exception()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -224,14 +226,17 @@ class ResourceStreamTest extends TestCase
 		$resourceStream->read(1);
 	}
 
-    public function test_get_contents_returns_entire_buffer()
+    public function test_get_contents_returns_entire_stream()
     {
-        $resourceStream = $this->getResourceStream();
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->write('Capsule!');
+		$resourceStream->rewind();
+
         $data = $resourceStream->getContents();
         $this->assertEquals("Capsule!", $data);
 	}
 
-	public function test_get_contents_on_empty_resource_throws_exception()
+	public function test_get_contents_on_detached_resource_throws_runtime_exception()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
@@ -257,11 +262,19 @@ class ResourceStreamTest extends TestCase
 		);
 	}
 
-	public function test_get_metadata_on_empty_resource_returns_null()
+	public function test_get_metadata_on_detached_resource_returns_empty_array()
 	{
 		$resourceStream = $this->getResourceStream();
 		$resourceStream->detach();
 
-		$this->assertNull($resourceStream->getMetadata());
+		$this->assertEquals([], $resourceStream->getMetadata());
+	}
+
+	public function test_get_metadata_key_on_detached_resource_returns_null()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->detach();
+
+		$this->assertNull($resourceStream->getMetadata("foo"));
 	}
 }

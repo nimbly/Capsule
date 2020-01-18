@@ -5,12 +5,15 @@ namespace Capsule\Stream;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
+/**
+ * A ResourceStream supports *any* streamable PHP resource.
+ */
 class ResourceStream implements StreamInterface
 {
     /**
      * Array of file modes broken into readable and writeable.
      *
-     * @var array
+     * @var array<string, array<string>>
      */
     private $fileModes = [
         "readable" => [
@@ -23,7 +26,7 @@ class ResourceStream implements StreamInterface
             "w", "w+", "r+", "a", "a+", "x", "x+", "c", "c+",
             "wb", "w+b", "r+b", "ab", "a+b", "xb", "x+b", "cb", "c+b",
             "wt", "w+t", "r+t", "at", "a+t", "xt", "x+t", "ct", "c+t",
-        ],
+        ]
     ];
 
     /**
@@ -252,7 +255,7 @@ class ResourceStream implements StreamInterface
     public function getMetadata($key = null)
     {
 		if( empty($this->resource) ){
-			return null;
+			return $key ? null : [];
 		}
 
         if( empty($key) ){

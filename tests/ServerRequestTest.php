@@ -365,23 +365,41 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_has()
+	public function test_has_request_param()
 	{
 		$request = $this->makeRequest();
 
-		$this->assertTrue($request->has('name'));
-		$this->assertTrue($request->has('query1'));
+		$this->assertTrue($request->hasRequestParam('name'));
 	}
 
-	public function test_get()
+	public function test_has_query_param()
 	{
 		$request = $this->makeRequest();
 
-		$this->assertEquals('value1', $request->get('query1'));
-		$this->assertEquals('test@example.com', $request->get('email'));
+		$this->assertTrue($request->hasQueryParam('query1'));
 	}
 
-	public function test_get_from_object_parsed_body()
+	public function test_get_query_param()
+	{
+		$request = $this->makeRequest();
+
+		$this->assertEquals('value1', $request->getQueryParam('query1'));
+	}
+
+	public function test_get_request_param_from_array_parsed_body()
+	{
+		$request = $this->makeRequest();
+
+		$request = $request->withParsedBody(
+			[
+				"email" => "test@nimbly.io"
+			]
+		);
+
+		$this->assertEquals("test@nimbly.io", $request->getRequestParam('email'));
+	}
+
+	public function test_get_request_param_from_object_parsed_body()
 	{
 		$request = $this->makeRequest();
 
@@ -391,23 +409,68 @@ class ServerRequestTest extends TestCase
 			]
 		);
 
-		$this->assertEquals("test@nimbly.io", $request->get('email'));
+		$this->assertEquals("test@nimbly.io", $request->getRequestParam('email'));
 	}
 
-	public function test_get_prefers_parsed_body()
+	public function test_only_request_params()
 	{
 		$request = $this->makeRequest();
-		$request = $request->withQueryParams([
-			'email' => 'bob@example.com'
-		]);
+
+		$request = $request->withParsedBody(
+			[
+				"email" => "test@nimbly.io",
+				"name" => "Bob Smith",
+				"age" => 42
+			]
+		);
 
 		$this->assertEquals(
-			'test@example.com',
-			$request->get('email')
+			[
+				"name" => "Bob Smith",
+				"age" => 42
+			],
+			$request->onlyRequestParams(["name", "age"])
 		);
 	}
 
-	public function test_all()
+	public function test_except_request_params()
+	{
+		$request = $this->makeRequest();
+
+		$request = $request->withParsedBody(
+			[
+				"email" => "test@nimbly.io",
+				"name" => "Bob Smith",
+				"age" => 42
+			]
+		);
+
+		$this->assertEquals(
+			[
+				"email" => "test@nimbly.io",
+				"name" => "Bob Smith"
+			],
+			$request->exceptRequestParams(["age"])
+		);
+	}
+
+	public function test_get_uploaded_file()
+	{
+		$request = $this->makeRequest();
+
+		$uploadedFile = new UploadedFile("Ok");
+
+		$request = $request->withUploadedFiles([
+			"file" => $uploadedFile
+		]);
+
+		$this->assertSame(
+			$uploadedFile,
+			$request->getUploadedFile("file")
+		);
+	}
+
+	public function test_get_all_params()
 	{
 		$request = $this->makeRequest();
 
@@ -419,7 +482,7 @@ class ServerRequestTest extends TestCase
 				"query2" => "value2",
 				"q" => "search"
 			],
-			$request->all()
+			$request->getAllParams()
 		);
 	}
 }

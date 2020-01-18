@@ -4,6 +4,7 @@ namespace Capsule;
 
 use Capsule\Stream\BufferStream;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
 
@@ -252,48 +253,119 @@ class ServerRequest extends Request implements ServerRequestInterface
 	}
 
 	/**
-	 * Check for the presence of a value in either the parsed request body or the query params.
+	 * Check for the presence of a parameter in the parsed request body.
 	 *
 	 * @param string $name
 	 * @return boolean
 	 */
-	public function has(string $name): bool
+	public function hasRequestParam(string $param): bool
 	{
-		return 	\array_key_exists($name, $this->queryParams) ||
-				\array_key_exists($name, (array) ($this->parsedBody ?? []));
+		return \array_key_exists($param, (array) ($this->getParsedBody() ?? []));
 	}
 
 	/**
-	 * Get a request value from either the parsed request body or the query params.
+	 * Get a request parameter from the parsed request body.
 	 *
 	 * @param string $name
 	 * @return mixed|null
 	 */
-	public function get(string $name)
+	public function getRequestParam(string $param)
 	{
-		if( \is_array($this->parsedBody) &&
-			\array_key_exists($name, $this->parsedBody) ){
-			return $this->parsedBody[$name];
-		}
-
 		if( \is_object($this->parsedBody) &&
-			\property_exists($this->parsedBody, $name) ){
-			return $this->parsedBody->{$name};
+			\property_exists($this->parsedBody, $param) ){
+			return $this->parsedBody->{$param};
 		}
 
-		return $this->queryParams[$name] ?? null;
+		if( \is_array($this->parsedBody) &&
+			\array_key_exists($param, $this->parsedBody) ){
+			return $this->parsedBody[$param];
+		}
+
+		return null;
 	}
 
 	/**
-	 * Get all request values from both the parsed request body and the query params.
+	 * Get only the request body parameters provided.
+	 *
+	 * @param array<string> $params
+	 * @return array<string, mixed>
+	 */
+	public function onlyRequestParams(array $params): array
+	{
+		$only = [];
+
+		foreach( (array) $this->parsedBody as $key => $value ){
+
+			if( \in_array($key, $params) ){
+				$only[$key] = $value;
+			}
+		}
+
+		return $only;
+	}
+
+	/**
+	 * Get all request body parameters except those provided.
+	 *
+	 * @param array<string> $params
+	 * @return array<string, mixed>
+	 */
+	public function exceptRequestParams(array $params): array
+	{
+		$except = [];
+
+		foreach( (array) $this->parsedBody as $key => $value ){
+			if( !\in_array($key, $params) ){
+				$except[$key] = $value;
+			}
+		}
+
+		return $except;
+	}
+
+	/**
+	 * Check for the presence of a query parameter.
+	 *
+	 * @param string $param
+	 * @return boolean
+	 */
+	public function hasQueryParam(string $param): bool
+	{
+		return \array_key_exists($param, $this->queryParams);
+	}
+
+	/**
+	 * Get a query parameter from the query params.
+	 *
+	 * @param string $param
+	 * @return string|null
+	 */
+	public function getQueryParam(string $param): ?string
+	{
+		return $this->queryParams[$param] ?? null;
+	}
+
+	/**
+	 * Get all request values from *both* the parsed request body and the query params.
 	 *
 	 * @return array<string, mixed>
 	 */
-	public function all(): array
+	public function getAllParams(): array
 	{
 		return \array_merge(
 			(array) ($this->parsedBody ?? []),
 			$this->queryParams
 		);
+	}
+
+	/**
+	 * Get an UploadedFileInterface instance by its name.
+	 *
+	 * @param string $name
+	 * @return UploadedFileInterface|null
+	 */
+	public function getUploadedFile(string $name): ?UploadedFileInterface
+	{
+		return $this->getUploadedFiles()[$name] ?? null;
 	}
 }
