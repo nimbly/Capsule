@@ -3,7 +3,6 @@
 namespace Capsule;
 
 use Capsule\Stream\BufferStream;
-use PDO;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
