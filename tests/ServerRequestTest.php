@@ -413,6 +413,21 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
+	public function test_has_uploaded_file()
+	{
+		$request = $this->makeRequest();
+
+		$uploadedFile = new UploadedFile("Ok");
+
+		$request = $request->withUploadedFiles([
+			"file" => $uploadedFile
+		]);
+
+		$this->assertTrue(
+			$request->hasUploadedFile("file")
+		);
+	}
+
 	public function test_get_uploaded_file()
 	{
 		$request = $this->makeRequest();

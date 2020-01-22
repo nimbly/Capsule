@@ -267,16 +267,11 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function onlyBodyParams(array $params): array
 	{
-		$only = [];
+		return \array_filter((array) $this->parsedBody, function($key) use ($params): bool {
 
-		foreach( (array) $this->parsedBody as $key => $value ){
+			return \in_array($key, $params);
 
-			if( \in_array($key, $params) ){
-				$only[$key] = $value;
-			}
-		}
-
-		return $only;
+		}, ARRAY_FILTER_USE_KEY);
 	}
 
 	/**
@@ -287,15 +282,11 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function exceptBodyParams(array $params): array
 	{
-		$except = [];
+		return \array_filter((array) $this->parsedBody, function($key) use ($params): bool {
 
-		foreach( (array) $this->parsedBody as $key => $value ){
-			if( !\in_array($key, $params) ){
-				$except[$key] = $value;
-			}
-		}
+			return !\in_array($key, $params);
 
-		return $except;
+		}, ARRAY_FILTER_USE_KEY);
 	}
 
 	/**
@@ -331,6 +322,17 @@ class ServerRequest extends Request implements ServerRequestInterface
 			(array) ($this->parsedBody ?? []),
 			$this->queryParams
 		);
+	}
+
+	/**
+	 * Check for the presense of an uploaded file.
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
+	public function hasUploadedFile(string $name): bool
+	{
+		return \array_key_exists($name, $this->getUploadedFiles());
 	}
 
 	/**
