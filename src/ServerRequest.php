@@ -233,7 +233,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param string $name
 	 * @return boolean
 	 */
-	public function hasRequestParam(string $param): bool
+	public function hasBodyParam(string $param): bool
 	{
 		return \array_key_exists($param, (array) ($this->getParsedBody() ?? []));
 	}
@@ -244,7 +244,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param string $name
 	 * @return mixed|null
 	 */
-	public function getRequestParam(string $param)
+	public function getBodyParam(string $param)
 	{
 		if( \is_object($this->parsedBody) &&
 			\property_exists($this->parsedBody, $param) ){
@@ -265,7 +265,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param array<string> $params
 	 * @return array<string, mixed>
 	 */
-	public function onlyRequestParams(array $params): array
+	public function onlyBodyParams(array $params): array
 	{
 		$only = [];
 
@@ -285,7 +285,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param array<string> $params
 	 * @return array<string, mixed>
 	 */
-	public function exceptRequestParams(array $params): array
+	public function exceptBodyParams(array $params): array
 	{
 		$except = [];
 

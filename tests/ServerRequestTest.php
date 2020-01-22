@@ -311,11 +311,11 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_has_request_param()
+	public function test_has_body_param()
 	{
 		$request = $this->makeRequest();
 
-		$this->assertTrue($request->hasRequestParam('name'));
+		$this->assertTrue($request->hasBodyParam('name'));
 	}
 
 	public function test_has_query_param()
@@ -332,7 +332,7 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals('value1', $request->getQueryParam('query1'));
 	}
 
-	public function test_get_request_param_from_array_parsed_body()
+	public function test_get_body_param_from_array_parsed_body()
 	{
 		$request = $this->makeRequest();
 
@@ -342,10 +342,10 @@ class ServerRequestTest extends TestCase
 			]
 		);
 
-		$this->assertEquals("test@nimbly.io", $request->getRequestParam('email'));
+		$this->assertEquals("test@nimbly.io", $request->getBodyParam('email'));
 	}
 
-	public function test_get_request_param_from_object_parsed_body()
+	public function test_get_body_param_from_object_parsed_body()
 	{
 		$request = $this->makeRequest();
 
@@ -355,10 +355,10 @@ class ServerRequestTest extends TestCase
 			]
 		);
 
-		$this->assertEquals("test@nimbly.io", $request->getRequestParam('email'));
+		$this->assertEquals("test@nimbly.io", $request->getBodyParam('email'));
 	}
 
-	public function test_get_request_param_returns_null_if_not_found()
+	public function test_get_body_param_returns_null_if_not_found()
 	{
 		$request = $this->makeRequest();
 
@@ -368,10 +368,10 @@ class ServerRequestTest extends TestCase
 			]
 		);
 
-		$this->assertNull($request->getRequestParam('id'));
+		$this->assertNull($request->getBodyParam('id'));
 	}
 
-	public function test_only_request_params()
+	public function test_only_body_params()
 	{
 		$request = $this->makeRequest();
 
@@ -388,11 +388,11 @@ class ServerRequestTest extends TestCase
 				"name" => "Bob Smith",
 				"age" => 42
 			],
-			$request->onlyRequestParams(["name", "age"])
+			$request->onlyBodyParams(["name", "age"])
 		);
 	}
 
-	public function test_except_request_params()
+	public function test_except_body_params()
 	{
 		$request = $this->makeRequest();
 
@@ -409,7 +409,7 @@ class ServerRequestTest extends TestCase
 				"email" => "test@nimbly.io",
 				"name" => "Bob Smith"
 			],
-			$request->exceptRequestParams(["age"])
+			$request->exceptBodyParams(["age"])
 		);
 	}
 
