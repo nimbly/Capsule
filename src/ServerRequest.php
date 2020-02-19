@@ -266,7 +266,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function onlyBodyParams(array $params): array
 	{
-		return \array_filter((array) $this->parsedBody, function($key) use ($params): bool {
+		return \array_filter((array) $this->parsedBody, function(string $key) use ($params): bool {
 
 			return \in_array($key, $params);
 
@@ -281,7 +281,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function exceptBodyParams(array $params): array
 	{
-		return \array_filter((array) $this->parsedBody, function($key) use ($params): bool {
+		return \array_filter((array) $this->parsedBody, function(string $key) use ($params): bool {
 
 			return !\in_array($key, $params);
 
