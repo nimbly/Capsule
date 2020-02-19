@@ -229,6 +229,9 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Check for the presence of a parameter in the parsed request body.
 	 *
+	 * Note, this method will return *true* as long as the param exists, even
+	 * if the value of the param is null or generally "falsey".
+	 *
 	 * @param string $name
 	 * @return boolean
 	 */
