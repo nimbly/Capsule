@@ -32,7 +32,7 @@ class ResourceStream implements StreamInterface
     /**
      * Stream resource.
      *
-     * @var resource|null
+     * @var resource|closed-resource|null
      */
     protected $resource;
 
@@ -59,7 +59,7 @@ class ResourceStream implements StreamInterface
      */
     public function close(): void
     {
-		if( !empty($this->resource) ){
+		if( \is_resource($this->resource) ){
 			\fclose($this->resource);
 			$this->resource = null;
 		}
@@ -67,6 +67,7 @@ class ResourceStream implements StreamInterface
 
     /**
      * @inheritDoc
+	 * @psalm-suppress InvalidReturnType
      */
     public function detach()
     {
@@ -81,7 +82,7 @@ class ResourceStream implements StreamInterface
      */
     public function getSize(): ?int
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			return null;
 		}
 
@@ -94,7 +95,7 @@ class ResourceStream implements StreamInterface
      */
     public function tell(): int
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			throw new RuntimeException("Underlying resource has been detached.");
 		}
 
@@ -112,7 +113,7 @@ class ResourceStream implements StreamInterface
      */
     public function eof(): bool
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			return true;
 		}
 
@@ -136,7 +137,7 @@ class ResourceStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			throw new RuntimeException("Underlying resource has been detached.");
 		}
 
@@ -150,7 +151,7 @@ class ResourceStream implements StreamInterface
      */
     public function rewind(): void
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			throw new RuntimeException("Underlying resource has been detached.");
 		}
 
@@ -182,7 +183,7 @@ class ResourceStream implements StreamInterface
      */
     public function write($string): int
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			throw new RuntimeException("Underlying resource has been detached.");
 		}
 
@@ -218,7 +219,7 @@ class ResourceStream implements StreamInterface
      */
     public function read($length): string
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			throw new RuntimeException("Underlying resource has been detached.");
 		}
 
@@ -236,7 +237,7 @@ class ResourceStream implements StreamInterface
      */
     public function getContents(): string
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			throw new RuntimeException("Underlying resource has been detached.");
 		}
 
@@ -254,7 +255,7 @@ class ResourceStream implements StreamInterface
      */
     public function getMetadata($key = null)
     {
-		if( empty($this->resource) ){
+		if( !\is_resource($this->resource) ){
 			return $key ? null : [];
 		}
 
