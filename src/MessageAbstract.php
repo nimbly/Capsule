@@ -19,7 +19,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * Message headers
      *
-     * @var array<string, array<string>>
+     * @var array<string,array<string>>
      */
     protected $headers = [];
 
@@ -81,7 +81,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
-	 * @return array<string, array<string>>
+	 * @return array<string,array<string>>
      */
     public function getHeaders(): array
     {
@@ -180,7 +180,7 @@ abstract class MessageAbstract implements MessageInterface
     /**
      * Mass assign headers.
      *
-     * @param array<string, string>|array<string, array<string>> $headers
+     * @param array<string,string>|array<string,array<string>> $headers
 	 * @throws RuntimeException
      * @return void
      */

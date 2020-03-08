@@ -13,7 +13,7 @@ class ResourceStream implements StreamInterface
     /**
      * Array of file modes broken into readable and writeable.
      *
-     * @var array<string, array<string>>
+     * @var array<string,array<string>>
      */
     private $fileModes = [
         "readable" => [

@@ -28,7 +28,7 @@ class Response extends MessageAbstract implements ResponseInterface
      *
      * @param int $statusCode
      * @param StreamInterface|string $body
-     * @param array<string, string> $headers
+     * @param array<string,string> $headers
 	 * @param string|null $reasonPhrase
      * @param string $httpVersion
      */

@@ -37,7 +37,7 @@ class Request extends MessageAbstract implements RequestInterface
      * @param string $method
      * @param UriInterface|string $uri
      * @param StreamInterface|string $body
-     * @param array<string, string> $headers
+     * @param array<string,string> $headers
      * @param string $httpVersion
      */
     public function __construct(string $method, $uri, $body = null, array $headers = [], string $httpVersion = "1.1")

@@ -14,14 +14,14 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Query parameters sent in request.
 	 *
-	 * @var array<string, string>
+	 * @var array<string,string>
 	 */
 	protected $queryParams = [];
 
 	/**
 	 * Cookies sent in request.
 	 *
-	 * @var array<string, string>
+	 * @var array<string,string>
 	 */
 	protected $cookieParams = [];
 
@@ -42,14 +42,14 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Request attributes.
 	 *
-	 * @var array<string, mixed>
+	 * @var array<string,mixed>
 	 */
 	protected $attributes = [];
 
 	/**
 	 * Server parameters.
 	 *
-	 * @var array<string, mixed>
+	 * @var array<string,mixed>
 	 */
 	protected $serverParams = [];
 
@@ -59,11 +59,11 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param string $method
 	 * @param string|UriInterface $uri
 	 * @param string|array|object|null $body
-	 * @param array<string, mixed> $query
-	 * @param array<string, mixed> $headers
-	 * @param array<string, mixed> $cookies
+	 * @param array<string,mixed> $query
+	 * @param array<string,mixed> $headers
+	 * @param array<string,mixed> $cookies
 	 * @param array<UploadedFile> $files
-	 * @param array<string, mixed> $serverParams
+	 * @param array<string,mixed> $serverParams
 	 * @param string $version
 	 */
 	public function __construct(
@@ -265,7 +265,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * Get only the request body parameters provided.
 	 *
 	 * @param array<string> $params
-	 * @return array<string, mixed>
+	 * @return array<string,mixed>
 	 */
 	public function onlyBodyParams(array $params): array
 	{
@@ -280,7 +280,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * Get all request body parameters except those provided.
 	 *
 	 * @param array<string> $params
-	 * @return array<string, mixed>
+	 * @return array<string,mixed>
 	 */
 	public function exceptBodyParams(array $params): array
 	{
@@ -316,7 +316,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Get all request values from *both* the parsed request body and the query params.
 	 *
-	 * @return array<string, mixed>
+	 * @return array<string,mixed>
 	 */
 	public function getAllParams(): array
 	{
