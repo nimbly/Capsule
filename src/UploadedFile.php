@@ -70,10 +70,12 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	public function __construct($contents, ?string $clientFilename = null, ?string $clientMediaType = null, ?int $size = null, int $error = UPLOAD_ERR_OK)
 	{
+		/**
+		 * @psalm-suppress RedundantConditionGivenDocblockType
+		 */
 		if( $contents instanceof StreamInterface ){
 			$this->stream = $contents;
 		}
-		/** @psalm-suppress RedundantConditionGivenDocblockType */
 		elseif( \is_string($contents) ){
 			$this->file = $contents;
 		}

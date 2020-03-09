@@ -38,11 +38,22 @@ class ResourceStream implements StreamInterface
 
     /**
      * ResourceStream constructor.
+	 *
+	 * Resource *must* be of type "stream."
      *
      * @param resource $resource
      */
     public function __construct($resource)
     {
+		/**
+		 * @psalm-suppress RedundantConditionGivenDocblockType
+		 * @psalm-suppress DocblockTypeContradiction
+		 */
+		if( !\is_resource($resource) ||
+			\get_resource_type($resource) !== "stream" ){
+			throw new RuntimeException("Invalid resource supplied in constructor.");
+		}
+
         $this->resource = $resource;
     }
 
@@ -67,10 +78,13 @@ class ResourceStream implements StreamInterface
 
     /**
      * @inheritDoc
-	 * @psalm-suppress InvalidReturnType
      */
     public function detach()
     {
+		if( !\is_resource($this->resource) ){
+			return null;
+		}
+
 		$resource = $this->resource;
 		$this->resource = null;
 
@@ -125,10 +139,6 @@ class ResourceStream implements StreamInterface
      */
     public function isSeekable(): bool
     {
-		if( empty($this->resource) ){
-			return false;
-		}
-
         return (bool) $this->getMetadata('seekable');
     }
 
@@ -137,8 +147,9 @@ class ResourceStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
-		if( !\is_resource($this->resource) ){
-			throw new RuntimeException("Underlying resource has been detached.");
+		if( !\is_resource($this->resource) ||
+			!$this->isSeekable() ){
+			throw new RuntimeException("Resource is not seekable.");
 		}
 
         if( \fseek($this->resource, $offset, $whence) !== 0 ){
@@ -151,8 +162,9 @@ class ResourceStream implements StreamInterface
      */
     public function rewind(): void
     {
-		if( !\is_resource($this->resource) ){
-			throw new RuntimeException("Underlying resource has been detached.");
+		if( !\is_resource($this->resource) ||
+			!$this->isSeekable() ){
+			throw new RuntimeException("Resource is not seekable.");
 		}
 
         if( \rewind($this->resource) === false ){
@@ -165,10 +177,6 @@ class ResourceStream implements StreamInterface
      */
     public function isWritable(): bool
     {
-		if( empty($this->resource) ){
-			return false;
-		}
-
 		/** @psalm-suppress PossiblyInvalidCast */
 		$mode = (string) $this->getMetadata('mode');
 
@@ -183,8 +191,9 @@ class ResourceStream implements StreamInterface
      */
     public function write($string): int
     {
-		if( !\is_resource($this->resource) ){
-			throw new RuntimeException("Underlying resource has been detached.");
+		if( !\is_resource($this->resource) ||
+			!$this->isWritable() ){
+			throw new RuntimeException("Resource is not writable.");
 		}
 
         $bytes = \fwrite($this->resource, $string);
@@ -201,10 +210,6 @@ class ResourceStream implements StreamInterface
      */
     public function isReadable(): bool
     {
-		if( empty($this->resource) ){
-			return false;
-		}
-
 		/** @psalm-suppress PossiblyInvalidCast */
 		$mode = (string) $this->getMetadata('mode');
 
@@ -219,8 +224,9 @@ class ResourceStream implements StreamInterface
      */
     public function read($length): string
     {
-		if( !\is_resource($this->resource) ){
-			throw new RuntimeException("Underlying resource has been detached.");
+		if( !\is_resource($this->resource) ||
+			!$this->isReadable() ){
+			throw new RuntimeException("Resource is not readable.");
 		}
 
         $data = \fread($this->resource, $length);

@@ -24,7 +24,23 @@ class ResourceStreamTest extends TestCase
     {
 		$resourceStream = $this->getResourceStream();
         $this->assertEquals("Capsule!", $resourceStream->getContents());
-    }
+	}
+
+	public function test_constructor_rejects_non_resources()
+	{
+		$this->expectException(RuntimeException::class);
+
+		$resourceStream = new ResourceStream("Hello World!");
+	}
+
+	public function test_constructor_rejects_non_stream_resources()
+	{
+		$this->expectException(RuntimeException::class);
+
+		$resourceStream = new ResourceStream(
+			\curl_init()
+		);
+	}
 
     public function test_casting_to_string_returns_contents()
     {
@@ -32,27 +48,37 @@ class ResourceStreamTest extends TestCase
         $this->assertEquals("Capsule!", (string) $resourceStream);
     }
 
-    public function test_close_closes_file()
+    public function test_close_closes_stream()
     {
-        $file = \fopen("php://temp", "w+");
-        $resourceStream = new ResourceStream($file);
+        $resource = \fopen("php://temp", "w+");
+        $resourceStream = new ResourceStream($resource);
         $resourceStream->close();
 
-        $this->assertTrue(!\is_resource($file));
+        $this->assertTrue(!\is_resource($resource));
     }
 
-    public function test_detach_returns_file_resource()
+    public function test_detach_returns_stream_resource()
     {
-        $file = \fopen("php://temp", "w+");
-        $resourceStream = new ResourceStream($file);
+        $resource = \fopen("php://temp", "w+");
+        $resourceStream = new ResourceStream($resource);
 
         $this->assertSame(
-			$file,
+			$resource,
 			$resourceStream->detach()
 		);
-    }
+	}
 
-    public function test_get_size_returns_length_of_file()
+	public function test_detach_on_null_stream_resource_returns_null()
+	{
+		$resourceStream = $this->getResourceStream();
+		$resourceStream->close();
+
+		$this->assertNull(
+			$resourceStream->detach()
+		);
+	}
+
+    public function test_get_size_returns_length_of_stream()
     {
         $resourceStream = $this->getResourceStream();
 
