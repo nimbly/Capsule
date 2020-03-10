@@ -4,6 +4,7 @@ namespace Capsule\Tests;
 
 use Capsule\Factory\UriFactory;
 use Capsule\ServerRequest;
+use Capsule\Stream\BufferStream;
 use Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
 
@@ -60,6 +61,20 @@ class ServerRequestTest extends TestCase
 		$this->assertSame(
 			$uri,
 			$request->getUri()
+		);
+	}
+
+	public function test_create_with_string_body_creates_buffer_stream()
+	{
+		$request = new ServerRequest(
+			"post",
+			"http://example.org/foo/bar?q=search",
+			\json_encode(["email" => "test@example.com", "name" => "Testy Test"])
+		);
+
+		$this->assertInstanceOf(
+			BufferStream::class,
+			$request->getBody()
 		);
 	}
 
