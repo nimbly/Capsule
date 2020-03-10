@@ -28,7 +28,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 		return new ServerRequest(
 			$psr7ServerRequest->getMethod(),
 			$psr7ServerRequest->getUri(),
-			$psr7ServerRequest->getParsedBody() ?? $psr7ServerRequest->getBody()->getContents(),
+			$psr7ServerRequest->getParsedBody() ?? $psr7ServerRequest->getBody(),
 			$psr7ServerRequest->getQueryParams(),
 			$psr7ServerRequest->getHeaders(),
 			$psr7ServerRequest->getCookieParams(),
