@@ -23,12 +23,12 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 	 * @param ServerRequestInterface $serverRequest
 	 * @return ServerRequest
 	 */
-	public function createServerRequestFromPsr7(ServerRequestInterface $psr7ServerRequest): ServerRequest
+	public static function createServerRequestFromPsr7(ServerRequestInterface $psr7ServerRequest): ServerRequest
 	{
 		return new ServerRequest(
 			$psr7ServerRequest->getMethod(),
 			$psr7ServerRequest->getUri(),
-			$psr7ServerRequest->getParsedBody() ?? $psr7ServerRequest->getBody(),
+			$psr7ServerRequest->getBody(),
 			$psr7ServerRequest->getQueryParams(),
 			$psr7ServerRequest->getHeaders(),
 			$psr7ServerRequest->getCookieParams(),
