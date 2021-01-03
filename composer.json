@@ -2,10 +2,22 @@
     "name": "nimbly/capsule",
     "description": "Capsule is a simple PSR-7 HTTP message and PSR-17 HTTP factory implementation.",
     "type": "library",
+	"license": "MIT",
+    "authors": [
+        {
+            "name": "Brent Scheffler",
+            "email": "brent@brentscheffler.com"
+        }
+    ],
     "require": {
-        "php": ">=7.4|^8.0",
+        "php": ">=7.3|^8.0",
         "psr/http-message": "^1.0",
         "psr/http-factory": "^1.0"
+    },
+	"autoload": {
+        "psr-4": {
+            "Capsule\\": "src/"
+        }
     },
     "require-dev": {
         "vimeo/psalm": "^4.0",
@@ -13,19 +25,7 @@
         "php-coveralls/php-coveralls": "^2.4",
         "symfony/var-dumper": "^4.3"
     },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Brent Scheffler",
-            "email": "brent@brentscheffler.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Capsule\\": "src/"
-        }
-    },
-    "autoload-dev": {
+	"autoload-dev": {
         "psr-4": {
             "Capsule\\Tests\\": "tests/"
         }
