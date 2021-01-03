@@ -50,6 +50,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @param string $version
 	 * @return static
      */
     public function withProtocolVersion($version): self
@@ -59,7 +60,7 @@ abstract class MessageAbstract implements MessageInterface
         }
 
         $instance = clone $this;
-        $instance->version = (string) $version;
+        $instance->version = $version;
         return $instance;
     }
 
@@ -90,6 +91,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @param string $name
      */
     public function hasHeader($name): bool
     {
@@ -98,6 +100,8 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @param string $name
+	 * @return array<string>
      */
     public function getHeader($name): array
     {
@@ -110,6 +114,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @param string $name
      */
     public function getHeaderLine($name): string
     {
@@ -124,6 +129,8 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @param string $name
+	 * @param string|array<string> $value
 	 * @return static
      */
     public function withHeader($name, $value): self
@@ -140,6 +147,8 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @param string $name
+	 * @param string|array<string> $value
 	 * @return static
      */
     public function withAddedHeader($name, $value): self
@@ -164,6 +173,7 @@ abstract class MessageAbstract implements MessageInterface
 
     /**
      * @inheritDoc
+	 * @param string $name
 	 * @return static
      */
     public function withoutHeader($name): self

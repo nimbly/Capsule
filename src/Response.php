@@ -51,13 +51,15 @@ class Response extends MessageAbstract implements ResponseInterface
 
     /**
      * @inheritDoc
+	 * @param int $code
+	 * @param string $reasonPhrase
 	 * @return static
      */
     public function withStatus($code, $reasonPhrase = ''): Response
     {
         $instance = clone $this;
-		$instance->statusCode = (int) $code;
-		$instance->reasonPhrase = $reasonPhrase ? $reasonPhrase : ResponseStatus::getPhrase((int) $code) ?? "";
+		$instance->statusCode = $code;
+		$instance->reasonPhrase = $reasonPhrase ? $reasonPhrase : ResponseStatus::getPhrase($code) ?? "";
         return $instance;
     }
 

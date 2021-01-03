@@ -176,6 +176,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @param array|object|null $data
 	 * @return static
 	 */
 	public function withParsedBody($data): ServerRequest
@@ -204,6 +205,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @param string $name
+	 * @param mixed $value
 	 * @return static
 	 */
 	public function withAttribute($name, $value): ServerRequest
@@ -216,6 +219,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @param string $name
 	 * @return static
 	 */
 	public function withoutAttribute($name): ServerRequest

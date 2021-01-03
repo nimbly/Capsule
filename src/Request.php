@@ -36,14 +36,14 @@ class Request extends MessageAbstract implements RequestInterface
     /**
      * @param string $method
      * @param UriInterface|string $uri
-     * @param StreamInterface|string $body
+     * @param StreamInterface|string|null $body
      * @param array<string,string> $headers
      * @param string $httpVersion
      */
     public function __construct(string $method, $uri, $body = null, array $headers = [], string $httpVersion = "1.1")
     {
-        $this->method = \strtoupper((string) $method);
-        $this->uri = $uri instanceof UriInterface ? $uri : UriFactory::createFromString((string) $uri);
+        $this->method = \strtoupper($method);
+        $this->uri = $uri instanceof UriInterface ? $uri : UriFactory::createFromString($uri);
         $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
 
 		$this->setHeaders($headers);
@@ -57,6 +57,7 @@ class Request extends MessageAbstract implements RequestInterface
 
     /**
      * @inheritDoc
+	 * @param string $method
 	 * @return static
      */
     public function withMethod($method): Request
@@ -84,6 +85,8 @@ class Request extends MessageAbstract implements RequestInterface
 
     /**
      * @inheritDoc
+	 * @param UriInterface $uri
+	 * @param bool $preserveHost
 	 * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false): Request
@@ -123,6 +126,7 @@ class Request extends MessageAbstract implements RequestInterface
 
     /**
      * @inheritDoc
+	 * @param mixed $requestTarget
 	 * @return static
      */
     public function withRequestTarget($requestTarget): Request

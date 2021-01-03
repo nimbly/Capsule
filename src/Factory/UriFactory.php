@@ -37,7 +37,7 @@ class UriFactory implements UriFactoryInterface
 			->withScheme(!empty($uriPart['scheme']) ? \strtolower($uriPart['scheme']) : "http")
 			->withUserInfo($uriPart['user'] ?? "", $uriPart['pass'] ?? "")
 			->withHost(!empty($uriPart['host']) ? \strtolower($uriPart['host']) : "")
-			->withPort(!empty($uriPart['port']) ? (int) $uriPart['port'] : null)
+			->withPort(!empty($uriPart['port']) ? $uriPart['port'] : null)
 			->withPath($uriPart['path'] ?? "")
 			->withQuery($uriPart['query'] ?? "")
 			->withFragment($uriPart['fragment'] ?? "");

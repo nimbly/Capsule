@@ -126,6 +126,7 @@ class UploadedFile implements UploadedFileInterface
 
 	/**
 	 * @inheritDoc
+	 * @param string $targetPath
 	 * @return void
 	 */
 	public function moveTo($targetPath): void
