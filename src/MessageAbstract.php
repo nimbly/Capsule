@@ -9,25 +9,25 @@ use RuntimeException;
 
 abstract class MessageAbstract implements MessageInterface
 {
-    /**
-     * Message version
-     *
-     * @var string
-     */
-    protected $version = "1.1";
+	/**
+	 * Message version
+	 *
+	 * @var string
+	 */
+	protected $version = "1.1";
 
-    /**
-     * Message headers
-     *
-     * @var array<string,array<string>>
-     */
-    protected $headers = [];
+	/**
+	 * Message headers
+	 *
+	 * @var array<string,array<string>>
+	 */
+	protected $headers = [];
 
-    /**
-     * Message body
-     *
-     * @var StreamInterface
-     */
+	/**
+	 * Message body
+	 *
+	 * @var StreamInterface
+	 */
 	protected $body;
 
 	/**
@@ -39,170 +39,174 @@ abstract class MessageAbstract implements MessageInterface
 		"1.1", "1.0", "2", "2.0"
 	];
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @return string
-     */
-    public function getProtocolVersion(): string
-    {
-        return $this->version;
-    }
+	 */
+	public function getProtocolVersion(): string
+	{
+		return $this->version;
+	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @param string $version
 	 * @return static
-     */
-    public function withProtocolVersion($version): self
-    {
-        if( !\in_array($version, $this->allowedVersions) ){
-            throw new RuntimeException("Invalid protocol version {$version}");
-        }
+	 */
+	public function withProtocolVersion($version): self
+	{
+		if( !\in_array($version, $this->allowedVersions) ){
+			throw new RuntimeException("Invalid protocol version {$version}");
+		}
 
-        $instance = clone $this;
-        $instance->version = $version;
-        return $instance;
-    }
+		$instance = clone $this;
+		$instance->version = $version;
+		return $instance;
+	}
 
-    /**
-     * Find a header by its case-insensitive name.
-     *
-     * @param string $name
-     */
-    private function findHeaderKey(string $name): ?string
-    {
-        foreach( $this->headers as $key => $value ){
-            if( \strtolower($name) === \strtolower($key) ){
-                return $key;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritDoc
-	 * @return array<string,array<string>>
-     */
-    public function getHeaders(): array
-    {
-        return $this->headers;
-    }
-
-    /**
-     * @inheritDoc
+	/**
+	 * Find a header by its case-insensitive name.
+	 *
 	 * @param string $name
-     */
-    public function hasHeader($name): bool
-    {
-        return ($this->findHeaderKey($name) !== null);
-    }
+	 */
+	private function findHeaderKey(string $name): ?string
+	{
+		foreach( $this->headers as $key => $value ){
+			if( \strtolower($name) === \strtolower($key) ){
+				return $key;
+			}
+		}
 
-    /**
-     * @inheritDoc
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @return array<string,array<string>>
+	 */
+	public function getHeaders(): array
+	{
+		return $this->headers;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @param string $name
+	 */
+	public function hasHeader($name): bool
+	{
+		return ($this->findHeaderKey($name) !== null);
+	}
+
+	/**
+	 * @inheritDoc
 	 * @param string $name
 	 * @return array<string>
-     */
-    public function getHeader($name): array
-    {
-        if( ($key = $this->findHeaderKey($name)) !== null ){
-            return $this->headers[$key];
-        }
+	 */
+	public function getHeader($name): array
+	{
+		if( ($key = $this->findHeaderKey($name)) !== null ){
+			return $this->headers[$key];
+		}
 
-        return [];
-    }
+		return [];
+	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @param string $name
-     */
-    public function getHeaderLine($name): string
-    {
-        $header = $this->getHeader($name);
+	 */
+	public function getHeaderLine($name): string
+	{
+		$header = $this->getHeader($name);
 
-        if( empty($header) ){
-            return "";
-        }
+		if( empty($header) ){
+			return "";
+		}
 
-        return \implode(",", $header);
-    }
+		return \implode(",", $header);
+	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @param string $name
 	 * @param string|array<string> $value
 	 * @return static
-     */
-    public function withHeader($name, $value): self
-    {
+	 */
+	public function withHeader($name, $value): self
+	{
+		$instance = clone $this;
+
+		if( ($key = $this->findHeaderKey($name)) === null ){
+			$key = $name;
+		}
+
+		if( !\is_array($value) ){
+			$value = [$value];
+		}
+
+		$instance->headers[$key] = $value;
+		return $instance;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @param string $name
+	 * @param string|array<string> $value
+	 * @return static
+	 */
+	public function withAddedHeader($name, $value): self
+	{
+		if( ($key = $this->findHeaderKey($name)) === null ){
+			$key = $name;
+		}
+
 		$instance = clone $this;
 
 		if( !\is_array($value) ){
 			$value = [$value];
 		}
 
-        $instance->headers[$name] = $value;
-        return $instance;
-    }
-
-    /**
-     * @inheritDoc
-	 * @param string $name
-	 * @param string|array<string> $value
-	 * @return static
-     */
-    public function withAddedHeader($name, $value): self
-    {
-        if( ($key = $this->findHeaderKey($name)) === null ){
-            $key = $name;
-        }
-
-		$instance = clone $this;
-
-		if( !\is_array($value) ){
-			$value = [$value];
-		}
-
-        $instance->headers[$key] = \array_merge(
+		$instance->headers[$key] = \array_merge(
 			$instance->headers[$key] ?? [],
 			$value
 		);
 
-        return $instance;
-    }
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @param string $name
 	 * @return static
-     */
-    public function withoutHeader($name): self
-    {
-        if( ($key = $this->findHeaderKey($name)) === null ){
-            return $this;
-        }
+	 */
+	public function withoutHeader($name): self
+	{
+		if( ($key = $this->findHeaderKey($name)) === null ){
+			return $this;
+		}
 
-        $instance = clone $this;
-        unset($instance->headers[$key]);
-        return $instance;
-    }
+		$instance = clone $this;
+		unset($instance->headers[$key]);
+		return $instance;
+	}
 
-    /**
-     * Mass assign headers.
-     *
-     * @param array<string,string>|array<string,array<string>> $headers
+	/**
+	 * Mass assign headers.
+	 *
+	 * @param array<string,string>|array<string,array<string>> $headers
 	 * @throws RuntimeException
-     * @return void
-     */
-    protected function setHeaders(array $headers): void
-    {
-        foreach( $headers as $name => $value ){
+	 * @return void
+	 */
+	protected function setHeaders(array $headers): void
+	{
+		foreach( $headers as $name => $value ){
 
 			if( !\is_array($value) ){
 				$value = [$value];
 			}
 
-            $this->headers[$name] = $value;
+			$this->headers[$name] = $value;
 		}
 	}
 
@@ -229,22 +233,22 @@ abstract class MessageAbstract implements MessageInterface
 		);
 	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getBody(): ?StreamInterface
-    {
-        return $this->body;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function getBody(): ?StreamInterface
+	{
+		return $this->body;
+	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @return static
-     */
-    public function withBody(StreamInterface $body): self
-    {
-        $instance = clone $this;
-        $instance->body = $body;
-        return $instance;
-    }
+	 */
+	public function withBody(StreamInterface $body): self
+	{
+		$instance = clone $this;
+		$instance->body = $body;
+		return $instance;
+	}
 }
