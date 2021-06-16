@@ -62,6 +62,10 @@ class ResourceStream implements StreamInterface
      */
     public function __toString(): string
     {
+		if ($this->isSeekable()) {
+			$this->rewind();
+		}
+
         return $this->getContents();
 	}
 
