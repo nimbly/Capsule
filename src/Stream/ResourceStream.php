@@ -62,10 +62,6 @@ class ResourceStream implements StreamInterface
      */
     public function __toString(): string
     {
-		if ($this->isSeekable()) {
-			$this->rewind();
-		}
-
         return $this->getContents();
 	}
 
@@ -249,6 +245,10 @@ class ResourceStream implements StreamInterface
     {
 		if( !\is_resource($this->resource) ){
 			throw new RuntimeException("Underlying resource has been detached.");
+		}
+
+		if( $this->isSeekable() ) {
+			$this->rewind();
 		}
 
 		$contents = \stream_get_contents($this->resource);
