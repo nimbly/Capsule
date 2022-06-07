@@ -1,57 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule;
+namespace Nimbly\Capsule;
 
-use Capsule\Stream\ResourceStream;
+use Nimbly\Capsule\Stream\ResourceStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 
-
 class UploadedFile implements UploadedFileInterface
 {
-	/**
-	 * Stream for contents.
-	 *
-	 * @var StreamInterface|null
-	 */
-	protected $stream;
-
-	/**
-	 * Path to file on disk.
-	 *
-	 * @var string|null
-	 */
-	protected $file;
-
-	/**
-	 * Name of file as client uploaded it.
-	 *
-	 * @var string|null
-	 */
-	protected $clientFilename;
-
-	/**
-	 * Media (mime) type of file.
-	 *
-	 * @var string|null
-	 */
-	protected $clientMediaType;
-
-	/**
-	 * File size (in bytes).
-	 *
-	 * @var int|null
-	 */
-	protected $size;
-
-	/**
-	 * Error code for upload.
-	 *
-	 * @var int
-	 */
-	protected $error;
-
 	/**
 	 * Flag on whether file has already been moved.
 	 *
@@ -62,31 +19,19 @@ class UploadedFile implements UploadedFileInterface
 	/**
 	 * UploadedFile constructor.
 	 *
-	 * @param StreamInterface|string $contents
+	 * @param StreamInterface $stream
 	 * @param string|null $clientFilename
 	 * @param string|null $clientMediaType
 	 * @param integer|null $size
 	 * @param integer $error
 	 */
-	public function __construct($contents, ?string $clientFilename = null, ?string $clientMediaType = null, ?int $size = null, int $error = UPLOAD_ERR_OK)
+	public function __construct(
+		protected StreamInterface $stream,
+		protected ?string $clientFilename = null,
+		protected ?string $clientMediaType = null,
+		protected ?int $size = null,
+		protected int $error = UPLOAD_ERR_OK)
 	{
-		/**
-		 * @psalm-suppress RedundantConditionGivenDocblockType
-		 */
-		if( $contents instanceof StreamInterface ){
-			$this->stream = $contents;
-		}
-		elseif( \is_string($contents) ){
-			$this->file = $contents;
-		}
-		else {
-			throw new RuntimeException("UploadedFile contents must either be a StreamInterface instance or a path to a file.");
-		}
-
-		$this->clientFilename = $clientFilename;
-		$this->clientMediaType = $clientMediaType;
-		$this->size = $size;
-		$this->error = $error;
 	}
 
 	/**
@@ -108,19 +53,6 @@ class UploadedFile implements UploadedFileInterface
 	public function getStream(): StreamInterface
 	{
 		$this->validateStream();
-
-		if( $this->stream ){
-			return $this->stream;
-		}
-
-		if( empty($this->file) ){
-			throw new RuntimeException("Cannot open file for streaming.");
-		}
-
-		$this->stream = new ResourceStream(
-			\fopen($this->file, "r")
-		);
-
 		return $this->stream;
 	}
 
@@ -137,28 +69,18 @@ class UploadedFile implements UploadedFileInterface
 			throw new RuntimeException("Target file cannot be empty.");
 		}
 
-		if( $this->file ){
+		$fh = \fopen($targetPath, "w+");
 
-			$this->fileMoved = \php_sapi_name() == 'cli' ?
-				\rename($this->file, $targetPath) :
-				\move_uploaded_file($this->file, $targetPath);
-
+		if( empty($fh) ){
+			throw new RuntimeException("Target file cannot be written to.");
 		}
-		elseif( $this->stream ) {
 
-			$fh = \fopen($targetPath, "w+");
+		$targetStream = new ResourceStream($fh);
 
-			if( empty($fh) ){
-				throw new RuntimeException("Target file cannot be written to.");
-			}
-
-			$targetStream = new ResourceStream($fh);
-
-			while( !$this->stream->eof() ){
-				$targetStream->write(
-					$this->stream->read(8192)
-				);
-			}
+		while( !$this->stream->eof() ){
+			$targetStream->write(
+				$this->stream->read(8192)
+			);
 		}
 	}
 

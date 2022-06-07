@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule\Factory;
+namespace Nimbly\Capsule\Factory;
 
-use Capsule\Uri;
+use Nimbly\Capsule\Uri;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
@@ -12,7 +12,7 @@ class UriFactory implements UriFactoryInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function createUri(string $uri = ''): UriInterface
+	public function createUri(string $uri = ""): UriInterface
 	{
 		return self::createFromString($uri);
 	}
@@ -33,13 +33,15 @@ class UriFactory implements UriFactoryInterface
 			throw new RuntimeException("Malformed URL string.");
 		}
 
-		return (new Uri)
-			->withScheme(!empty($uriPart['scheme']) ? \strtolower($uriPart['scheme']) : "http")
-			->withUserInfo($uriPart['user'] ?? "", $uriPart['pass'] ?? "")
-			->withHost(!empty($uriPart['host']) ? \strtolower($uriPart['host']) : "")
-			->withPort(!empty($uriPart['port']) ? $uriPart['port'] : null)
-			->withPath($uriPart['path'] ?? "")
-			->withQuery($uriPart['query'] ?? "")
-			->withFragment($uriPart['fragment'] ?? "");
+		return new Uri(
+			!empty($uriPart["scheme"]) ? \strtolower($uriPart["scheme"]) : "http",
+			!empty($uriPart["host"]) ? \strtolower($uriPart["host"]) : "",
+			$uriPart["path"] ?? "",
+			!empty($uriPart["port"]) ? $uriPart["port"] : null,
+			$uriPart["user"] ?? "",
+			$uriPart["pass"] ?? "",
+			$uriPart["query"] ?? "",
+			$uriPart["fragment"] ?? ""
+		);
 	}
 }

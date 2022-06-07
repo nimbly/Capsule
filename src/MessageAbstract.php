@@ -1,11 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule;
+namespace Nimbly\Capsule;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
-
 
 abstract class MessageAbstract implements MessageInterface
 {
@@ -14,28 +13,28 @@ abstract class MessageAbstract implements MessageInterface
 	 *
 	 * @var string
 	 */
-	protected $version = "1.1";
+	protected string $version = "1.1";
 
 	/**
 	 * Message headers
 	 *
 	 * @var array<string,array<string>>
 	 */
-	protected $headers = [];
+	protected array $headers = [];
 
 	/**
 	 * Message body
 	 *
 	 * @var StreamInterface
 	 */
-	protected $body;
+	protected StreamInterface $body;
 
 	/**
 	 * Allowed HTTP versions
 	 *
 	 * @var array<string>
 	 */
-	private $allowedVersions = [
+	private array $allowedVersions = [
 		"1.1", "1.0", "2", "2.0"
 	];
 
@@ -105,7 +104,9 @@ abstract class MessageAbstract implements MessageInterface
 	 */
 	public function getHeader($name): array
 	{
-		if( ($key = $this->findHeaderKey($name)) !== null ){
+		$key = $this->findHeaderKey($name);
+
+		if( $key !== null ){
 			return $this->headers[$key];
 		}
 
@@ -219,7 +220,7 @@ abstract class MessageAbstract implements MessageInterface
 	 */
 	protected function setHostHeader(string $host, ?int $port = null): void
 	{
-		if( ($key = $this->findHeaderKey('Host')) ){
+		if( ($key = $this->findHeaderKey("Host")) ){
 			unset($this->headers[$key]);
 		}
 
@@ -228,7 +229,7 @@ abstract class MessageAbstract implements MessageInterface
 		}
 
 		$this->headers = \array_merge(
-			['Host' => [$host]],
+			["Host" => [$host]],
 			$this->headers
 		);
 	}
@@ -236,7 +237,7 @@ abstract class MessageAbstract implements MessageInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getBody(): ?StreamInterface
+	public function getBody(): StreamInterface
 	{
 		return $this->body;
 	}

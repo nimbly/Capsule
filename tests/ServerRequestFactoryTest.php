@@ -1,23 +1,24 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Factory\ServerRequestFactory;
-use Capsule\ServerRequest;
-use Capsule\UploadedFile;
+use Nimbly\Capsule\Factory\ServerRequestFactory;
+use Nimbly\Capsule\ServerRequest;
+use Nimbly\Capsule\UploadedFile;
 use GuzzleHttp\Psr7\ServerRequest as Psr7ServerRequest;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Capsule\Factory\ServerRequestFactory
- * @covers Capsule\ServerRequest
- * @covers Capsule\Request
- * @covers Capsule\MessageAbstract
- * @covers Capsule\Factory\UploadedFileFactory
- * @covers Capsule\UploadedFile
- * @covers Capsule\Factory\UriFactory
- * @covers Capsule\Uri
- * @covers Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\Request
+ * @covers Nimbly\Capsule\ServerRequest
+ * @covers Nimbly\Capsule\UploadedFile
+ * @covers Nimbly\Capsule\Uri
+ * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\ServerRequestFactory
+ * @covers Nimbly\Capsule\Factory\StreamFactory
+ * @covers Nimbly\Capsule\Factory\UploadedFileFactory
+ * @covers Nimbly\Capsule\Factory\UriFactory
  */
 class ServerRequestFactoryTest extends TestCase
 {
@@ -30,40 +31,40 @@ class ServerRequestFactoryTest extends TestCase
 		$this->assertInstanceOf(ServerRequest::class, $request);
 		$this->assertEquals("GET", $request->getMethod());
 		$this->assertEquals("example.com", $request->getUri()->getHost());
-		$this->assertEquals('http', $request->getUri()->getScheme());
+		$this->assertEquals("http", $request->getUri()->getScheme());
 	}
 
 	public function test_create_from_globals()
 	{
-		$_SERVER['SERVER_PROTOCOL'] = "HTTP/1.1";
-		$_SERVER['REQUEST_METHOD'] = "POST";
-		$_SERVER['REQUEST_URI'] = "/foo?query1=value1";
-		$_SERVER['HTTP_HOST'] = "capsule.org";
-		$_SERVER['HTTP_CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
-		$_SERVER['HTTP_X_FORWARDED_BY'] = '5.6.7.8';
+		$_SERVER["SERVER_PROTOCOL"] = "HTTP/1.1";
+		$_SERVER["REQUEST_METHOD"] = "POST";
+		$_SERVER["REQUEST_URI"] = "/foo?query1=value1";
+		$_SERVER["HTTP_HOST"] = "capsule.org";
+		$_SERVER["HTTP_CONTENT_TYPE"] = "application/x-www-form-urlencoded";
+		$_SERVER["HTTP_X_FORWARDED_BY"] = "5.6.7.8";
 		$_GET = ["query1" => "value1"];
 		$_POST = ["post1" => "value1"];
 		$_COOKIE = ["cookie1" => "value1"];
 
 		$_FILES = [
 			[
-				'name' => 'file1.json',
-				'type' => 'text/plain',
-				'tmp_name' => 'test.json',
-				'size' => 100,
-				'error' => UPLOAD_ERR_OK
+				"name" => "file1.json",
+				"type" => "text/plain",
+				"tmp_name" => "test.json",
+				"size" => 100,
+				"error" => UPLOAD_ERR_OK
 			]
 		];
 
 		$request = ServerRequestFactory::createFromGlobals();
 
 		$this->assertEquals(
-			'1.1',
+			"1.1",
 			$request->getProtocolVersion()
 		);
 
 		$this->assertEquals(
-			'POST',
+			"POST",
 			$request->getMethod()
 		);
 
@@ -83,7 +84,7 @@ class ServerRequestFactoryTest extends TestCase
 		);
 
 		$this->assertEquals(
-			['query1' => 'value1'],
+			["query1" => "value1"],
 			$request->getQueryParams()
 		);
 
@@ -99,7 +100,7 @@ class ServerRequestFactoryTest extends TestCase
 
 		$this->assertEquals(
 			[
-				new UploadedFile('test.json', 'file1.json', 'text/plain', 100, UPLOAD_ERR_OK)
+				new UploadedFile("test.json", "file1.json", "text/plain", 100, UPLOAD_ERR_OK)
 			],
 			$request->getUploadedFiles()
 		);

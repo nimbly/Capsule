@@ -1,50 +1,53 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule;
+namespace Nimbly\Capsule;
 
-use Capsule\Factory\UriFactory;
-use Capsule\Stream\BufferStream;
+use Nimbly\Capsule\Factory\StreamFactory;
+use Nimbly\Capsule\Factory\UriFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-
 class Request extends MessageAbstract implements RequestInterface
 {
-    /**
-     * HTTP method
-     *
-     * @var string
-     */
-    protected $method;
+	/**
+	 * HTTP method
+	 *
+	 * @var string
+	 */
+	protected string $method;
 
-    /**
-     * Request URI
-     *
-     * @var UriInterface
-     */
-    protected $uri;
+	/**
+	 * Request URI
+	 *
+	 * @var UriInterface
+	 */
+	protected UriInterface $uri;
 
-    /**
-     * Request target form
-     *
-     * @var string
-	 * @psalm-suppress PropertyNotSetInConstructor
-     */
-    protected $requestTarget;
+	/**
+	 * Request target form
+	 *
+	 * @var string|null
+	 */
+	protected ?string $requestTarget = null;
 
-    /**
-     * @param string $method
-     * @param UriInterface|string $uri
-     * @param StreamInterface|string|null $body
-     * @param array<string,string> $headers
-     * @param string $httpVersion
-     */
-    public function __construct(string $method, $uri, $body = null, array $headers = [], string $httpVersion = "1.1")
-    {
-        $this->method = \strtoupper($method);
-        $this->uri = $uri instanceof UriInterface ? $uri : UriFactory::createFromString($uri);
-        $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
+	/**
+	 * @param string $method
+	 * @param string|UriInterface|string $uri
+	 * @param string|StreamInterface|null $body
+	 * @param array<string,string> $headers
+	 * @param string $httpVersion
+	 */
+	public function __construct(
+		string $method,
+		UriInterface|string $uri,
+		StreamInterface|string|null $body = null,
+		array $headers = [],
+		string $httpVersion = "1.1")
+	{
+		$this->method = \strtoupper($method);
+		$this->uri = $uri instanceof UriInterface ? $uri : UriFactory::createFromString($uri);
+		$this->body = $body instanceof StreamInterface ? $body : StreamFactory::createFromString((string) $body);
 
 		$this->setHeaders($headers);
 
@@ -52,61 +55,61 @@ class Request extends MessageAbstract implements RequestInterface
 			$this->setHostHeader($this->uri->getHost(), $this->uri->getPort());
 		}
 
-        $this->version = $httpVersion;
+		$this->version = $httpVersion;
 	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @param string $method
 	 * @return static
-     */
-    public function withMethod($method): Request
-    {
-        $instance = clone $this;
-        $instance->method = \strtoupper($method);
-        return $instance;
-    }
+	 */
+	public function withMethod($method): Request
+	{
+		$instance = clone $this;
+		$instance->method = \strtoupper($method);
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function getMethod(): string
+	{
+		return $this->method;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getUri(): UriInterface
-    {
-        return $this->uri;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function getUri(): UriInterface
+	{
+		return $this->uri;
+	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @param UriInterface $uri
 	 * @param bool $preserveHost
 	 * @return static
-     */
-    public function withUri(UriInterface $uri, $preserveHost = false): Request
-    {
-        $instance = clone $this;
+	 */
+	public function withUri(UriInterface $uri, $preserveHost = false): Request
+	{
+		$instance = clone $this;
 		$instance->uri = $uri;
 
 		if( $preserveHost === false ||
-			$this->hasHeader('Host') === false ){
+			$this->hasHeader("Host") === false ){
 			$instance->setHostHeader($uri->getHost(), $uri->getPort());
 		}
 
-        return $instance;
-    }
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getRequestTarget(): string
-    {
+	/**
+	 * @inheritDoc
+	 */
+	public function getRequestTarget(): string
+	{
 		if( !empty($this->requestTarget) ){
 			return $this->requestTarget;
 		}
@@ -121,18 +124,18 @@ class Request extends MessageAbstract implements RequestInterface
 			$requestTarget .= "?" . $this->uri->getQuery();
 		}
 
-        return $requestTarget;
-    }
+		return $requestTarget;
+	}
 
-    /**
-     * @inheritDoc
+	/**
+	 * @inheritDoc
 	 * @param mixed $requestTarget
 	 * @return static
-     */
-    public function withRequestTarget($requestTarget): Request
-    {
-        $instance = clone $this;
-        $instance->requestTarget = $requestTarget;
-        return $instance;
-    }
+	 */
+	public function withRequestTarget($requestTarget): Request
+	{
+		$instance = clone $this;
+		$instance->requestTarget = $requestTarget;
+		return $instance;
+	}
 }

@@ -1,18 +1,19 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Factory\RequestFactory;
-use Capsule\Request;
+use Nimbly\Capsule\Factory\RequestFactory;
+use Nimbly\Capsule\Request;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Capsule\Factory\RequestFactory
- * @covers Capsule\Request
- * @covers Capsule\Factory\UriFactory
- * @covers Capsule\Uri
- * @covers Capsule\MessageAbstract
- * @covers Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\RequestFactory
+ * @covers Nimbly\Capsule\Request
+ * @covers Nimbly\Capsule\Factory\UriFactory
+ * @covers Nimbly\Capsule\Uri
+ * @covers Nimbly\Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  */
 class RequestFactoryTest extends TestCase
 {

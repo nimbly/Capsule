@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule\Factory;
+namespace Nimbly\Capsule\Factory;
 
-use Capsule\UploadedFile;
+use Nimbly\Capsule\Stream\ResourceStream;
+use Nimbly\Capsule\UploadedFile;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 
 class UploadedFileFactory implements UploadedFileFactoryInterface
 {
@@ -15,7 +17,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 	public function createUploadedFile(
         StreamInterface $stream,
         int $size = null,
-        int $error = \UPLOAD_ERR_OK,
+        int $error = UPLOAD_ERR_OK,
         string $clientFilename = null,
         string $clientMediaType = null
     ): UploadedFileInterface {
@@ -32,17 +34,23 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 	/**
 	 * Create an UploadedFile instance from a single $_FILES element.
 	 *
-	 * @param array $file
+	 * @param array{tmp_name:string,name:string,type:string,size:int,error:int} $file
 	 * @return UploadedFile
 	 */
 	public static function createFromGlobal(array $file): UploadedFile
 	{
+		$fh = \fopen($file["tmp_name"], "r");
+
+		if( $fh === false ){
+			throw new RuntimeException("Failed to open file for reading.");
+		}
+
 		return new UploadedFile(
-			$file['tmp_name'] ?? "",
-			$file['name'] ?? null,
-			$file['type'] ?? null,
-			(int) ($file['size'] ?? 0),
-			(int) ($file['error'] ?? UPLOAD_ERR_OK)
+			new ResourceStream($fh),
+			$file["name"] ?? null,
+			$file["type"] ?? null,
+			$file["size"] ?? 0,
+			$file["error"] ?? UPLOAD_ERR_OK
 		);
 	}
 }

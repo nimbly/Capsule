@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule\Factory;
+namespace Nimbly\Capsule\Factory;
 
-use Capsule\Stream\ResourceStream;
+use Nimbly\Capsule\Stream\BufferStream;
+use Nimbly\Capsule\Stream\ResourceStream;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
@@ -12,7 +13,7 @@ class StreamFactory implements StreamFactoryInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function createStream(string $content = ''): StreamInterface
+	public function createStream(string $content = ""): StreamInterface
 	{
 		$fh = @\fopen("php://temp", "w+");
 
@@ -31,7 +32,7 @@ class StreamFactory implements StreamFactoryInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
+	public function createStreamFromFile(string $filename, string $mode = "r"): StreamInterface
 	{
 		$fh = @\fopen($filename, $mode);
 
@@ -48,5 +49,16 @@ class StreamFactory implements StreamFactoryInterface
 	public function createStreamFromResource($resource): StreamInterface
 	{
 		return new ResourceStream($resource);
+	}
+
+	/**
+	 * Create a BufferStream from a string.
+	 *
+	 * @param string $contents
+	 * @return StreamInterface
+	 */
+	public static function createFromString(string $contents): StreamInterface
+	{
+		return new BufferStream($contents);
 	}
 }

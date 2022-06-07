@@ -1,9 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule\Factory;
+namespace Nimbly\Capsule\Factory;
 
-use Capsule\Factory\UploadedFileFactory;
-use Capsule\ServerRequest;
+use Nimbly\Capsule\Factory\UploadedFileFactory;
+use Nimbly\Capsule\ServerRequest;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -53,14 +53,14 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 	public static function createFromGlobals(): ServerRequest
 	{
 		// Build out the URI
-		$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http";
+		$scheme = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off" ? "https" : "http";
 
 		$uri = $scheme . "://" .
-		($_SERVER['HTTP_HOST'] ?? (($_SERVER['SERVER_NAME'] ?? "") . ":" . ($_SERVER['SERVER_PORT'] ?? ""))) .
-		($_SERVER['REQUEST_URI'] ?? "/");
+		($_SERVER["HTTP_HOST"] ?? (($_SERVER["SERVER_NAME"] ?? "") . ":" . ($_SERVER["SERVER_PORT"] ?? ""))) .
+		($_SERVER["REQUEST_URI"] ?? "/");
 
 		// Capture the version.
-		\preg_match("/^HTTP\/([\d\.]+)$/i", $_SERVER['SERVER_PROTOCOL'] ?? "", $versionMatch);
+		\preg_match("/^HTTP\/([\d\.]+)$/i", $_SERVER["SERVER_PROTOCOL"] ?? "", $versionMatch);
 
 		// Get the request body first by getting raw input from php://input.
 		$body = \file_get_contents("php://input");
@@ -71,10 +71,10 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 			$files[$name] = UploadedFileFactory::createFromGlobal($file);
 		}
 
-		return new ServerRequest(
-			$_SERVER['REQUEST_METHOD'],
+		$serverRequest = new ServerRequest(
+			$_SERVER["REQUEST_METHOD"],
 			$uri,
-			!empty($body) ? $body : $_POST,
+			!empty($body) ? $body : null,
 			$_GET,
 			\array_change_key_case(\getallheaders()),
 			$_COOKIE,
@@ -82,5 +82,11 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 			$_SERVER,
 			$versionMatch[2] ?? "1.1"
 		);
+
+		if( empty($body) ){
+			$serverRequest = $serverRequest->withParsedBody($_POST);
+		}
+
+		return $serverRequest;
 	}
 }

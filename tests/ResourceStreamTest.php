@@ -1,13 +1,13 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Capsule\Stream\ResourceStream;
+use Nimbly\Capsule\Stream\ResourceStream;
 use RuntimeException;
 
 /**
- * @covers Capsule\Stream\ResourceStream
+ * @covers Nimbly\Capsule\Stream\ResourceStream
  */
 class ResourceStreamTest extends TestCase
 {

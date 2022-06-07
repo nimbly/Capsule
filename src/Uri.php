@@ -1,247 +1,207 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule;
+namespace Nimbly\Capsule;
 
 use Psr\Http\Message\UriInterface;
 
-/**
- * @psalm-suppress MissingConstructor
- */
 class Uri implements UriInterface
 {
-    /**
-     * URI scheme (http or https)
-     *
-     * @var string|null
-     */
-    protected $scheme;
+	public function __construct(
+		protected string $scheme,
+		protected string $host,
+		protected ?string $path = null,
+		protected ?int $port = null,
+		protected ?string $username = null,
+		protected ?string $password = null,
+		protected ?string $query = null,
+		protected ?string $fragment = null
+	)
+	{
+	}
 
-    /**
-     * Request host
-     *
-     * @var string|null
-     */
-    protected $host;
+	/**
+	 * @inheritDoc
+	 */
+	public function getScheme()
+	{
+		return $this->scheme;
+	}
 
-    /**
-     * Port number
-     *
-     * @var int|null
-     */
-    protected $port;
+	/**
+	 * @inheritDoc
+	 */
+	public function getAuthority()
+	{
+		if( empty($this->username) && empty($this->password) ){
+			return "";
+		}
 
-    /**
-     * Username
-     *
-     * @var string|null
-     */
-    protected $username;
+		return \sprintf(
+			"%s:%s@%s:%s",
+			$this->username ?? "",
+			$this->password ?? "",
+			$this->host,
+			$this->port ?? ""
+		);
+	}
 
-    /**
-     * Password
-     *
-     * @var string|null
-     */
-    protected $password;
+	/**
+	 * @inheritDoc
+	 */
+	public function getUserInfo()
+	{
+		$userInfo = "";
 
-    /**
-     * Path
-     *
-     * @var string|null
-     */
-    protected $path;
+		if( $this->username ){
+			$userInfo = $this->username;
+		}
 
-    /**
-     * Query
-     *
-     * @var string|null
-     */
-    protected $query;
+		if( $this->password ){
+			$userInfo .= ":{$this->password}";
+		}
 
-    /**
-     * Fragment
-     *
-     * @var string|null
-     */
-	protected $fragment;
+		return $userInfo;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getScheme()
-    {
-        return $this->scheme ?? "";
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function getHost()
+	{
+		return $this->host;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getAuthority()
-    {
-        if( empty($this->username) && empty($this->password) ){
-            return "";
-        }
+	/**
+	 * @inheritDoc
+	 */
+	public function getPort()
+	{
+		return $this->port;
+	}
 
-        return "{$this->username}:{$this->password}@{$this->host}:{$this->port}";
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function getPath()
+	{
+		return $this->path ?? "";
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getUserInfo()
-    {
-        $userInfo = "";
+	/**
+	 * @inheritDoc
+	 */
+	public function getQuery()
+	{
+		return $this->query ?? "";
+	}
 
-        if( $this->username ){
-            $userInfo = $this->username;
-        }
+	/**
+	 * @inheritDoc
+	 */
+	public function getFragment()
+	{
+		return $this->fragment ?? "";
+	}
 
-        if( $this->password ){
-            $userInfo .= ":{$this->password}";
-        }
+	/**
+	 * @inheritDoc
+	 */
+	public function withScheme($scheme)
+	{
+		$instance = clone $this;
+		$instance->scheme = \strtolower($scheme);
+		return $instance;
+	}
 
-        return $userInfo;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function withUserInfo($user, $password = null)
+	{
+		$instance = clone $this;
+		$instance->username = $user;
+		$instance->password = $password ?? "";
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getHost()
-    {
-        return $this->host ?? "";
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function withHost($host)
+	{
+		$instance = clone $this;
+		$instance->host = $host;
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getPort()
-    {
-        return $this->port;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function withPort($port)
+	{
+		$instance = clone $this;
+		$instance->port = $port;
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getPath()
-    {
-        return $this->path ?? "";
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function withPath($path)
+	{
+		$instance = clone $this;
+		$instance->path = $path;
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getQuery()
-    {
-        return $this->query ?? "";
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getFragment()
-    {
-        return $this->fragment ?? "";
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withScheme($scheme)
-    {
-        $instance = clone $this;
-        $instance->scheme = \strtolower($scheme);
-        return $instance;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withUserInfo($user, $password = null)
-    {
-        $instance = clone $this;
-        $instance->username = $user;
-        $instance->password = $password ?? "";
-        return $instance;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withHost($host)
-    {
-        $instance = clone $this;
-        $instance->host = $host;
-        return $instance;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withPort($port)
-    {
-        $instance = clone $this;
-        $instance->port = $port;
-        return $instance;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withPath($path)
-    {
-        $instance = clone $this;
-        $instance->path = $path;
-        return $instance;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withQuery($query)
-    {
-        $instance = clone $this;
-        $instance->query = $query;
-        return $instance;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function withQuery($query)
+	{
+		$instance = clone $this;
+		$instance->query = $query;
+		return $instance;
+	}
 
 
-    /**
-     * @inheritDoc
-     */
-    public function withFragment($fragment)
-    {
-        $instance = clone $this;
-        $instance->fragment = $fragment;
-        return $instance;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function withFragment($fragment)
+	{
+		$instance = clone $this;
+		$instance->fragment = $fragment;
+		return $instance;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function __toString()
-    {
-        $url = "{$this->scheme}://";
+	/**
+	 * @inheritDoc
+	 */
+	public function __toString()
+	{
+		$url = "{$this->scheme}://";
 
-        if( $this->username || $this->password ){
-            $url .= "{$this->username}:{$this->password}@";
-        }
+		if( $this->username || $this->password ){
+			$url .= "{$this->username}:{$this->password}@";
+		}
 
-        $url .= $this->host ?? "";
+		$url .= $this->host;
 
-        if( $this->port ){
-            $url .= ":{$this->port}";
-        }
+		if( $this->port ){
+			$url .= ":{$this->port}";
+		}
 
-        $url.= ($this->path ?? "/");
+		$url.= ($this->path ?? "/");
 
-        if( $this->query ){
-            $url .= "?{$this->query}";
-        }
+		if( $this->query ){
+			$url .= "?{$this->query}";
+		}
 
-        if( $this->fragment ){
-            $url .= "#{$this->fragment}";
-        }
+		if( $this->fragment ){
+			$url .= "#{$this->fragment}";
+		}
 
-        return $url;
-    }
+		return $url;
+	}
 }

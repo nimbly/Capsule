@@ -1,13 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule;
+namespace Nimbly\Capsule;
 
-use Capsule\Stream\BufferStream;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
-
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
@@ -16,49 +14,49 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 *
 	 * @var array<string,string>
 	 */
-	protected $queryParams = [];
+	protected array $queryParams = [];
 
 	/**
 	 * Cookies sent in request.
 	 *
 	 * @var array<string,string>
 	 */
-	protected $cookieParams = [];
+	protected array $cookieParams = [];
 
 	/**
 	 * Uploaded files sent in request.
 	 *
 	 * @var array<UploadedFile>
 	 */
-	protected $uploadedFiles = [];
+	protected array $uploadedFiles = [];
 
 	/**
 	 * Parsed representation of body contents.
 	 *
-	 * @var null|array|object
+	 * @var object|array|null
 	 */
-	protected $parsedBody;
+	protected object|array|null $parsedBody = null;
 
 	/**
 	 * Request attributes.
 	 *
 	 * @var array<string,mixed>
 	 */
-	protected $attributes = [];
+	protected array $attributes = [];
 
 	/**
 	 * Server parameters.
 	 *
 	 * @var array<string,mixed>
 	 */
-	protected $serverParams = [];
+	protected array $serverParams = [];
 
 	/**
 	 * ServerRequest constructor.
 	 *
 	 * @param string $method
 	 * @param string|UriInterface $uri
-	 * @param string|array|object|null $body
+	 * @param string|StreamInterface $body
 	 * @param array<string,mixed> $query
 	 * @param array<string,mixed> $headers
 	 * @param array<string,mixed> $cookies
@@ -68,8 +66,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function __construct(
 		string $method,
-		$uri,
-		$body = null,
+		string|UriInterface $uri,
+		string|StreamInterface|null $body = null,
 		array $query = [],
 		array $headers = [],
 		array $cookies = [],
@@ -77,17 +75,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 		array $serverParams = [],
 		string $version = "1.1")
 	{
-
-		if( !$body instanceof StreamInterface ){
-			if( \is_string($body) ){
-				$body = new BufferStream($body);
-			}
-			elseif( \is_array($body) || \is_object($body) ){
-				$this->parsedBody = $body;
-			}
-		}
-
-		parent::__construct($method, $uri, $body instanceof StreamInterface ? $body : null, $headers, $version);
+		parent::__construct($method, $uri, $body, $headers, $version);
 
 		// Allow assigning query params to the server request via the URI.
 		\parse_str($this->getUri()->getQuery(), $queryParams);
@@ -148,6 +136,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
+	 * @return array<UploadedFileInterface>
 	 */
 	public function getUploadedFiles(): array
 	{
@@ -179,7 +168,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param array|object|null $data
 	 * @return static
 	 */
-	public function withParsedBody($data): ServerRequest
+	public function withParsedBody($data): static
 	{
 		$instance = clone $this;
 		$instance->parsedBody = $data;
@@ -209,7 +198,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param mixed $value
 	 * @return static
 	 */
-	public function withAttribute($name, $value): ServerRequest
+	public function withAttribute($name, $value): static
 	{
 		$instance = clone $this;
 		$instance->attributes[$name] = $value;
@@ -222,7 +211,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param string $name
 	 * @return static
 	 */
-	public function withoutAttribute($name): ServerRequest
+	public function withoutAttribute($name): static
 	{
 		$instance = clone $this;
 		unset($instance->attributes[$name]);
@@ -273,11 +262,13 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function onlyBodyParams(array $params): array
 	{
-		return \array_filter((array) $this->parsedBody, function(string $key) use ($params): bool {
-
-			return \in_array($key, $params);
-
-		}, ARRAY_FILTER_USE_KEY);
+		return \array_filter(
+			(array) $this->parsedBody,
+			function(string $key) use ($params): bool {
+				return \in_array($key, $params);
+			},
+			ARRAY_FILTER_USE_KEY
+		);
 	}
 
 	/**
@@ -288,11 +279,13 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 */
 	public function exceptBodyParams(array $params): array
 	{
-		return \array_filter((array) $this->parsedBody, function(string $key) use ($params): bool {
-
-			return !\in_array($key, $params);
-
-		}, ARRAY_FILTER_USE_KEY);
+		return \array_filter(
+			(array) $this->parsedBody,
+			function(string $key) use ($params): bool {
+				return !\in_array($key, $params);
+			},
+			ARRAY_FILTER_USE_KEY
+		);
 	}
 
 	/**

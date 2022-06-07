@@ -1,15 +1,14 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Capsule\Stream\BufferStream;
+use Nimbly\Capsule\Stream\BufferStream;
 use ReflectionClass;
 use RuntimeException;
-use SebastianBergmann\Environment\Runtime;
 
 /**
- * @covers Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Stream\BufferStream
  */
 class BufferStreamTest extends TestCase
 {

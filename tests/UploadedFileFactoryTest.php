@@ -1,16 +1,16 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Factory\UploadedFileFactory;
-use Capsule\Stream\BufferStream;
-use Capsule\UploadedFile;
+use Nimbly\Capsule\Factory\UploadedFileFactory;
+use Nimbly\Capsule\Stream\BufferStream;
+use Nimbly\Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Capsule\Factory\UploadedFileFactory
- * @covers Capsule\UploadedFile
- * @covers Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\UploadedFileFactory
+ * @covers Nimbly\Capsule\UploadedFile
+ * @covers Nimbly\Capsule\Stream\BufferStream
  */
 class UploadedFileFactoryTest extends TestCase
 {

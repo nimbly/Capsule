@@ -1,17 +1,17 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Stream\BufferStream;
-use Capsule\Stream\ResourceStream;
-use Capsule\UploadedFile;
+use Nimbly\Capsule\Stream\BufferStream;
+use Nimbly\Capsule\Stream\ResourceStream;
+use Nimbly\Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
- * @covers Capsule\UploadedFile
- * @covers Capsule\Stream\ResourceStream
- * @covers Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\UploadedFile
+ * @covers Nimbly\Capsule\Stream\ResourceStream
+ * @covers Nimbly\Capsule\Stream\BufferStream
  */
 class UploadedFileTest extends TestCase
 {
@@ -28,17 +28,11 @@ class UploadedFileTest extends TestCase
 		}
 
 		return new UploadedFile(
-			__DIR__ . "/tmp/tmp_upload",
+			new ResourceStream(\fopen(__DIR__ . "/tmp/tmp_upload", "r")),
 			"test.json",
 			"text/plain",
 			\filesize(__DIR__ . "/tmp/tmp_upload")
 		);
-	}
-
-	public function test_constructor_with_invalid_upload_content()
-	{
-		$this->expectException(RuntimeException::class);
-		new UploadedFile(new \stdClass);
 	}
 
 	public function test_get_stream_from_stream()
@@ -57,14 +51,6 @@ class UploadedFileTest extends TestCase
 		$uploadedFile = $this->makeFile();
 
 		$this->assertTrue($uploadedFile->getStream() instanceof ResourceStream);
-	}
-
-	public function test_get_stream_from_empty_file()
-	{
-		$uploadedFile = new UploadedFile("");
-
-		$this->expectException(RuntimeException::class);
-		$uploadedFile->getStream();
 	}
 
 	public function test_move_to()

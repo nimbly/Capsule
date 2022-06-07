@@ -1,19 +1,20 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Factory\UriFactory;
-use Capsule\Request;
+use Nimbly\Capsule\Factory\UriFactory;
+use Nimbly\Capsule\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * @covers Capsule\Request
- * @covers Capsule\Factory\UriFactory
- * @covers Capsule\Uri
- * @covers Capsule\Stream\BufferStream
- * @covers Capsule\Stream\ResourceStream
- * @covers Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\Request
+ * @covers Nimbly\Capsule\Factory\UriFactory
+ * @covers Nimbly\Capsule\Uri
+ * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Stream\ResourceStream
+ * @covers Nimbly\Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  */
 class RequestTest extends TestCase
 {

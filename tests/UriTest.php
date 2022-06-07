@@ -1,69 +1,72 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
+use Nimbly\Capsule\Factory\UriFactory;
 use PHPUnit\Framework\TestCase;
-use Capsule\Uri;
 
 /**
- * @covers Capsule\Uri
+ * @covers Nimbly\Capsule\Uri
+ * @covers Nimbly\Capsule\Factory\UriFactory
  */
 class UriTest extends TestCase
 {
     public function test_with_scheme_saves_data()
     {
-        $uri = (new Uri)->withScheme("https");
+		$uri = UriFactory::createFromString("http://example.com:80");
+        $uri = $uri->withScheme("https");
         $this->assertEquals("https", $uri->getScheme());
     }
 
     public function test_with_scheme_is_immutable()
     {
-        $uri = new Uri;
+        $uri = UriFactory::createFromString("example.com");
         $newUri = $uri->withScheme("https");
 
-        $this->assertEmpty($uri->getScheme());
         $this->assertNotEquals($uri, $newUri);
     }
 
     public function test_with_userinfo_saves_data()
     {
-        $uri = (new Uri)->withUserInfo("username", "password");
+		$uri = UriFactory::createFromString("http://example.com:80");
+        $uri = $uri->withUserInfo("username", "password");
         $this->assertEquals("username:password", $uri->getUserInfo());
     }
 
     public function test_with_userinfo_is_immutable()
     {
-        $uri = new Uri;
+        $uri = UriFactory::createFromString("http://example.com");
         $newUri = $uri->withUserInfo("username", "password");
 
-        $this->assertEmpty($uri->getScheme());
+        $this->assertEmpty($uri->getUserInfo());
         $this->assertNotEquals($uri, $newUri);
     }
 
     public function test_with_host_saves_data()
     {
-        $uri = (new Uri)->withHost("www.example.com");
+		$uri = UriFactory::createFromString("http://example.com:80");
+        $uri = $uri->withHost("www.example.com");
         $this->assertEquals("www.example.com", $uri->getHost());
     }
 
     public function test_with_host_is_immutable()
     {
-        $uri = new Uri;
+        $uri = UriFactory::createFromString("http://example.com");
         $newUri = $uri->withHost("www.example.com");
 
-        $this->assertEmpty($uri->getHost());
         $this->assertNotEquals($uri, $newUri);
     }
 
     public function test_with_port_saves_data()
     {
-        $uri = (new Uri)->withPort(443);
+		$uri = UriFactory::createFromString("http://example.com:80");
+        $uri = $uri->withPort(443);
         $this->assertEquals(443, $uri->getPort());
     }
 
     public function test_with_port_is_immutable()
     {
-        $uri = new Uri;
+        $uri = UriFactory::createFromString("http://example.com");
         $newUri = $uri->withPort(443);
 
         $this->assertEmpty($uri->getPort());
@@ -72,13 +75,14 @@ class UriTest extends TestCase
 
     public function test_with_path_saves_data()
     {
-        $uri = (new Uri)->withPath("/some/path/to/resource");
+		$uri = UriFactory::createFromString("http://example.com:80");
+        $uri = $uri->withPath("/some/path/to/resource");
         $this->assertEquals("/some/path/to/resource", $uri->getPath());
     }
 
     public function test_with_path_is_immutable()
     {
-        $uri = new Uri;
+        $uri = UriFactory::createFromString("http://example.com:80");
         $newUri = $uri->withPath("/some/path/to/resource");
 
         $this->assertEmpty($uri->getPath());
@@ -87,13 +91,13 @@ class UriTest extends TestCase
 
     public function test_with_query_saves_data()
     {
-        $uri = (new Uri)->withQuery("q=foo&s=some search text");
+		$uri = UriFactory::createFromString("http://example.com:80?q=foo&s=some search text");
         $this->assertEquals("q=foo&s=some search text", $uri->getQuery());
     }
 
     public function test_with_query_is_immutable()
     {
-        $uri = new Uri;
+        $uri = UriFactory::createFromString("http://example.com:80");
         $newUri = $uri->withQuery("q=foo&s=some search text");
 
         $this->assertEmpty($uri->getQuery());
@@ -102,13 +106,14 @@ class UriTest extends TestCase
 
     public function test_with_fragment_saves_data()
     {
-        $uri = (new Uri)->withFragment("Chapter1");
+		$uri = UriFactory::createFromString("http://example.com:80");
+        $uri = $uri->withFragment("Chapter1");
         $this->assertEquals("Chapter1", $uri->getFragment());
     }
 
     public function test_with_fragment_is_immutable()
     {
-        $uri = new Uri;
+        $uri = UriFactory::createFromString("http://example.com:80");
         $newUri = $uri->withFragment("Chapter1");
 
         $this->assertEmpty($uri->getFragment());
@@ -117,7 +122,7 @@ class UriTest extends TestCase
 
     public function test_get_authority_with_no_credentials_returns_empty_string()
     {
-		$uri = new Uri;
+		$uri = UriFactory::createFromString("http://example.com:80");
         $this->assertEquals("", $uri->getAuthority());
     }
 }

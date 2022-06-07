@@ -1,18 +1,19 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Request;
-use Capsule\Stream\BufferStream;
+use Nimbly\Capsule\Request;
+use Nimbly\Capsule\Stream\BufferStream;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
- * @covers Capsule\MessageAbstract
- * @covers Capsule\Request
- * @covers Capsule\Stream\BufferStream
- * @covers Capsule\Factory\UriFactory
- * @covers Capsule\Uri
+ * @covers Nimbly\Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\Request
+ * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\UriFactory
+ * @covers Nimbly\Capsule\Uri
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  */
 class MessageTest extends TestCase
 {

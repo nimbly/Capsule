@@ -1,73 +1,78 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule;
+namespace Nimbly\Capsule;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Capsule\Stream\BufferStream;
-
+use Nimbly\Capsule\Stream\BufferStream;
+use UnexpectedValueException;
 
 class Response extends MessageAbstract implements ResponseInterface
 {
-    /**
-     * Response status code.
-     *
-     * @var int
-     */
-	protected $statusCode;
+	protected int $statusCode;
+	protected string $reasonPhrase;
 
 	/**
-	 * Response reason phrase.
+	 * Response constructor.
 	 *
-	 * @var string
-	 */
-	protected $reasonPhrase;
-
-    /**
-     * Response constructor.
-     *
-     * @param int $statusCode
-     * @param StreamInterface|string $body
-     * @param array<string,string> $headers
+	 * @param int|ResponseStatus $statusCode
+	 * @param string|StreamInterface $body
+	 * @param array<string,string> $headers
 	 * @param string|null $reasonPhrase
-     * @param string $httpVersion
-     */
-    public function __construct(int $statusCode, $body = null, array $headers = [], ?string $reasonPhrase = null, string $httpVersion = "1.1")
-    {
-		$this->statusCode = $statusCode;
-        $this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
+	 * @param string $httpVersion
+	 */
+	public function __construct(
+		int|ResponseStatus $statusCode,
+		string|StreamInterface $body = null,
+		array $headers = [],
+		?string $reasonPhrase = null,
+		string $httpVersion = "1.1")
+	{
+		if( \is_int($statusCode) ){
+			$statusCode = ResponseStatus::from($statusCode);
+		}
+
+		$this->statusCode = $statusCode->value;
+		$this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
+		$this->reasonPhrase = $reasonPhrase ?: $statusCode->getPhrase();
 		$this->setHeaders($headers);
-		$this->reasonPhrase = $reasonPhrase ?: ResponseStatus::getPhrase($statusCode) ?? "";
-        $this->version = $httpVersion;
-    }
+		$this->version = $httpVersion;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function getStatusCode(): int
+	{
+		return $this->statusCode;
+	}
 
-    /**
-     * @inheritDoc
-	 * @param int $code
+	/**
+	 * @inheritDoc
+	 * @param int|ResponseStatus $code
 	 * @param string $reasonPhrase
 	 * @return static
-     */
-    public function withStatus($code, $reasonPhrase = ''): Response
-    {
-        $instance = clone $this;
-		$instance->statusCode = $code;
-		$instance->reasonPhrase = $reasonPhrase ? $reasonPhrase : ResponseStatus::getPhrase($code) ?? "";
-        return $instance;
-    }
+	 */
+	public function withStatus($code, $reasonPhrase = ""): Response
+	{
+		if( \is_int($code) ){
+			$code = ResponseStatus::from($code);
+		}
+		elseif( $code instanceof ResponseStatus === false ){
+			throw new UnexpectedValueException("Expecting either an integer or a ResponseStatus enum.");
+		}
 
-    /**
-     * @inheritDoc
-     */
-    public function getReasonPhrase(): string
-    {
-        return $this->reasonPhrase;
-    }
+		$instance = clone $this;
+		$instance->statusCode = $code->value;
+		$instance->reasonPhrase = $reasonPhrase ? $reasonPhrase : $code->getPhrase();
+		return $instance;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getReasonPhrase(): string
+	{
+		return $this->reasonPhrase;
+	}
 }
