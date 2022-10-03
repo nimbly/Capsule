@@ -15,9 +15,9 @@ class StreamFactory implements StreamFactoryInterface
 	 */
 	public function createStream(string $content = ""): StreamInterface
 	{
-		$fh = @\fopen("php://temp", "w+");
+		$fh = \fopen("php://temp", "w+");
 
-		if( empty($fh) ){
+		if( $fh === false ){
 			throw new RuntimeException("Unable to create stream from php://temp");
 		}
 
@@ -34,9 +34,9 @@ class StreamFactory implements StreamFactoryInterface
 	 */
 	public function createStreamFromFile(string $filename, string $mode = "r"): StreamInterface
 	{
-		$fh = @\fopen($filename, $mode);
+		$fh = \fopen($filename, $mode);
 
-		if( empty($fh) ){
+		if( $fh === false ){
 			throw new RuntimeException("Cannot open file.");
 		}
 

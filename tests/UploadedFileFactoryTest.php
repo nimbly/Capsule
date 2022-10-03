@@ -6,6 +6,7 @@ use Nimbly\Capsule\Factory\UploadedFileFactory;
 use Nimbly\Capsule\Stream\BufferStream;
 use Nimbly\Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @covers Nimbly\Capsule\Factory\UploadedFileFactory
@@ -56,5 +57,18 @@ class UploadedFileFactoryTest extends TestCase
 		$this->assertEquals("text/json", $uploadedFile->getClientMediaType());
 		$this->assertEquals(\filesize(__DIR__ . "/tmp/tmp_upload"), $uploadedFile->getSize());
 		$this->assertEquals(UPLOAD_ERR_OK, $uploadedFile->getError());
+	}
+
+	public function test_create_from_global_file_open_error_throws_runtime_exception()
+	{
+		$this->expectException(RuntimeException::class);
+
+		$uploadedFile = UploadedFileFactory::createFromGlobal([
+			"tmp_name" => "foo",
+			"name" => "test.json",
+			"type" => "text/json",
+			"size" => \filesize(__DIR__ . "/tmp/tmp_upload"),
+			"error" => UPLOAD_ERR_OK
+		]);
 	}
 }

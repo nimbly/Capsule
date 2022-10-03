@@ -71,7 +71,7 @@ class UploadedFile implements UploadedFileInterface
 
 		$fh = \fopen($targetPath, "w+");
 
-		if( empty($fh) ){
+		if( $fh === false ){
 			throw new RuntimeException("Target file cannot be written to.");
 		}
 
