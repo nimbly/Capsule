@@ -106,11 +106,11 @@ abstract class MessageAbstract implements MessageInterface
 	{
 		$key = $this->findHeaderKey($name);
 
-		if( $key !== null ){
-			return $this->headers[$key];
+		if( $key === null ){
+			return [];
 		}
 
-		return [];
+		return $this->headers[$key];
 	}
 
 	/**
@@ -138,7 +138,9 @@ abstract class MessageAbstract implements MessageInterface
 	{
 		$instance = clone $this;
 
-		if( ($key = $this->findHeaderKey($name)) === null ){
+		$key = $this->findHeaderKey($name);
+
+		if( $key === null ){
 			$key = $name;
 		}
 
@@ -158,7 +160,9 @@ abstract class MessageAbstract implements MessageInterface
 	 */
 	public function withAddedHeader($name, $value): self
 	{
-		if( ($key = $this->findHeaderKey($name)) === null ){
+		$key = $this->findHeaderKey($name);
+
+		if( $key === null ){
 			$key = $name;
 		}
 
@@ -183,7 +187,9 @@ abstract class MessageAbstract implements MessageInterface
 	 */
 	public function withoutHeader($name): self
 	{
-		if( ($key = $this->findHeaderKey($name)) === null ){
+		$key = $this->findHeaderKey($name);
+
+		if( $key === null ){
 			return $this;
 		}
 

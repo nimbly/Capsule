@@ -35,6 +35,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 	 * Create an UploadedFile instance from a single $_FILES element.
 	 *
 	 * @param array{tmp_name:string,name:string,type:string,size:int,error:int} $file
+	 * @throws RuntimeException
 	 * @return UploadedFile
 	 */
 	public static function createFromGlobal(array $file): UploadedFile
@@ -42,7 +43,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 		$fh = \fopen($file["tmp_name"], "r");
 
 		if( $fh === false ){
-			throw new RuntimeException("Failed to open file for reading.");
+			throw new RuntimeException("Failed to open file upload for reading.");
 		}
 
 		return new UploadedFile(

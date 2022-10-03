@@ -113,11 +113,7 @@ class BufferStream implements StreamInterface
 	 */
 	public function isWritable(): bool
 	{
-		if( $this->buffer === null ){
-			return false;
-		}
-
-		return true;
+		return $this->buffer !== null;
 	}
 
 	/**

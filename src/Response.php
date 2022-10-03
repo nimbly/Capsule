@@ -5,7 +5,6 @@ namespace Nimbly\Capsule;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Nimbly\Capsule\Stream\BufferStream;
-use UnexpectedValueException;
 
 class Response extends MessageAbstract implements ResponseInterface
 {
@@ -15,26 +14,22 @@ class Response extends MessageAbstract implements ResponseInterface
 	/**
 	 * Response constructor.
 	 *
-	 * @param int|ResponseStatus $statusCode
+	 * @param int $statusCode
 	 * @param string|StreamInterface $body
 	 * @param array<string,string> $headers
 	 * @param string|null $reasonPhrase
-	 * @param string $httpVersion
+	 * @param string $http_version
 	 */
 	public function __construct(
-		int|ResponseStatus $statusCode,
+		int $statusCode,
 		string|StreamInterface $body = null,
 		array $headers = [],
 		?string $reasonPhrase = null,
 		string $httpVersion = "1.1")
 	{
-		if( \is_int($statusCode) ){
-			$statusCode = ResponseStatus::from($statusCode);
-		}
-
-		$this->statusCode = $statusCode->value;
+		$this->statusCode = $statusCode;
 		$this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
-		$this->reasonPhrase = $reasonPhrase ?: $statusCode->getPhrase();
+		$this->reasonPhrase = $reasonPhrase ?: ResponseStatus::getPhrase($statusCode);
 		$this->setHeaders($headers);
 		$this->version = $httpVersion;
 	}
@@ -49,22 +44,15 @@ class Response extends MessageAbstract implements ResponseInterface
 
 	/**
 	 * @inheritDoc
-	 * @param int|ResponseStatus $code
+	 * @param int $code
 	 * @param string $reasonPhrase
 	 * @return static
 	 */
 	public function withStatus($code, $reasonPhrase = ""): Response
 	{
-		if( \is_int($code) ){
-			$code = ResponseStatus::from($code);
-		}
-		elseif( $code instanceof ResponseStatus === false ){
-			throw new UnexpectedValueException("Expecting either an integer or a ResponseStatus enum.");
-		}
-
 		$instance = clone $this;
-		$instance->statusCode = $code->value;
-		$instance->reasonPhrase = $reasonPhrase ? $reasonPhrase : $code->getPhrase();
+		$instance->statusCode = $code;
+		$instance->reasonPhrase = $reasonPhrase ?: ResponseStatus::getPhrase($code);
 		return $instance;
 	}
 

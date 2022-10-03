@@ -14,21 +14,21 @@ class UploadedFile implements UploadedFileInterface
 	 *
 	 * @var boolean
 	 */
-	private $fileMoved = false;
+	private bool $file_moved = false;
 
 	/**
 	 * UploadedFile constructor.
 	 *
 	 * @param StreamInterface $stream
-	 * @param string|null $clientFilename
-	 * @param string|null $clientMediaType
+	 * @param string|null $fileName
+	 * @param string|null $mediaType
 	 * @param integer|null $size
 	 * @param integer $error
 	 */
 	public function __construct(
 		protected StreamInterface $stream,
-		protected ?string $clientFilename = null,
-		protected ?string $clientMediaType = null,
+		protected ?string $fileName = null,
+		protected ?string $mediaType = null,
 		protected ?int $size = null,
 		protected int $error = UPLOAD_ERR_OK)
 	{
@@ -42,7 +42,7 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	private function validateStream(): void
 	{
-		if( $this->error !== UPLOAD_ERR_OK || $this->fileMoved ){
+		if( $this->error !== UPLOAD_ERR_OK || $this->file_moved ){
 			throw new RuntimeException("Underlying stream is not operable.");
 		}
 	}
@@ -82,6 +82,8 @@ class UploadedFile implements UploadedFileInterface
 				$this->stream->read(8192)
 			);
 		}
+
+		$this->file_moved = true;
 	}
 
 	/**
@@ -105,7 +107,7 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	public function getClientFilename(): ?string
 	{
-		return $this->clientFilename;
+		return $this->fileName;
 	}
 
 	/**
@@ -113,6 +115,6 @@ class UploadedFile implements UploadedFileInterface
 	 */
 	public function getClientMediaType(): ?string
 	{
-		return $this->clientMediaType;
+		return $this->mediaType;
 	}
 }

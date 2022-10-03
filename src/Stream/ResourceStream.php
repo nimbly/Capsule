@@ -148,7 +148,7 @@ class ResourceStream implements StreamInterface
 	 */
 	public function isSeekable(): bool
 	{
-		return (bool) $this->getMetadata('seekable');
+		return (bool) $this->getMetadata("seekable");
 	}
 
 	/**
@@ -187,11 +187,11 @@ class ResourceStream implements StreamInterface
 	public function isWritable(): bool
 	{
 		/** @psalm-suppress PossiblyInvalidCast */
-		$mode = (string) $this->getMetadata('mode');
+		$mode = (string) $this->getMetadata("mode");
 
 		return \in_array(
 			\strtolower($mode),
-			$this->fileModes['writeable']
+			$this->fileModes["writeable"]
 		);
 	}
 
@@ -220,11 +220,11 @@ class ResourceStream implements StreamInterface
 	public function isReadable(): bool
 	{
 		/** @psalm-suppress PossiblyInvalidCast */
-		$mode = (string) $this->getMetadata('mode');
+		$mode = (string) $this->getMetadata("mode");
 
 		return \in_array(
 			\strtolower($mode),
-			$this->fileModes['readable']
+			$this->fileModes["readable"]
 		);
 	}
 
@@ -278,11 +278,11 @@ class ResourceStream implements StreamInterface
 			return $key ? null : [];
 		}
 
-		if( empty($key) ){
-			return \stream_get_meta_data($this->resource);
-		}
-
 		$meta = \stream_get_meta_data($this->resource);
+
+		if( empty($key) ){
+			return $meta;
+		}
 
 		return $meta[$key] ?? null;
 	}

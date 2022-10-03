@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @covers Nimbly\Capsule\Factory\UploadedFileFactory
  * @covers Nimbly\Capsule\UploadedFile
  * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Stream\ResourceStream
  */
 class UploadedFileFactoryTest extends TestCase
 {

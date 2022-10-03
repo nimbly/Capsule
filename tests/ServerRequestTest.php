@@ -42,7 +42,7 @@ class ServerRequestTest extends TestCase
 			],
 			[
 				new UploadedFile(
-					"file1",
+					new BufferStream("Capsule!"),
 					"text/plain",
 					"temp_file.name",
 					100,
@@ -184,7 +184,7 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals(
 			[
 				new UploadedFile(
-					"file1",
+					new BufferStream("Capsule!"),
 					"text/plain",
 					"temp_file.name",
 					100,
@@ -201,8 +201,8 @@ class ServerRequestTest extends TestCase
 		$request = $this->makeRequest();
 
 		$newRequest = $request->withUploadedFiles([
-			new UploadedFile("example1.file", "appliication/json", "foo", 101, UPLOAD_ERR_OK),
-			new UploadedFile("example2.file", "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
+			new UploadedFile(new BufferStream, "appliication/json", "foo", 101, UPLOAD_ERR_OK),
+			new UploadedFile(new BufferStream, "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
 		]);
 
 		$this->assertNotSame(
@@ -212,8 +212,8 @@ class ServerRequestTest extends TestCase
 
 		$this->assertEquals(
 			[
-				new UploadedFile("example1.file", "appliication/json", "foo", 101, UPLOAD_ERR_OK),
-				new UploadedFile("example2.file", "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
+				new UploadedFile(new BufferStream, "appliication/json", "foo", 101, UPLOAD_ERR_OK),
+				new UploadedFile(new BufferStream, "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
 			],
 			$newRequest->getUploadedFiles()
 		);
@@ -402,7 +402,9 @@ class ServerRequestTest extends TestCase
 	{
 		$request = $this->makeRequest();
 
-		$uploadedFile = new UploadedFile("Ok");
+		$uploadedFile = new UploadedFile(
+			new BufferStream("Capsule!")
+		);
 
 		$request = $request->withUploadedFiles([
 			"file" => $uploadedFile
@@ -417,7 +419,9 @@ class ServerRequestTest extends TestCase
 	{
 		$request = $this->makeRequest();
 
-		$uploadedFile = new UploadedFile("Ok");
+		$uploadedFile = new UploadedFile(
+			new BufferStream
+		);
 
 		$request = $request->withUploadedFiles([
 			"file" => $uploadedFile

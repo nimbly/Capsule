@@ -6,7 +6,10 @@ use Nimbly\Capsule\Factory\ServerRequestFactory;
 use Nimbly\Capsule\ServerRequest;
 use Nimbly\Capsule\UploadedFile;
 use GuzzleHttp\Psr7\ServerRequest as Psr7ServerRequest;
+use Nimbly\Capsule\Stream\BufferStream;
+use Nimbly\Capsule\Stream\ResourceStream;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @covers Nimbly\Capsule\MessageAbstract
@@ -15,6 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @covers Nimbly\Capsule\UploadedFile
  * @covers Nimbly\Capsule\Uri
  * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Stream\ResourceStream
  * @covers Nimbly\Capsule\Factory\ServerRequestFactory
  * @covers Nimbly\Capsule\Factory\StreamFactory
  * @covers Nimbly\Capsule\Factory\UploadedFileFactory
@@ -50,7 +54,7 @@ class ServerRequestFactoryTest extends TestCase
 			[
 				"name" => "file1.json",
 				"type" => "text/plain",
-				"tmp_name" => "test.json",
+				"tmp_name" => __DIR__ . "/fixtures/test.json",
 				"size" => 100,
 				"error" => UPLOAD_ERR_OK
 			]
@@ -98,11 +102,31 @@ class ServerRequestFactoryTest extends TestCase
 			$request->getParsedBody()
 		);
 
+		$this->assertCount(1, $request->getUploadedFiles());
+
 		$this->assertEquals(
-			[
-				new UploadedFile("test.json", "file1.json", "text/plain", 100, UPLOAD_ERR_OK)
-			],
-			$request->getUploadedFiles()
+			"file1.json",
+			$request->getUploadedFiles()[0]->getClientFilename()
+		);
+
+		$this->assertEquals(
+			"text/plain",
+			$request->getUploadedFiles()[0]->getClientMediaType()
+		);
+
+		$this->assertEquals(
+			100,
+			$request->getUploadedFiles()[0]->getSize()
+		);
+
+		$this->assertEquals(
+			UPLOAD_ERR_OK,
+			$request->getUploadedFiles()[0]->getError()
+		);
+
+		$this->assertEquals(
+			"{\"name\": \"Test\", \"email\": \"test@example.com\"}",
+			$request->getUploadedFiles()[0]->getStream()->getContents()
 		);
 
 		$this->assertEquals(

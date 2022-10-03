@@ -23,8 +23,8 @@ class ResponseFactoryTest extends TestCase
 		$response = $responseFactory->createResponse(200);
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals(ResponseStatus::OK->value, $response->getStatusCode());
-		$this->assertEquals(ResponseStatus::OK->getPhrase(), $response->getReasonPhrase());
+		$this->assertEquals(ResponseStatus::OK, $response->getStatusCode());
+		$this->assertEquals(ResponseStatus::getPhrase(ResponseStatus::OK), $response->getReasonPhrase());
 	}
 
 	public function test_create_response_with_reasonphrase()
@@ -32,12 +32,12 @@ class ResponseFactoryTest extends TestCase
 		$responseFactory = new ResponseFactory;
 
 		$response = $responseFactory->createResponse(
-			ResponseStatus::NOT_FOUND->value,
+			ResponseStatus::NOT_FOUND,
 			"Resource not found"
 		);
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals(ResponseStatus::NOT_FOUND->value, $response->getStatusCode());
+		$this->assertEquals(ResponseStatus::NOT_FOUND, $response->getStatusCode());
 		$this->assertEquals("Resource not found", $response->getReasonPhrase());
 	}
 }
