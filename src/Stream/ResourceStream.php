@@ -110,7 +110,7 @@ class ResourceStream implements StreamInterface
 			return null;
 		}
 
-		return (int) $fstat["size"];
+		return $fstat["size"];
 	}
 
 	/**
