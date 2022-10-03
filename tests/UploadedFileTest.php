@@ -64,12 +64,20 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_move_to_invalid_target_path()
+	public function test_move_to_empty_target_path_throws_runtime_exception()
 	{
 		$uploadedFile = $this->makeFile();
 
 		$this->expectException(RuntimeException::class);
 		$uploadedFile->moveTo("");
+	}
+
+	public function test_move_to_unwriteable_target_throws_runtime_exception()
+	{
+		$uploadedFile = $this->makeFile();
+
+		$this->expectException(RuntimeException::class);
+		$uploadedFile->moveTo("/root");
 	}
 
 	public function test_calling_move_to_more_than_once_throws_exception()
