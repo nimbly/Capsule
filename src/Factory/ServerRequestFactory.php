@@ -67,12 +67,19 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
 		// Process the uploaded files into an array<UploadedFile>.
 		$files = [];
+
+		/**
+		 * @var array<string,array{error:int,name:string,size:int,tmp_name:string,type:string}> $_FILES
+		 */
 		foreach( $_FILES as $name => $file ){
 			$files[$name] = UploadedFileFactory::createFromGlobal($file);
 		}
 
+		/**
+		 * @psalm-suppress InvalidScalarArgument
+		 */
 		$serverRequest = new ServerRequest(
-			$_SERVER["REQUEST_METHOD"],
+			$_SERVER["REQUEST_METHOD"] ?? "GET",
 			$uri,
 			!empty($body) ? $body : null,
 			$_GET,
