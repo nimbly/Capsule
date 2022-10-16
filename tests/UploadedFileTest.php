@@ -54,6 +54,12 @@ class UploadedFileTest extends TestCase
 		$this->assertInstanceOf(StreamInterface::class, $uploadedFile->getStream());
 	}
 
+	public function test_create_from_non_readable_file_path_throws_runtime_exception(): void
+	{
+		$this->expectException(RuntimeException::class);
+		$uploadedFile = new UploadedFile(__DIR__ . "/fixtures/foo.json");
+	}
+
 	public function test_get_stream_from_file(): void
 	{
 		$uploadedFile = $this->makeFile();
