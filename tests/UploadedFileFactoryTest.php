@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  * @covers Nimbly\Capsule\Factory\UploadedFileFactory
  * @covers Nimbly\Capsule\UploadedFile
  * @covers Nimbly\Capsule\Stream\BufferStream

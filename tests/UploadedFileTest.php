@@ -13,6 +13,7 @@ use RuntimeException;
  * @covers Nimbly\Capsule\UploadedFile
  * @covers Nimbly\Capsule\Stream\ResourceStream
  * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  */
 class UploadedFileTest extends TestCase
 {

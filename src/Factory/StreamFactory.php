@@ -34,13 +34,7 @@ class StreamFactory implements StreamFactoryInterface
 	 */
 	public function createStreamFromFile(string $filename, string $mode = "r"): StreamInterface
 	{
-		$fh = \fopen($filename, $mode);
-
-		if( $fh === false ){
-			throw new RuntimeException("Failed to open file for reading.");
-		}
-
-		return new ResourceStream($fh);
+		return self::createFromFile($filename, $mode);
 	}
 
 	/**
@@ -60,5 +54,34 @@ class StreamFactory implements StreamFactoryInterface
 	public static function createFromString(string $contents): StreamInterface
 	{
 		return new BufferStream($contents);
+	}
+
+	/**
+	 * Create a StreamInterface instance from a file.
+	 *
+	 * @param string $filename
+	 * @param string $mode
+	 * @return StreamInterface
+	 */
+	public static function createFromFile(string $filename, string $mode = "w+"): StreamInterface
+	{
+		$fh = \fopen($filename, $mode);
+
+		if( $fh === false ){
+			throw new RuntimeException("Failed to open file for reading.");
+		}
+
+		return new ResourceStream($fh);
+	}
+
+	/**
+	 * Create a StreamInterface instance from a resource.
+	 *
+	 * @param resource $resource
+	 * @return StreamInterface
+	 */
+	public static function createFromResource($resource): StreamInterface
+	{
+		return new ResourceStream($resource);
 	}
 }

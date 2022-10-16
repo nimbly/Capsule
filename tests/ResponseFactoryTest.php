@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers Nimbly\Capsule\Factory\ResponseFactory
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  * @covers Nimbly\Capsule\Response
  * @covers Nimbly\Capsule\ResponseStatus
  * @covers Nimbly\Capsule\MessageAbstract

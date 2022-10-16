@@ -2,6 +2,7 @@
 
 namespace Nimbly\Capsule;
 
+use Nimbly\Capsule\Factory\StreamFactory;
 use Nimbly\Capsule\Stream\ResourceStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -33,13 +34,7 @@ class UploadedFile implements UploadedFileInterface
 		protected int $error = UPLOAD_ERR_OK)
 	{
 		if( \is_string($stream) ){
-			$fh = \fopen($stream, "r");
-
-			if( $fh === false ){
-				throw new RuntimeException("Failed to open file for reading.");
-			}
-
-			$stream = new ResourceStream($fh);
+			$stream = StreamFactory::createFromFile($stream, "r");
 		}
 
 		$this->stream = $stream;
@@ -80,13 +75,7 @@ class UploadedFile implements UploadedFileInterface
 			throw new RuntimeException("Target file cannot be empty.");
 		}
 
-		$fh = \fopen($targetPath, "w+");
-
-		if( $fh === false ){
-			throw new RuntimeException("Failed to create target file or it cannot be written to.");
-		}
-
-		$targetStream = new ResourceStream($fh);
+		$targetStream = StreamFactory::createFromFile($targetPath, "w+");
 
 		while( !$this->stream->eof() ){
 			$targetStream->write(

@@ -81,7 +81,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 		$serverRequest = new ServerRequest(
 			$_SERVER["REQUEST_METHOD"] ?? "GET",
 			$uri,
-			!empty($body) ? $body : null,
+			$body ?: null,
 			$_GET,
 			\array_change_key_case(\getallheaders()),
 			$_COOKIE,

@@ -2,9 +2,9 @@
 
 namespace Nimbly\Capsule;
 
+use Nimbly\Capsule\Factory\StreamFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Nimbly\Capsule\Stream\BufferStream;
 
 class Response extends MessageAbstract implements ResponseInterface
 {
@@ -26,7 +26,7 @@ class Response extends MessageAbstract implements ResponseInterface
 		string $httpVersion = "1.1")
 	{
 		$this->statusCode = $statusCode;
-		$this->body = $body instanceof StreamInterface ? $body : new BufferStream((string) $body);
+		$this->body = $body instanceof StreamInterface ? $body : StreamFactory::createFromString((string) $body);
 		$this->reasonPhrase = $reasonPhrase ?: ResponseStatus::getPhrase($statusCode);
 		$this->setHeaders($headers);
 		$this->version = $httpVersion;

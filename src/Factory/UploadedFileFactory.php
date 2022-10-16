@@ -40,14 +40,8 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 	 */
 	public static function createFromGlobal(array $file): UploadedFile
 	{
-		$fh = \fopen($file["tmp_name"], "r");
-
-		if( $fh === false ){
-			throw new RuntimeException("Failed to open file for reading.");
-		}
-
 		return new UploadedFile(
-			new ResourceStream($fh),
+			$file["tmp_name"],
 			$file["name"] ?? null,
 			$file["type"] ?? null,
 			$file["size"] ?? 0,

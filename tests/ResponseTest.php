@@ -13,6 +13,7 @@ use Psr\Http\Message\StreamInterface;
  * @covers Nimbly\Capsule\ResponseStatus
  * @covers Nimbly\Capsule\MessageAbstract
  * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  */
 class ResponseTest extends TestCase
 {
