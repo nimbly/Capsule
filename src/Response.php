@@ -12,8 +12,6 @@ class Response extends MessageAbstract implements ResponseInterface
 	protected string $reasonPhrase;
 
 	/**
-	 * Response constructor.
-	 *
 	 * @param int $statusCode
 	 * @param string|StreamInterface $body
 	 * @param array<string,string> $headers

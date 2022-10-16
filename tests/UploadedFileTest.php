@@ -6,6 +6,7 @@ use Nimbly\Capsule\Stream\BufferStream;
 use Nimbly\Capsule\Stream\ResourceStream;
 use Nimbly\Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
 /**
@@ -35,7 +36,7 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_get_stream_from_stream()
+	public function test_get_stream_from_stream(): void
 	{
 		$stream = new BufferStream("Capsule!");
 		$uploadedFile = new UploadedFile($stream);
@@ -46,14 +47,21 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_get_stream_from_file()
+	public function test_create_from_file_path(): void
+	{
+		$uploadedFile = new UploadedFile(__DIR__ . "/fixtures/test.json");
+
+		$this->assertInstanceOf(StreamInterface::class, $uploadedFile->getStream());
+	}
+
+	public function test_get_stream_from_file(): void
 	{
 		$uploadedFile = $this->makeFile();
 
-		$this->assertTrue($uploadedFile->getStream() instanceof ResourceStream);
+		$this->assertInstanceOf(ResourceStream::class, $uploadedFile->getStream());
 	}
 
-	public function test_move_to()
+	public function test_move_to(): void
 	{
 		$uploadedFile = $this->makeFile();
 
@@ -64,7 +72,7 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_move_to_empty_target_path_throws_runtime_exception()
+	public function test_move_to_empty_target_path_throws_runtime_exception(): void
 	{
 		$uploadedFile = $this->makeFile();
 
@@ -72,7 +80,7 @@ class UploadedFileTest extends TestCase
 		$uploadedFile->moveTo("");
 	}
 
-	public function test_move_to_unwriteable_target_throws_runtime_exception()
+	public function test_move_to_unwriteable_target_throws_runtime_exception(): void
 	{
 		$uploadedFile = $this->makeFile();
 
@@ -80,7 +88,7 @@ class UploadedFileTest extends TestCase
 		$uploadedFile->moveTo("/root");
 	}
 
-	public function test_calling_move_to_more_than_once_throws_exception()
+	public function test_calling_move_to_more_than_once_throws_exception(): void
 	{
 		$uploadedFile = $this->makeFile();
 		$uploadedFile->moveTo(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename());
@@ -89,14 +97,14 @@ class UploadedFileTest extends TestCase
 		$uploadedFile->moveTo(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename());
 	}
 
-	public function test_get_size()
+	public function test_get_size(): void
 	{
 		$uploadedFile = $this->makeFile();
 
 		$this->assertEquals(45, $uploadedFile->getSize());
 	}
 
-	public function test_get_error()
+	public function test_get_error(): void
 	{
 		$uploadedFile = $this->makeFile();
 
@@ -106,7 +114,7 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_get_client_filename()
+	public function test_get_client_filename(): void
 	{
 		$uploadedFile = $this->makeFile();
 
@@ -116,7 +124,7 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_get_client_media_type()
+	public function test_get_client_media_type(): void
 	{
 		$uploadedFile = $this->makeFile();
 
@@ -126,7 +134,7 @@ class UploadedFileTest extends TestCase
 		);
 	}
 
-	public function test_getting_stream_after_moving_should_throw_exception()
+	public function test_getting_stream_after_moving_should_throw_exception(): void
 	{
 		$uploadedFile = $this->makeFile();
 		$uploadedFile->moveTo(__DIR__ . "/tmp/" . $uploadedFile->getClientFilename());

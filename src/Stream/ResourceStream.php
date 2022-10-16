@@ -37,11 +37,7 @@ class ResourceStream implements StreamInterface
 	protected $resource;
 
 	/**
-	 * ResourceStream constructor.
-	 *
-	 * Resource *must* be of type "stream."
-	 *
-	 * @param resource $resource
+	 * @param resource $resource Resource *must* be of type "stream."
 	 */
 	public function __construct($resource)
 	{

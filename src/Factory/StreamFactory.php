@@ -18,7 +18,7 @@ class StreamFactory implements StreamFactoryInterface
 		$fh = \fopen("php://temp", "w+");
 
 		if( $fh === false ){
-			throw new RuntimeException("Unable to create stream from php://temp");
+			throw new RuntimeException("Failed to create stream from php://temp.");
 		}
 
 		$stream = new ResourceStream($fh);
@@ -37,7 +37,7 @@ class StreamFactory implements StreamFactoryInterface
 		$fh = \fopen($filename, $mode);
 
 		if( $fh === false ){
-			throw new RuntimeException("Cannot open file.");
+			throw new RuntimeException("Failed to open file for reading.");
 		}
 
 		return new ResourceStream($fh);

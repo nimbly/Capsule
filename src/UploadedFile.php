@@ -9,6 +9,8 @@ use RuntimeException;
 
 class UploadedFile implements UploadedFileInterface
 {
+	protected StreamInterface $stream;
+
 	/**
 	 * Flag on whether file has already been moved.
 	 *
@@ -17,21 +19,30 @@ class UploadedFile implements UploadedFileInterface
 	private bool $file_moved = false;
 
 	/**
-	 * UploadedFile constructor.
-	 *
-	 * @param StreamInterface $stream
+	 * @param string|StreamInterface $stream StreamInterface instance or a string to the full path of the file.
 	 * @param string|null $fileName
 	 * @param string|null $mediaType
 	 * @param integer|null $size
 	 * @param integer $error
 	 */
 	public function __construct(
-		protected StreamInterface $stream,
+		string|StreamInterface $stream,
 		protected ?string $fileName = null,
 		protected ?string $mediaType = null,
 		protected ?int $size = null,
 		protected int $error = UPLOAD_ERR_OK)
 	{
+		if( \is_string($stream) ){
+			$fh = \fopen($stream, "r");
+
+			if( $fh === false ){
+				throw new RuntimeException("Failed to open file for reading.");
+			}
+
+			$stream = new ResourceStream($fh);
+		}
+
+		$this->stream = $stream;
 	}
 
 	/**
@@ -72,7 +83,7 @@ class UploadedFile implements UploadedFileInterface
 		$fh = \fopen($targetPath, "w+");
 
 		if( $fh === false ){
-			throw new RuntimeException("Target file cannot be written to.");
+			throw new RuntimeException("Failed to create target file or it cannot be written to.");
 		}
 
 		$targetStream = new ResourceStream($fh);

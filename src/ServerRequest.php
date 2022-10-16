@@ -52,8 +52,6 @@ class ServerRequest extends Request implements ServerRequestInterface
 	protected array $serverParams = [];
 
 	/**
-	 * ServerRequest constructor.
-	 *
 	 * @param string $method
 	 * @param string|UriInterface $uri
 	 * @param string|StreamInterface $body

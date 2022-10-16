@@ -43,7 +43,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 		$fh = \fopen($file["tmp_name"], "r");
 
 		if( $fh === false ){
-			throw new RuntimeException("Failed to open file upload for reading.");
+			throw new RuntimeException("Failed to open file for reading.");
 		}
 
 		return new UploadedFile(

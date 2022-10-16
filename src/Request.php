@@ -33,15 +33,15 @@ class Request extends MessageAbstract implements RequestInterface
 
 	/**
 	 * @param string $method
-	 * @param string|UriInterface|string $uri
+	 * @param string|UriInterface $uri
 	 * @param string|StreamInterface|null $body
 	 * @param array<string,string> $headers
 	 * @param string $httpVersion
 	 */
 	public function __construct(
 		string $method,
-		UriInterface|string $uri,
-		StreamInterface|string|null $body = null,
+		string|UriInterface $uri,
+		string|StreamInterface|null $body = null,
 		array $headers = [],
 		string $httpVersion = "1.1")
 	{

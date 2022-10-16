@@ -17,8 +17,6 @@ class BufferStream implements StreamInterface
 	protected ?string $buffer = "";
 
 	/**
-	 * BufferStream constructor.
-	 *
 	 * @param string $data
 	 */
 	public function __construct(string $data = "")
