@@ -98,7 +98,7 @@ class RequestTest extends TestCase
         );
 
         $this->assertEquals("POST", $request->getMethod());
-        $this->assertEquals("http://example.com", (string) $request->getUri());
+        $this->assertEquals("http://example.com/", (string) $request->getUri());
         $this->assertEquals("BODY", $request->getBody()->getContents());
         $this->assertEquals("en_US", $request->getHeader("Accept-Language")[0]);
         $this->assertEquals("2", $request->getProtocolVersion());

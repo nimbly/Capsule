@@ -32,17 +32,23 @@ class Uri implements UriInterface
 	 */
 	public function getAuthority(): string
 	{
-		if( empty($this->username) && empty($this->password) ){
+		if( empty($this->host) ){
 			return "";
 		}
 
-		return \sprintf(
-			"%s:%s@%s:%s",
-			$this->username ?? "",
-			$this->password ?? "",
-			$this->host ?? "",
-			$this->port ?? ""
-		);
+		$authority = "";
+
+		if( !empty($this->username) || !empty($this->password) ){
+			$authority .= \sprintf("%s:%s@", $this->username ?? "", $this->password ?? "");
+		}
+
+		$authority .= $this->host;
+
+		if( $this->port ){
+			$authority .= (":" . $this->port);
+		}
+
+		return $authority;
 	}
 
 	/**
@@ -189,22 +195,12 @@ class Uri implements UriInterface
 		if( $this->getAuthority() ){
 			$url .= ("//" . $this->getAuthority());
 		}
-		else {
-			$url .= ("//" . $this->host);
-
-			if( $this->port ){
-				$url .= (":" . $this->port);
-			}
-		}
 
 		if( empty($this->path) && $this->getAuthority() ){
 			$url .= "/";
 		}
-		elseif( $this->path && !$this->getAuthority() ){
+		elseif( $this->path ) {
 			$url .= ("/" . \trim($this->path, "/"));
-		}
-		else {
-			$url .= (string) $this->path;
 		}
 
 		if( $this->query ){
