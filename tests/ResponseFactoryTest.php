@@ -1,18 +1,19 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Factory\ResponseFactory;
-use Capsule\Response;
-use Capsule\ResponseStatus;
+use Nimbly\Capsule\Factory\ResponseFactory;
+use Nimbly\Capsule\Response;
+use Nimbly\Capsule\ResponseStatus;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Capsule\Factory\ResponseFactory
- * @covers Capsule\Response
- * @covers Capsule\ResponseStatus
- * @covers Capsule\MessageAbstract
- * @covers Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\ResponseFactory
+ * @covers Nimbly\Capsule\Factory\StreamFactory
+ * @covers Nimbly\Capsule\Response
+ * @covers Nimbly\Capsule\ResponseStatus
+ * @covers Nimbly\Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\Stream\BufferStream
  */
 class ResponseFactoryTest extends TestCase
 {
@@ -20,7 +21,7 @@ class ResponseFactoryTest extends TestCase
 	{
 		$responseFactory = new ResponseFactory;
 
-		$response = $responseFactory->createResponse(ResponseStatus::OK);
+		$response = $responseFactory->createResponse(200);
 
 		$this->assertInstanceOf(Response::class, $response);
 		$this->assertEquals(ResponseStatus::OK, $response->getStatusCode());
@@ -31,7 +32,10 @@ class ResponseFactoryTest extends TestCase
 	{
 		$responseFactory = new ResponseFactory;
 
-		$response = $responseFactory->createResponse(ResponseStatus::NOT_FOUND, "Resource not found");
+		$response = $responseFactory->createResponse(
+			ResponseStatus::NOT_FOUND,
+			"Resource not found"
+		);
 
 		$this->assertInstanceOf(Response::class, $response);
 		$this->assertEquals(ResponseStatus::NOT_FOUND, $response->getStatusCode());

@@ -1,18 +1,19 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Response;
-use Capsule\ResponseStatus;
-use Capsule\Stream\BufferStream;
+use Nimbly\Capsule\Response;
+use Nimbly\Capsule\ResponseStatus;
+use Nimbly\Capsule\Stream\BufferStream;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * @covers Capsule\Response
- * @covers Capsule\ResponseStatus
- * @covers Capsule\MessageAbstract
- * @covers Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Response
+ * @covers Nimbly\Capsule\ResponseStatus
+ * @covers Nimbly\Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  */
 class ResponseTest extends TestCase
 {
@@ -29,16 +30,31 @@ class ResponseTest extends TestCase
     public function test_with_status_code_saves_data()
     {
         $response = new Response(ResponseStatus::OK);
-        $response = $response->withStatus(ResponseStatus::NOT_FOUND, "Page Not Found");
 
-        $this->assertEquals(ResponseStatus::NOT_FOUND, $response->getStatusCode());
-        $this->assertEquals("Page Not Found", $response->getReasonPhrase());
+		$response = $response->withStatus(
+			ResponseStatus::NOT_FOUND,
+			"Page Not Found"
+		);
+
+        $this->assertEquals(
+			ResponseStatus::NOT_FOUND,
+			$response->getStatusCode()
+		);
+
+        $this->assertEquals(
+			"Page Not Found",
+			$response->getReasonPhrase()
+		);
     }
 
     public function test_with_status_code_resolves_phrase_if_none_given()
     {
         $response = new Response(ResponseStatus::NOT_FOUND);
-        $this->assertEquals(ResponseStatus::getPhrase(ResponseStatus::NOT_FOUND), $response->getReasonPhrase());
+
+		$this->assertEquals(
+			ResponseStatus::getPhrase(ResponseStatus::NOT_FOUND),
+			$response->getReasonPhrase()
+		);
     }
 
     public function test_with_status_code_is_immutable()

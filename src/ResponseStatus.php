@@ -1,7 +1,6 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule;
-
+namespace Nimbly\Capsule;
 
 class ResponseStatus
 {
@@ -28,8 +27,8 @@ class ResponseStatus
 	const NOT_MODIFIED = 304;
 	const USE_PROXY = 305;
 	const SWITCH_PROXY = 306;
-	const TEMPORARY_REDIRECTS = 307;
-	const PERMANENT_REDIRECTS = 308;
+	const TEMPORARY_REDIRECT = 307;
+	const PERMANENT_REDIRECT = 308;
 
 	const BAD_REQUEST = 400;
 	const UNAUTHORIZED = 401;
@@ -54,6 +53,7 @@ class ResponseStatus
 	const UNPROCESSABLE_ENTITY = 422;
 	const LOCKED = 423;
 	const FAILED_DEPENDENCY = 424;
+	const TOO_EARLY = 425;
 	const UPGRADE_REQUIRED = 426;
 	const PRECONDITION_REQUIRED = 428;
 	const TOO_MANY_REQUESTS = 429;
@@ -64,6 +64,7 @@ class ResponseStatus
 	const NOT_IMPLEMENTED = 501;
 	const BAD_GATEWAY = 502;
 	const SERVICE_UNAVAILABLE = 503;
+	const GATEWAY_TIMEOUT = 504;
 	const HTTP_VERSION_NOT_SUPPORTED = 505;
 	const VARIANT_ALSO_NEGOTIATES = 506;
 	const INSUFFICIENT_STORAGE = 507;
@@ -71,88 +72,89 @@ class ResponseStatus
 	const NOT_EXTENDED = 510;
 	const NETWORK_AUTHENTICATION_REQUIRED = 511;
 
-    /**
-     * Official HTTP status codes mapped to their response phrase.
-     *
-     * @var array
-     */
-    protected static $phrases = [
-        100 => "Continue",
-        101 => "Switching Protocols",
-        102 => "Processing",
-        103 => "Early Hints",
+	/**
+	 * Official HTTP status codes mapped to their response phrase.
+	 *
+	 * @var array<int,string>
+	 */
+	protected static array $phrases = [
+		self::CONTINUE => "Continue",
+		self::SWITCHING_PROTOCOLS => "Switching Protocols",
+		self::PROCESSING => "Processing",
+		self::EARLY_HINTS => "Early Hints",
 
-        200 => "OK",
-        201 => "Created",
-        202 => "Accepted",
-        203 => "Non-Authoritative Information",
-        204 => "No Content",
-        205 => "Reset Content",
-        206 => "Partial Content",
-        207 => "Multi-Status",
-        208 => "Already Reported",
-        226 => "IM Used",
+		self::OK => "Ok",
+		self::CREATED => "Created",
+		self::ACCEPTED => "Accepted",
+		self::NON_AUTHORITATIVE_INFORMATION => "Non-Authoritative Information",
+		self::NO_CONTENT => "No Content",
+		self::RESET_CONTENT => "Reset Content",
+		self::PARTIAL_CONTENT => "Partial Content",
+		self::MULTI_STATUS => "Multi-Status",
+		self::ALREADY_REPORTED => "Already Reported",
+		self::IM_USED => "IM Used",
 
-        300 => "Multiple Choices",
-        301 => "Moved Permanently",
-        302 => "Found",
-        303 => "See Other",
-        304 => "Not Modified",
-        305 => "Use Proxy",
-        306 => "Switch Proxy",
-        307 => "Temporary Redirect",
-        308 => "Permanent Redirect",
+		self::MULTIPLE_CHOICES => "Multiple Choices",
+		self::MOVED_PERMENENTLY => "Moved Permanently",
+		self::FOUND => "Found",
+		self::SEE_OTHER => "See Other",
+		self::NOT_MODIFIED => "Not Modified",
+		self::USE_PROXY => "Use Proxy",
+		self::SWITCH_PROXY => "Switch Proxy",
+		self::TEMPORARY_REDIRECT => "Temporary Redirect",
+		self::PERMANENT_REDIRECT => "Permanent Redirect",
 
-        400 => "Bad Request",
-        401 => "Unauthorized",
-        402 => "Payment Required",
-        403 => "Forbidden",
-        404 => "Not Found",
-        405 => "Method Not Allowed",
-        406 => "Not Acceptable",
-        407 => "Proxy Authentication Required",
-        408 => "Request Timeout",
-        409 => "Conflict",
-        410 => "Gone",
-        411 => "Length Required",
-        412 => "Precondition Failed",
-        413 => "Payload Too Large",
-        414 => "URI Too Long",
-        415 => "Unsupported Media Type",
-        416 => "Range Not Satisfiable",
-        417 => "Expection Failed",
-        418 => "I'm A Teapot",
-        421 => "Misdirected Request",
-        422 => "Unprocessable Entity",
-        423 => "Locked",
-        424 => "Failed Dependency",
-        426 => "Upgrade Required",
-        428 => "Precondition Required",
-        429 => "Too Many Requests",
-        431 => "Request Header Fields Too Large",
-        451 => "Unavailable For Legal Reasons",
+		self::BAD_REQUEST => "Bad Request",
+		self::UNAUTHORIZED => "Unauthorized",
+		self::PAYMENT_REQUIRED => "Payment Required",
+		self::FORBIDDEN => "Forbidden",
+		self::NOT_FOUND => "Not Found",
+		self::METHOD_NOT_ALLOWED => "Method Not Allowed",
+		self::NOT_ACCEPTABLE => "Not Acceptable",
+		self::PROXY_AUTHENTICATION_REQUIRED => "Proxy Authentication Required",
+		self::REQUEST_TIMEOUT => "Request Timeout",
+		self::CONFLICT => "Conflict",
+		self::GONE => "Gone",
+		self::LENGTH_REQUIRED => "Length Required",
+		self::PRECONDITION_FAILED => "Precondition Failed",
+		self::PAYLOAD_TOO_LARGE => "Payload Too Large",
+		self::URI_TOO_LONG => "URI Too Long",
+		self::UNSUPPORTED_MEDIA_TYPE => "Unsupported Media Type",
+		self::RANGE_NOT_SATISFIABLE => "Range Not Satisfiable",
+		self::EXPECTATION_FAILED => "Expection Failed",
+		self::IM_A_TEAPOT => "I'm A Teapot",
+		self::MISDIRECTED_REQUEST => "Misdirected Request",
+		self::UNPROCESSABLE_ENTITY => "Unprocessable Entity",
+		self::LOCKED => "Locked",
+		self::FAILED_DEPENDENCY => "Failed Dependency",
+		self::TOO_EARLY => "Too Early",
+		self::UPGRADE_REQUIRED => "Upgrade Required",
+		self::PRECONDITION_REQUIRED => "Precondition Required",
+		self::TOO_MANY_REQUESTS => "Too Many Requests",
+		self::REQUEST_HEADER_FIELDS_TOO_LARGE => "Request Header Fields Too Large",
+		self::UNAVAILBLE_FOR_LEGAL_REASONS => "Unavailable For Legal Reasons",
 
-        500 => "Internal Server Error",
-        501 => "Not Implemented",
-        502 => "Bad Gateway",
-        503 => "Service Unavailable",
-        504 => "Gateway Timeout",
-        505 => "HTTP Version Not Supported",
-        506 => "Variant Also Negotiates",
-        507 => "Insufficient Storage",
-        508 => "Loop Detected",
-        510 => "Not Extended",
-        511 => "Network Authentication Required",
-    ];
+		self::INTERNAL_SERVER_ERROR => "Internal Server Error",
+		self::NOT_IMPLEMENTED => "Not Implemented",
+		self::BAD_GATEWAY => "Bad Gateway",
+		self::SERVICE_UNAVAILABLE => "Service Unavailable",
+		self::GATEWAY_TIMEOUT => "Gateway Timeout",
+		self::HTTP_VERSION_NOT_SUPPORTED => "HTTP Version Not Supported",
+		self::VARIANT_ALSO_NEGOTIATES => "Variant Also Negotiates",
+		self::INSUFFICIENT_STORAGE => "Insufficient Storage",
+		self::LOOP_DETECTED => "Loop Detected",
+		self::NOT_EXTENDED => "Not Extended",
+		self::NETWORK_AUTHENTICATION_REQUIRED => "Network Authentication Required"
+	];
 
-    /**
-     * Get the response phrase based on the status code.
-     *
-     * @param int $code
-     * @return string|null
-     */
-    public static function getPhrase(int $code): ?string
-    {
-		return self::$phrases[$code] ?? null;
-    }
+	/**
+	 * Get the HTTP phrase for the response.
+	 *
+	 * @param int $status_code The HTTP status code to get the default reason phrase for.
+	 * @return string
+	 */
+	public static function getPhrase(int $status_code): string
+	{
+		return self::$phrases[$status_code] ?? "";
+	}
 }

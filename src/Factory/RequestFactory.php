@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Capsule\Factory;
+namespace Nimbly\Capsule\Factory;
 
-use Capsule\Request;
+use Nimbly\Capsule\Request;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 

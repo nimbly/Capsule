@@ -1,31 +1,33 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Factory\UriFactory;
-use Capsule\ServerRequest;
-use Capsule\Stream\BufferStream;
-use Capsule\UploadedFile;
+use Nimbly\Capsule\Factory\UriFactory;
+use Nimbly\Capsule\ServerRequest;
+use Nimbly\Capsule\Stream\BufferStream;
+use Nimbly\Capsule\UploadedFile;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Capsule\ServerRequest
- * @covers Capsule\Request
- * @covers Capsule\Factory\UriFactory
- * @covers Capsule\Uri
- * @covers Capsule\Stream\BufferStream
- * @covers Capsule\MessageAbstract
- * @covers Capsule\UploadedFile
+ * @covers Nimbly\Capsule\ServerRequest
+ * @covers Nimbly\Capsule\Request
+ * @covers Nimbly\Capsule\Factory\UriFactory
+ * @covers Nimbly\Capsule\Uri
+ * @covers Nimbly\Capsule\Stream\BufferStream
+ * @covers Nimbly\Capsule\MessageAbstract
+ * @covers Nimbly\Capsule\UploadedFile
+ * @covers Nimbly\Capsule\Factory\StreamFactory
  */
 class ServerRequestTest extends TestCase
 {
-	public function makeRequest(): ServerRequest
+	private function makeRequest(): ServerRequest
 	{
-		return new ServerRequest(
+		$serverRequest = new ServerRequest(
 			"GET",
 			"http://example.org/foo/bar?q=search",
-			['name' => "Test User", "email" => "test@example.com"],
-			//'{"name": "Test User", "email": "test@example.com"}',
+			null,
+			//["name" => "Test User", "email" => "test@example.com"],
+			//"{"name": "Test User", "email": "test@example.com"}",
 			[
 				"query1" => "value1",
 				"query2" => "value2"
@@ -40,9 +42,9 @@ class ServerRequestTest extends TestCase
 			],
 			[
 				new UploadedFile(
-					'file1',
-					'text/plain',
-					'temp_file.name',
+					new BufferStream("Capsule!"),
+					"text/plain",
+					"temp_file.name",
 					100,
 					UPLOAD_ERR_OK
 				)
@@ -50,6 +52,8 @@ class ServerRequestTest extends TestCase
 			[],
 			"1.1"
 		);
+
+		return $serverRequest->withParsedBody(["name" => "Test User", "email" => "test@example.com"]);
 	}
 
 	public function test_create_with_uri_instance()
@@ -75,40 +79,6 @@ class ServerRequestTest extends TestCase
 		$this->assertInstanceOf(
 			BufferStream::class,
 			$request->getBody()
-		);
-	}
-
-	public function test_create_with_array_body()
-	{
-		$request = new ServerRequest(
-			"get",
-			"http://example.org/foo/bar?q=search",
-			["email" => "test@example.com", "name" => "Testy Test"]
-		);
-
-		$this->assertEquals(
-			[
-				"email" => "test@example.com",
-				"name" => "Testy Test"
-			],
-			$request->getParsedBody()
-		);
-	}
-
-	public function test_create_with_object_body()
-	{
-		$request = new ServerRequest(
-			"get",
-			"http://example.org/foo/bar?q=search",
-			(object) ["email" => "test@example.com", "name" => "Testy Test"]
-		);
-
-		$this->assertEquals(
-			(object) [
-				"email" => "test@example.com",
-				"name" => "Testy Test"
-			],
-			$request->getParsedBody()
 		);
 	}
 
@@ -157,14 +127,14 @@ class ServerRequestTest extends TestCase
 		$request = $this->makeRequest();
 
 		$request = $request->withCookieParams([
-			'cookie3' => 'value3',
-			'cookie4' => 'value4'
+			"cookie3" => "value3",
+			"cookie4" => "value4"
 		]);
 
 		$this->assertEquals(
 			[
-				'cookie3' => 'value3',
-				'cookie4' => 'value4'
+				"cookie3" => "value3",
+				"cookie4" => "value4"
 			],
 			$request->getCookieParams()
 		);
@@ -214,9 +184,9 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals(
 			[
 				new UploadedFile(
-					'file1',
-					'text/plain',
-					'temp_file.name',
+					new BufferStream("Capsule!"),
+					"text/plain",
+					"temp_file.name",
 					100,
 					UPLOAD_ERR_OK
 				)
@@ -231,8 +201,8 @@ class ServerRequestTest extends TestCase
 		$request = $this->makeRequest();
 
 		$newRequest = $request->withUploadedFiles([
-			new UploadedFile("example1.file", "appliication/json", "foo", 101, UPLOAD_ERR_OK),
-			new UploadedFile("example2.file", "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
+			new UploadedFile(new BufferStream, "appliication/json", "foo", 101, UPLOAD_ERR_OK),
+			new UploadedFile(new BufferStream, "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
 		]);
 
 		$this->assertNotSame(
@@ -242,8 +212,8 @@ class ServerRequestTest extends TestCase
 
 		$this->assertEquals(
 			[
-				new UploadedFile("example1.file", "appliication/json", "foo", 101, UPLOAD_ERR_OK),
-				new UploadedFile("example2.file", "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
+				new UploadedFile(new BufferStream, "appliication/json", "foo", 101, UPLOAD_ERR_OK),
+				new UploadedFile(new BufferStream, "appliication/json", "bar", 201, UPLOAD_ERR_NO_FILE)
 			],
 			$newRequest->getUploadedFiles()
 		);
@@ -330,21 +300,21 @@ class ServerRequestTest extends TestCase
 	{
 		$request = $this->makeRequest();
 
-		$this->assertTrue($request->hasBodyParam('name'));
+		$this->assertTrue($request->hasBodyParam("name"));
 	}
 
 	public function test_has_query_param()
 	{
 		$request = $this->makeRequest();
 
-		$this->assertTrue($request->hasQueryParam('query1'));
+		$this->assertTrue($request->hasQueryParam("query1"));
 	}
 
 	public function test_get_query_param()
 	{
 		$request = $this->makeRequest();
 
-		$this->assertEquals('value1', $request->getQueryParam('query1'));
+		$this->assertEquals("value1", $request->getQueryParam("query1"));
 	}
 
 	public function test_get_body_param_from_array_parsed_body()
@@ -357,7 +327,7 @@ class ServerRequestTest extends TestCase
 			]
 		);
 
-		$this->assertEquals("test@nimbly.io", $request->getBodyParam('email'));
+		$this->assertEquals("test@nimbly.io", $request->getBodyParam("email"));
 	}
 
 	public function test_get_body_param_from_object_parsed_body()
@@ -370,7 +340,7 @@ class ServerRequestTest extends TestCase
 			]
 		);
 
-		$this->assertEquals("test@nimbly.io", $request->getBodyParam('email'));
+		$this->assertEquals("test@nimbly.io", $request->getBodyParam("email"));
 	}
 
 	public function test_get_body_param_returns_null_if_not_found()
@@ -383,7 +353,7 @@ class ServerRequestTest extends TestCase
 			]
 		);
 
-		$this->assertNull($request->getBodyParam('id'));
+		$this->assertNull($request->getBodyParam("id"));
 	}
 
 	public function test_only_body_params()
@@ -432,7 +402,9 @@ class ServerRequestTest extends TestCase
 	{
 		$request = $this->makeRequest();
 
-		$uploadedFile = new UploadedFile("Ok");
+		$uploadedFile = new UploadedFile(
+			new BufferStream("Capsule!")
+		);
 
 		$request = $request->withUploadedFiles([
 			"file" => $uploadedFile
@@ -447,7 +419,9 @@ class ServerRequestTest extends TestCase
 	{
 		$request = $this->makeRequest();
 
-		$uploadedFile = new UploadedFile("Ok");
+		$uploadedFile = new UploadedFile(
+			new BufferStream
+		);
 
 		$request = $request->withUploadedFiles([
 			"file" => $uploadedFile
@@ -465,8 +439,8 @@ class ServerRequestTest extends TestCase
 
 		$this->assertEquals(
 			[
-				'name' => 'Test User',
-				'email' => 'test@example.com',
+				"name" => "Test User",
+				"email" => "test@example.com",
 				"query1" => "value1",
 				"query2" => "value2",
 				"q" => "search"

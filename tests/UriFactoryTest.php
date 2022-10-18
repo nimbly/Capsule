@@ -1,13 +1,13 @@
 <?php
 
-namespace Capsule\Tests;
+namespace Nimbly\Capsule\Tests;
 
-use Capsule\Factory\UriFactory;
+use Nimbly\Capsule\Factory\UriFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Capsule\Factory\UriFactory
- * @covers Capsule\Uri
+ * @covers Nimbly\Capsule\Factory\UriFactory
+ * @covers Nimbly\Capsule\Uri
  */
 class UriFactoryTest extends TestCase
 {

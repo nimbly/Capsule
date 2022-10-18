@@ -1,14 +1,14 @@
 <?php
 
-namespace Capsule\Stream;
+namespace Nimbly\Capsule\Stream;
 
-use Capsule\Factory\StreamFactory;
+use Nimbly\Capsule\Factory\StreamFactory;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
- * @covers Capsule\Factory\StreamFactory
- * @covers Capsule\Stream\ResourceStream
+ * @covers Nimbly\Capsule\Factory\StreamFactory
+ * @covers Nimbly\Capsule\Stream\ResourceStream
  */
 class StreamFactoryTest extends TestCase
 {
