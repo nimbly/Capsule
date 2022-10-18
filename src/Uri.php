@@ -180,26 +180,39 @@ class Uri implements UriInterface
 	 */
 	public function __toString(): string
 	{
-		$url = "{$this->scheme}://";
+		$url = "";
 
-		if( $this->username || $this->password ){
-			$url .= "{$this->username}:{$this->password}@";
+		if( $this->scheme ){
+			$url .= ($this->scheme . ":");
 		}
 
-		$url .= $this->host;
+		if( $this->getAuthority() ){
+			$url .= ("//" . $this->getAuthority());
+		}
+		else {
+			$url .= ("//" . $this->host);
 
-		if( $this->port ){
-			$url .= ":{$this->port}";
+			if( $this->port ){
+				$url .= (":" . $this->port);
+			}
 		}
 
-		$url.= ($this->path ?? "/");
+		if( empty($this->path) && $this->getAuthority() ){
+			$url .= "/";
+		}
+		elseif( $this->path && !$this->getAuthority() ){
+			$url .= ("/" . \trim($this->path, "/"));
+		}
+		else {
+			$url .= (string) $this->path;
+		}
 
 		if( $this->query ){
-			$url .= "?{$this->query}";
+			$url .= ("?" . $this->query);
 		}
 
 		if( $this->fragment ){
-			$url .= "#{$this->fragment}";
+			$url .= ("#" . $this->fragment);
 		}
 
 		return $url;

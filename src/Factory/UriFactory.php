@@ -36,12 +36,12 @@ class UriFactory implements UriFactoryInterface
 		return new Uri(
 			!empty($uriPart["scheme"]) ? \strtolower($uriPart["scheme"]) : "http",
 			!empty($uriPart["host"]) ? \strtolower($uriPart["host"]) : "",
-			$uriPart["path"] ?? "",
+			$uriPart["path"] ?? null,
 			!empty($uriPart["port"]) ? $uriPart["port"] : null,
-			$uriPart["user"] ?? "",
-			$uriPart["pass"] ?? "",
-			$uriPart["query"] ?? "",
-			$uriPart["fragment"] ?? ""
+			$uriPart["user"] ?? null,
+			$uriPart["pass"] ?? null,
+			$uriPart["query"] ?? null,
+			$uriPart["fragment"] ?? null
 		);
 	}
 }
