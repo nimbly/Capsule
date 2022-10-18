@@ -26,7 +26,6 @@ class UriFactory implements UriFactoryInterface
 	 */
 	public static function createFromString(string $uri): Uri
 	{
-		// Parse the URI
 		$uriPart = \parse_url($uri);
 
 		if( $uriPart === false ){
@@ -34,8 +33,8 @@ class UriFactory implements UriFactoryInterface
 		}
 
 		return new Uri(
-			!empty($uriPart["scheme"]) ? \strtolower($uriPart["scheme"]) : "http",
-			!empty($uriPart["host"]) ? \strtolower($uriPart["host"]) : "",
+			!empty($uriPart["scheme"]) ? \strtolower($uriPart["scheme"]) : null,
+			!empty($uriPart["host"]) ? \strtolower($uriPart["host"]) : null,
 			$uriPart["path"] ?? null,
 			!empty($uriPart["port"]) ? $uriPart["port"] : null,
 			$uriPart["user"] ?? null,

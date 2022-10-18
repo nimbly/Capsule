@@ -24,7 +24,7 @@ class Uri implements UriInterface
 	 */
 	public function getScheme(): string
 	{
-		return $this->scheme;
+		return $this->scheme ?? "";
 	}
 
 	/**
@@ -40,7 +40,7 @@ class Uri implements UriInterface
 			"%s:%s@%s:%s",
 			$this->username ?? "",
 			$this->password ?? "",
-			$this->host,
+			$this->host ?? "",
 			$this->port ?? ""
 		);
 	}
@@ -68,7 +68,7 @@ class Uri implements UriInterface
 	 */
 	public function getHost(): string
 	{
-		return $this->host;
+		return $this->host ?? "";
 	}
 
 	/**
