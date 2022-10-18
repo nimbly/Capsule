@@ -24,7 +24,7 @@ class UriFactory implements UriFactoryInterface
 	 * @throws RuntimeException
 	 * @return Uri
 	 */
-	public static function createFromString(string $uri): UriInterface
+	public static function createFromString(string $uri): Uri
 	{
 		// Parse the URI
 		$uriPart = \parse_url($uri);

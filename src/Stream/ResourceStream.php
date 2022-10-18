@@ -268,7 +268,7 @@ class ResourceStream implements StreamInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getMetadata($key = null)
+	public function getMetadata($key = null): mixed
 	{
 		if( !\is_resource($this->resource) ){
 			return $key ? null : [];

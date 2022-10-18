@@ -174,7 +174,7 @@ class BufferStream implements StreamInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getMetadata($key = null)
+	public function getMetadata($key = null): mixed
 	{
 		if( $key ){
 			return null;

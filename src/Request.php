@@ -63,7 +63,7 @@ class Request extends MessageAbstract implements RequestInterface
 	 * @param string $method
 	 * @return static
 	 */
-	public function withMethod($method): Request
+	public function withMethod($method): static
 	{
 		$instance = clone $this;
 		$instance->method = \strtoupper($method);
@@ -92,7 +92,7 @@ class Request extends MessageAbstract implements RequestInterface
 	 * @param bool $preserveHost
 	 * @return static
 	 */
-	public function withUri(UriInterface $uri, $preserveHost = false): Request
+	public function withUri(UriInterface $uri, $preserveHost = false): static
 	{
 		$instance = clone $this;
 		$instance->uri = $uri;
@@ -132,7 +132,7 @@ class Request extends MessageAbstract implements RequestInterface
 	 * @param mixed $requestTarget
 	 * @return static
 	 */
-	public function withRequestTarget($requestTarget): Request
+	public function withRequestTarget($requestTarget): static
 	{
 		$instance = clone $this;
 		$instance->requestTarget = $requestTarget;

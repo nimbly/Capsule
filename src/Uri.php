@@ -22,7 +22,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getScheme()
+	public function getScheme(): string
 	{
 		return $this->scheme;
 	}
@@ -30,7 +30,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getAuthority()
+	public function getAuthority(): string
 	{
 		if( empty($this->username) && empty($this->password) ){
 			return "";
@@ -48,7 +48,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getUserInfo()
+	public function getUserInfo(): string
 	{
 		$userInfo = "";
 
@@ -66,7 +66,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getHost()
+	public function getHost(): string
 	{
 		return $this->host;
 	}
@@ -74,7 +74,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getPort()
+	public function getPort(): ?int
 	{
 		return $this->port;
 	}
@@ -82,7 +82,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getPath()
+	public function getPath(): string
 	{
 		return $this->path ?? "";
 	}
@@ -90,7 +90,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getQuery()
+	public function getQuery(): string
 	{
 		return $this->query ?? "";
 	}
@@ -98,7 +98,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getFragment()
+	public function getFragment(): string
 	{
 		return $this->fragment ?? "";
 	}
@@ -106,7 +106,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withScheme($scheme)
+	public function withScheme($scheme): static
 	{
 		$instance = clone $this;
 		$instance->scheme = \strtolower($scheme);
@@ -116,7 +116,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withUserInfo($user, $password = null)
+	public function withUserInfo($user, $password = null): static
 	{
 		$instance = clone $this;
 		$instance->username = $user;
@@ -127,7 +127,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withHost($host)
+	public function withHost($host): static
 	{
 		$instance = clone $this;
 		$instance->host = $host;
@@ -137,7 +137,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withPort($port)
+	public function withPort($port): static
 	{
 		$instance = clone $this;
 		$instance->port = $port;
@@ -147,7 +147,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withPath($path)
+	public function withPath($path): static
 	{
 		$instance = clone $this;
 		$instance->path = $path;
@@ -157,7 +157,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withQuery($query)
+	public function withQuery($query): static
 	{
 		$instance = clone $this;
 		$instance->query = $query;
@@ -168,7 +168,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withFragment($fragment)
+	public function withFragment($fragment): static
 	{
 		$instance = clone $this;
 		$instance->fragment = $fragment;
@@ -178,7 +178,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		$url = "{$this->scheme}://";
 

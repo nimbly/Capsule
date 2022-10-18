@@ -104,7 +104,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @inheritDoc
 	 * @return static
 	 */
-	public function withCookieParams(array $cookies): ServerRequest
+	public function withCookieParams(array $cookies): static
 	{
 		$instance = clone $this;
 		$instance->cookieParams = $cookies;
@@ -124,7 +124,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @inheritDoc
 	 * @return static
 	 */
-	public function withQueryParams(array $query): ServerRequest
+	public function withQueryParams(array $query): static
 	{
 		$instance = clone $this;
 		$instance->queryParams = $query;
@@ -145,7 +145,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @inheritDoc
 	 * @return static
 	 */
-	public function withUploadedFiles(array $uploadedFiles): ServerRequest
+	public function withUploadedFiles(array $uploadedFiles): static
 	{
 		$instance = clone $this;
 		$instance->uploadedFiles = $uploadedFiles;
@@ -156,7 +156,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getParsedBody()
+	public function getParsedBody(): mixed
 	{
 		return $this->parsedBody;
 	}
@@ -185,7 +185,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getAttribute($name, $default = null)
+	public function getAttribute($name, $default = null): mixed
 	{
 		return $this->attributes[$name] ?? $default;
 	}
@@ -234,10 +234,10 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Get a request parameter from the parsed request body.
 	 *
-	 * @param string $name
-	 * @return mixed|null
+	 * @param string $name Parsed body param name.
+	 * @return mixed|null Null is returned if body param does not exist.
 	 */
-	public function getBodyParam(string $param)
+	public function getBodyParam(string $param): mixed
 	{
 		if( \is_object($this->parsedBody) &&
 			\property_exists($this->parsedBody, $param) ){
@@ -255,7 +255,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Get only the request body parameters provided.
 	 *
-	 * @param array<string> $params
+	 * @param array<string> $params Array of body param names to return.
 	 * @return array<string,mixed>
 	 */
 	public function onlyBodyParams(array $params): array
@@ -272,7 +272,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Get all request body parameters except those provided.
 	 *
-	 * @param array<string> $params
+	 * @param array<string> $params Array of body param names to exclude.
 	 * @return array<string,mixed>
 	 */
 	public function exceptBodyParams(array $params): array

@@ -46,7 +46,7 @@ class Response extends MessageAbstract implements ResponseInterface
 	 * @param string $reasonPhrase
 	 * @return static
 	 */
-	public function withStatus($code, $reasonPhrase = ""): Response
+	public function withStatus($code, $reasonPhrase = ""): static
 	{
 		$instance = clone $this;
 		$instance->statusCode = $code;

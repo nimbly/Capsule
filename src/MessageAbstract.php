@@ -134,7 +134,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string|array<string> $value
 	 * @return static
 	 */
-	public function withHeader($name, $value): self
+	public function withHeader($name, $value): static
 	{
 		$instance = clone $this;
 
@@ -158,7 +158,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string|array<string> $value
 	 * @return static
 	 */
-	public function withAddedHeader($name, $value): self
+	public function withAddedHeader($name, $value): static
 	{
 		$key = $this->findHeaderKey($name);
 
@@ -185,7 +185,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string $name
 	 * @return static
 	 */
-	public function withoutHeader($name): self
+	public function withoutHeader($name): static
 	{
 		$key = $this->findHeaderKey($name);
 
@@ -252,7 +252,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @inheritDoc
 	 * @return static
 	 */
-	public function withBody(StreamInterface $body): self
+	public function withBody(StreamInterface $body): static
 	{
 		$instance = clone $this;
 		$instance->body = $body;
