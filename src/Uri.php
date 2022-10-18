@@ -7,8 +7,8 @@ use Psr\Http\Message\UriInterface;
 class Uri implements UriInterface
 {
 	public function __construct(
-		protected string $scheme,
-		protected string $host,
+		protected ?string $scheme = null,
+		protected ?string $host = null,
 		protected ?string $path = null,
 		protected ?int $port = null,
 		protected ?string $username = null,
