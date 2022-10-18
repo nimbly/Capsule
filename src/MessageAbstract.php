@@ -35,7 +35,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @var array<string>
 	 */
 	private array $allowedVersions = [
-		"1.1", "1.0", "2", "2.0"
+		"1", "1.0", "1.1", "2", "2.0"
 	];
 
 	/**

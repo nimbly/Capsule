@@ -3,7 +3,6 @@
 namespace Nimbly\Capsule;
 
 use Nimbly\Capsule\Factory\StreamFactory;
-use Nimbly\Capsule\Stream\ResourceStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;

@@ -2,7 +2,6 @@
 
 namespace Nimbly\Capsule\Factory;
 
-use Nimbly\Capsule\Stream\ResourceStream;
 use Nimbly\Capsule\UploadedFile;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
