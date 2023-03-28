@@ -75,6 +75,19 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 			$files[$name] = UploadedFileFactory::createFromGlobal($file);
 		}
 
+		if( \function_exists("getallheaders") ){
+			$headers = \getallheaders();
+		}
+		else {
+			$headers = [];
+			foreach( $_SERVER as $key => $value ){
+				if( \str_starts_with($key, "HTTP_") ){
+					$key = \str_replace("_", "-", \substr($key, 5));
+					$headers[$key] = $value;
+				}
+			}
+		}
+
 		/**
 		 * @psalm-suppress InvalidScalarArgument
 		 */
@@ -83,7 +96,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 			$uri,
 			$body ?: null,
 			$_GET,
-			\array_change_key_case(\getallheaders()),
+			\array_change_key_case($headers),
 			$_COOKIE,
 			$files,
 			$_SERVER,

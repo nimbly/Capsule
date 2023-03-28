@@ -67,12 +67,13 @@ abstract class MessageAbstract implements MessageInterface
 	 * Find a header by its case-insensitive name.
 	 *
 	 * @param string $name
+	 * @return string|null
 	 */
 	private function findHeaderKey(string $name): ?string
 	{
-		foreach( $this->headers as $key => $value ){
-			if( \strtolower($name) === \strtolower($key) ){
-				return $key;
+		foreach( \array_keys($this->headers) as $header ){
+			if( \strtolower($header) === \strtolower($name) ){
+				return $header;
 			}
 		}
 

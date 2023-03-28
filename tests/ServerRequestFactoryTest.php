@@ -5,7 +5,6 @@ namespace Nimbly\Capsule\Tests;
 use Nimbly\Capsule\Factory\ServerRequestFactory;
 use Nimbly\Capsule\ServerRequest;
 use Nimbly\Capsule\UploadedFile;
-use GuzzleHttp\Psr7\ServerRequest as Psr7ServerRequest;
 use Nimbly\Capsule\Stream\BufferStream;
 use Nimbly\Capsule\Stream\ResourceStream;
 use PHPUnit\Framework\TestCase;
@@ -139,7 +138,13 @@ class ServerRequestFactoryTest extends TestCase
 	{
 		$serverRequestFactory = new ServerRequestFactory;
 
-		$psr7request = new Psr7ServerRequest("get", "http://example.com", ["header1" => "value1"], "body_param1=value1&body_param2=value2", "1.1", ["server_param1" => "value1"]);
+		$psr7request = new ServerRequest(
+			method: "get",
+			uri: "http://example.com",
+			body: "body_param1=value1&body_param2=value2",
+			headers: ["header1" => "value1"],
+			serverParams: ["server_param1" => "value1"]
+		);
 
 		$psr7request = $psr7request->withQueryParams([
 			"query1" => "value1"
@@ -148,6 +153,7 @@ class ServerRequestFactoryTest extends TestCase
 		$request = $serverRequestFactory->createServerRequestFromPsr7($psr7request);
 
 		$this->assertInstanceOf(ServerRequest::class, $request);
+		$this->assertNotSame($psr7request, $request);
 		$this->assertEquals("GET", $request->getMethod());
 		$this->assertEquals("http", $request->getUri()->getScheme());
 		$this->assertEquals("example.com", $request->getUri()->getHost());
