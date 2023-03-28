@@ -26,7 +26,6 @@
 	"require-dev": {
 		"vimeo/psalm": "^4.0",
 		"phpunit/phpunit": "^9.0",
-		"php-coveralls/php-coveralls": "^2.4",
 		"symfony/var-dumper": "^4.3"
 	},
 	"autoload-dev": {

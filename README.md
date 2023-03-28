@@ -1,8 +1,8 @@
 # Capsule
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/nimbly/capsule.svg?style=flat-square)](https://packagist.org/packages/nimbly/capsule)
-[![Build Status](https://img.shields.io/travis/nimbly/capsule.svg?style=flat-square)](https://travis-ci.org/nimbly/capsule)
-[![Code Coverage](https://img.shields.io/coveralls/github/nimbly/Capsule.svg?style=flat-square)](https://coveralls.io/github/nimbly/Capsule)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nimbly/capsule/php.yml?style=flat-square)](https://github.com/nimbly/Capsule/actions/workflows/php.yml)
+[![Codecov branch](https://img.shields.io/codecov/c/github/nimbly/capsule/master?style=flat-square)](https://app.codecov.io/github/nimbly/Capsule)
 [![License](https://img.shields.io/github/license/nimbly/capsule.svg?style=flat-square)](https://packagist.org/packages/nimbly/capsule)
 
 Capsule is a simple [PSR-7](https://www.php-fig.org/psr/psr-7/) HTTP message interface and [PSR-17](https://www.php-fig.org/psr/psr-17) HTTP factory implementation.
