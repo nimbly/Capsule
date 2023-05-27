@@ -33,7 +33,7 @@ class ResponseFactoryTest extends TestCase
 		$responseFactory = new ResponseFactory;
 
 		$response = $responseFactory->createResponse(
-			ResponseStatus::NOT_FOUND,
+			ResponseStatus::NOT_FOUND->value,
 			"Resource not found"
 		);
 

@@ -8,27 +8,27 @@ use Psr\Http\Message\StreamInterface;
 
 class Response extends MessageAbstract implements ResponseInterface
 {
-	protected int $statusCode;
-	protected string $reasonPhrase;
+	protected ResponseStatus $statusCode;
+	protected ?string $reasonPhrase;
 
 	/**
-	 * @param int $statusCode
+	 * @param int|ResponseStatus $statusCode
 	 * @param string|StreamInterface $body
 	 * @param array<string,string> $headers
 	 * @param string|null $reasonPhrase
 	 * @param string $http_version
 	 */
 	public function __construct(
-		int $statusCode,
+		int|ResponseStatus $statusCode,
 		string|StreamInterface $body = null,
 		array $headers = [],
 		?string $reasonPhrase = null,
 		string $httpVersion = "1.1")
 	{
-		$this->statusCode = $statusCode;
+		$this->statusCode = \is_int($statusCode) ? ResponseStatus::from($statusCode) : $statusCode;
 		$this->body = $body instanceof StreamInterface ? $body : StreamFactory::createFromString((string) $body);
-		$this->reasonPhrase = $reasonPhrase ?: ResponseStatus::getPhrase($statusCode);
 		$this->setHeaders($headers);
+		$this->reasonPhrase = $reasonPhrase;
 		$this->version = $httpVersion;
 	}
 
@@ -37,7 +37,7 @@ class Response extends MessageAbstract implements ResponseInterface
 	 */
 	public function getStatusCode(): int
 	{
-		return $this->statusCode;
+		return $this->statusCode->value;
 	}
 
 	/**
@@ -49,8 +49,8 @@ class Response extends MessageAbstract implements ResponseInterface
 	public function withStatus($code, $reasonPhrase = ""): static
 	{
 		$instance = clone $this;
-		$instance->statusCode = $code;
-		$instance->reasonPhrase = $reasonPhrase ?: ResponseStatus::getPhrase($code);
+		$instance->statusCode = ResponseStatusEnum::from($code);
+		$instance->reasonPhrase = $reasonPhrase ?: null;
 		return $instance;
 	}
 
@@ -59,6 +59,6 @@ class Response extends MessageAbstract implements ResponseInterface
 	 */
 	public function getReasonPhrase(): string
 	{
-		return $this->reasonPhrase;
+		return $this->reasonPhrase ?: $this->statusCode->getPhrase();
 	}
 }
