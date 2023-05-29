@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestFactoryTest extends TestCase
 {
-	public function test_create_request_with_string_uri()
+	public function test_create_request_with_string_uri(): void
 	{
 		$requestFactory = new RequestFactory;
 		$request = $requestFactory->createRequest("get", "/api/books");

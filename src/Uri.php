@@ -6,6 +6,16 @@ use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
 {
+	/**
+	 * Standard ports.
+	 *
+	 * @var array<array-key,int>
+	 */
+	protected array $standard_ports = [
+		"http" => 80,
+		"https" => 443
+	];
+
 	public function __construct(
 		protected ?string $scheme = null,
 		protected ?string $host = null,
@@ -17,6 +27,17 @@ class Uri implements UriInterface
 		protected ?string $fragment = null
 	)
 	{
+	}
+
+	/**
+	 * Get the standard port for the given scheme.
+	 *
+	 * @param string $scheme
+	 * @return integer|null
+	 */
+	protected function getStandardPortForScheme(string $scheme): ?int
+	{
+		return $this->standard_ports[$scheme] ?? null;
 	}
 
 	/**
@@ -38,14 +59,14 @@ class Uri implements UriInterface
 
 		$authority = "";
 
-		if( !empty($this->username) || !empty($this->password) ){
-			$authority .= \sprintf("%s:%s@", $this->username ?? "", $this->password ?? "");
+		if( $this->getUserInfo() ){
+			$authority .= ($this->getUserInfo() . "@");
 		}
 
 		$authority .= $this->host;
 
-		if( $this->port ){
-			$authority .= (":" . $this->port);
+		if( $this->getPort() ){
+			$authority .= (":" . $this->getPort());
 		}
 
 		return $authority;
@@ -82,7 +103,15 @@ class Uri implements UriInterface
 	 */
 	public function getPort(): ?int
 	{
-		return $this->port;
+		if( $this->port ) {
+			if( $this->scheme && $this->getStandardPortForScheme($this->scheme) === $this->port ) {
+				return null;
+			}
+
+			return $this->port;
+		}
+
+		return null;
 	}
 
 	/**
