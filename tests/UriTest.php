@@ -12,6 +12,30 @@ use PHPUnit\Framework\TestCase;
  */
 class UriTest extends TestCase
 {
+	public function test_get_port_with_non_provided_returns_null(): void
+	{
+		$uri = UriFactory::createFromString("http://example.com");
+		$this->assertNull($uri->getPort());
+	}
+
+	public function test_get_port_with_standard_port_for_http_returns_null(): void
+	{
+		$uri = UriFactory::createFromString("http://example.com:80");
+		$this->assertNull($uri->getPort());
+	}
+
+	public function test_get_port_with_standard_port_for_https_returns_null(): void
+	{
+		$uri = UriFactory::createFromString("https://example.com:443");
+		$this->assertNull($uri->getPort());
+	}
+
+	public function test_get_port_with_non_standard_port_returns_port(): void
+	{
+		$uri = UriFactory::createFromString("http://example.com:8000");
+		$this->assertEquals(8000, $uri->getPort());
+	}
+
 	public function test_with_scheme_saves_data()
 	{
 		$uri = UriFactory::createFromString("http://example.com:80");
@@ -126,7 +150,7 @@ class UriTest extends TestCase
 		$uri = new Uri("https", "example.com", "foo", 443, "username", "password", "a=value1&b=value2", "anchor1");
 
 		$this->assertEquals(
-			"https://username:password@example.com:443/foo?a=value1&b=value2#anchor1",
+			"https://username:password@example.com/foo?a=value1&b=value2#anchor1",
 			(string) $uri
 		);
 	}
