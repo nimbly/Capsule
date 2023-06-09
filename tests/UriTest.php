@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UriTest extends TestCase
 {
-	public function test_get_port_with_non_provided_returns_null(): void
+	public function test_get_port_with_none_provided_returns_null(): void
 	{
 		$uri = UriFactory::createFromString("http://example.com");
 		$this->assertNull($uri->getPort());
@@ -34,6 +34,49 @@ class UriTest extends TestCase
 	{
 		$uri = UriFactory::createFromString("http://example.com:8000");
 		$this->assertEquals(8000, $uri->getPort());
+	}
+
+	public function test_get_authority_with_no_host_returns_empty_string(): void
+	{
+		$uri = new Uri(path: "/foo");
+
+		$this->assertEquals(
+			"",
+			$uri->getAuthority()
+		);
+	}
+
+	public function test_get_authority_with_user_info(): void
+	{
+		$uri = new Uri(
+			scheme: "http",
+			host: "localhost",
+			path: "/foo",
+			username: "username",
+			password: "password"
+		);
+
+		$this->assertEquals(
+			"username:password@localhost",
+			$uri->getAuthority()
+		);
+	}
+
+	public function test_get_authority_with_non_standard_port(): void
+	{
+		$uri = new Uri(
+			scheme: "http",
+			host: "localhost",
+			port: 8000,
+			path: "/foo",
+			username: "username",
+			password: "password"
+		);
+
+		$this->assertEquals(
+			"username:password@localhost:8000",
+			$uri->getAuthority()
+		);
 	}
 
 	public function test_with_scheme_saves_data()
