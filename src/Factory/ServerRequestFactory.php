@@ -89,7 +89,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 		}
 
 		/**
-		 * @psalm-suppress InvalidScalarArgument
+		 * @psalm-suppress InvalidArgument
 		 */
 		$serverRequest = new ServerRequest(
 			$_SERVER["REQUEST_METHOD"] ?? "GET",

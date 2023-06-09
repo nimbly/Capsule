@@ -49,7 +49,7 @@ class Response extends MessageAbstract implements ResponseInterface
 	public function withStatus($code, $reasonPhrase = ""): static
 	{
 		$instance = clone $this;
-		$instance->statusCode = ResponseStatusEnum::from($code);
+		$instance->statusCode = ResponseStatus::from($code);
 		$instance->reasonPhrase = $reasonPhrase ?: null;
 		return $instance;
 	}

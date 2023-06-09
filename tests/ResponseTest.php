@@ -22,7 +22,7 @@ class ResponseTest extends TestCase
 		$response = new Response(ResponseStatus::OK);
 
 		$this->assertEquals(
-			ResponseStatus::getPhrase(ResponseStatus::OK),
+			ResponseStatus::OK->getPhrase(),
 			$response->getReasonPhrase()
 		);
 	}
@@ -32,12 +32,12 @@ class ResponseTest extends TestCase
 		$response = new Response(ResponseStatus::OK);
 
 		$response = $response->withStatus(
-			ResponseStatus::NOT_FOUND,
+			ResponseStatus::NOT_FOUND->value,
 			"Page Not Found"
 		);
 
 		$this->assertEquals(
-			ResponseStatus::NOT_FOUND,
+			ResponseStatus::NOT_FOUND->value,
 			$response->getStatusCode()
 		);
 
@@ -52,7 +52,7 @@ class ResponseTest extends TestCase
 		$response = new Response(ResponseStatus::NOT_FOUND);
 
 		$this->assertEquals(
-			ResponseStatus::getPhrase(ResponseStatus::NOT_FOUND),
+			ResponseStatus::NOT_FOUND->getPhrase(),
 			$response->getReasonPhrase()
 		);
 	}
@@ -60,7 +60,7 @@ class ResponseTest extends TestCase
 	public function test_with_status_code_is_immutable()
 	{
 		$response = new Response(ResponseStatus::OK);
-		$newResponse = $response->withStatus(ResponseStatus::NOT_FOUND);
+		$newResponse = $response->withStatus(ResponseStatus::NOT_FOUND->value);
 		$this->assertNotSame($response, $newResponse);
 	}
 
@@ -76,9 +76,9 @@ class ResponseTest extends TestCase
 			"2"
 		);
 
-		$this->assertEquals(ResponseStatus::CREATED, $response->getStatusCode());
+		$this->assertEquals(ResponseStatus::CREATED->value, $response->getStatusCode());
 		$this->assertEquals("OK", $response->getBody()->getContents());
-		$this->assertEquals("text/plain", $response->getHeader('Content-Type')[0]);
+		$this->assertEquals("text/plain", $response->getHeader("Content-Type")[0]);
 		$this->assertEquals("Reason Phrase", $response->getReasonPhrase());
 		$this->assertEquals("2", $response->getProtocolVersion());
 	}
@@ -89,7 +89,7 @@ class ResponseTest extends TestCase
 
 		$this->assertEmpty($response->getBody()->getContents());
 		$this->assertEquals([], $response->getHeaders());
-		$this->assertEquals(ResponseStatus::getPhrase(ResponseStatus::OK), $response->getReasonPhrase());
+		$this->assertEquals(ResponseStatus::OK->getPhrase(), $response->getReasonPhrase());
 		$this->assertEquals("1.1", $response->getProtocolVersion());
 	}
 
