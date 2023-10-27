@@ -26,7 +26,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Uploaded files sent in request.
 	 *
-	 * @var array<UploadedFile>
+	 * @var array<UploadedFileInterface>
 	 */
 	protected array $uploadedFiles = [];
 
@@ -58,7 +58,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param array<string,mixed> $query
 	 * @param array<string,mixed> $headers
 	 * @param array<string,mixed> $cookies
-	 * @param array<UploadedFile> $files
+	 * @param array<UploadedFileInterface> $files
 	 * @param array<string,mixed> $serverParams
 	 * @param string $version
 	 */

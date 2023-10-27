@@ -9,7 +9,7 @@ use Psr\Http\Message\StreamInterface;
 class Response extends MessageAbstract implements ResponseInterface
 {
 	protected ResponseStatus $statusCode;
-	protected ?string $reasonPhrase;
+	protected string $reasonPhrase;
 
 	/**
 	 * @param int|ResponseStatus $statusCode
@@ -28,7 +28,7 @@ class Response extends MessageAbstract implements ResponseInterface
 		$this->statusCode = \is_int($statusCode) ? ResponseStatus::from($statusCode) : $statusCode;
 		$this->body = $body instanceof StreamInterface ? $body : StreamFactory::createFromString((string) $body);
 		$this->setHeaders($headers);
-		$this->reasonPhrase = $reasonPhrase;
+		$this->reasonPhrase = $reasonPhrase ?: $this->statusCode->getPhrase();
 		$this->version = $httpVersion;
 	}
 
@@ -50,7 +50,7 @@ class Response extends MessageAbstract implements ResponseInterface
 	{
 		$instance = clone $this;
 		$instance->statusCode = ResponseStatus::from($code);
-		$instance->reasonPhrase = $reasonPhrase ?: null;
+		$instance->reasonPhrase = $reasonPhrase ?: $instance->statusCode->getPhrase();
 		return $instance;
 	}
 
@@ -59,6 +59,6 @@ class Response extends MessageAbstract implements ResponseInterface
 	 */
 	public function getReasonPhrase(): string
 	{
-		return $this->reasonPhrase ?: $this->statusCode->getPhrase();
+		return $this->reasonPhrase;
 	}
 }

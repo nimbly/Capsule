@@ -25,7 +25,7 @@ use Psr\Http\Message\StreamInterface;
  */
 class ServerRequestFactoryTest extends TestCase
 {
-	public function test_create_server_request()
+	public function test_create_server_request(): void
 	{
 		$serverRequestFactory = new ServerRequestFactory;
 
@@ -37,7 +37,7 @@ class ServerRequestFactoryTest extends TestCase
 		$this->assertEquals("http", $request->getUri()->getScheme());
 	}
 
-	public function test_create_from_globals()
+	public function test_create_from_globals(): void
 	{
 		$_SERVER["SERVER_PROTOCOL"] = "HTTP/1.1";
 		$_SERVER["REQUEST_METHOD"] = "POST";
@@ -134,7 +134,7 @@ class ServerRequestFactoryTest extends TestCase
 		);
 	}
 
-	public function test_create_from_psr7()
+	public function test_create_from_psr7(): void
 	{
 		$serverRequestFactory = new ServerRequestFactory;
 

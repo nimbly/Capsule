@@ -17,7 +17,7 @@ use Psr\Http\Message\StreamInterface;
  */
 class ResponseTest extends TestCase
 {
-	public function test_reason_phrase_set_on_constructor()
+	public function test_reason_phrase_set_on_constructor(): void
 	{
 		$response = new Response(ResponseStatus::OK);
 
@@ -27,7 +27,7 @@ class ResponseTest extends TestCase
 		);
 	}
 
-	public function test_with_status_code_saves_data()
+	public function test_with_status_code_saves_data(): void
 	{
 		$response = new Response(ResponseStatus::OK);
 
@@ -47,7 +47,7 @@ class ResponseTest extends TestCase
 		);
 	}
 
-	public function test_with_status_code_resolves_phrase_if_none_given()
+	public function test_with_status_code_resolves_phrase_if_none_given(): void
 	{
 		$response = new Response(ResponseStatus::NOT_FOUND);
 
@@ -57,14 +57,14 @@ class ResponseTest extends TestCase
 		);
 	}
 
-	public function test_with_status_code_is_immutable()
+	public function test_with_status_code_is_immutable(): void
 	{
 		$response = new Response(ResponseStatus::OK);
 		$newResponse = $response->withStatus(ResponseStatus::NOT_FOUND->value);
 		$this->assertNotSame($response, $newResponse);
 	}
 
-	public function test_constructor()
+	public function test_constructor(): void
 	{
 		$response = new Response(
 			ResponseStatus::CREATED,
@@ -83,7 +83,7 @@ class ResponseTest extends TestCase
 		$this->assertEquals("2", $response->getProtocolVersion());
 	}
 
-	public function test_constructor_defaults()
+	public function test_constructor_defaults(): void
 	{
 		$response = new Response(ResponseStatus::OK);
 
@@ -93,7 +93,7 @@ class ResponseTest extends TestCase
 		$this->assertEquals("1.1", $response->getProtocolVersion());
 	}
 
-	public function test_no_body_provided_in_constructor_creates_a_body()
+	public function test_no_body_provided_in_constructor_creates_a_body(): void
 	{
 		$response = new Response(ResponseStatus::OK);
 

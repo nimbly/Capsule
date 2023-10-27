@@ -65,16 +65,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 		// Get the request body first by getting raw input from php://input.
 		$body = \file_get_contents("php://input");
 
-		// Process the uploaded files into an array<UploadedFile>.
-		$files = [];
-
-		/**
-		 * @var array<string,array{error:int,name:string,size:int,tmp_name:string,type:string}> $_FILES
-		 */
-		foreach( $_FILES as $name => $file ){
-			$files[$name] = UploadedFileFactory::createFromGlobal($file);
-		}
-
+		// Get all request headers
 		if( \function_exists("getallheaders") ){
 			$headers = \getallheaders();
 		}
@@ -98,7 +89,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 			$_GET,
 			\array_change_key_case($headers),
 			$_COOKIE,
-			$files,
+			UploadedFileFactory::createFromGlobals($_FILES),
 			$_SERVER,
 			$versionMatch[2] ?? "1.1"
 		);

@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ResponseFactoryTest extends TestCase
 {
-	public function test_create_response()
+	public function test_create_response(): void
 	{
 		$responseFactory = new ResponseFactory;
 
@@ -28,7 +28,7 @@ class ResponseFactoryTest extends TestCase
 		$this->assertEquals(ResponseStatus::OK->getPhrase(), $response->getReasonPhrase());
 	}
 
-	public function test_create_response_with_reasonphrase()
+	public function test_create_response_with_reasonphrase(): void
 	{
 		$responseFactory = new ResponseFactory;
 
