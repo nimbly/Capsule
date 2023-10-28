@@ -7,6 +7,9 @@ use Nimbly\Capsule\ServerRequest;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * With this factory you can generate ServerRequest instances.
+ */
 class ServerRequestFactory implements ServerRequestFactoryInterface
 {
 	/**

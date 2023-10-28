@@ -6,6 +6,10 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
+/**
+ * This abstract class provides common functionality between Request, ServerRequest, and Response
+ * implementations.
+ */
 abstract class MessageAbstract implements MessageInterface
 {
 	/**

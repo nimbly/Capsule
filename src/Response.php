@@ -12,15 +12,15 @@ class Response extends MessageAbstract implements ResponseInterface
 	protected string $reasonPhrase;
 
 	/**
-	 * @param int|ResponseStatus $statusCode
-	 * @param string|StreamInterface $body
-	 * @param array<string,string> $headers
-	 * @param string|null $reasonPhrase
-	 * @param string $http_version
+	 * @param int|ResponseStatus $statusCode The HTTP response status code. For example: 200, 404, etc. Alternatively, you can use the ResponseStatus enum.
+	 * @param string|StreamInterface|null $body The body of the response. If no body is expected for the response, you can use a null or empty string value.
+	 * @param array<string,string> $headers An array of key & value pairs for headers to be included in the response. For example, ["Content-Type" => "application/json"]
+	 * @param string|null $reasonPhrase The HTTP status code reason phrase. For example, "Not Found" for 404. By default, the reason phrases listed in the ResponseStatus enum will be used if none provided.
+	 * @param string $http_version The HTTP protocol version of the response. Defaults to "1.1".
 	 */
 	public function __construct(
 		int|ResponseStatus $statusCode,
-		string|StreamInterface $body = null,
+		string|StreamInterface|null $body = null,
 		array $headers = [],
 		?string $reasonPhrase = null,
 		string $httpVersion = "1.1")

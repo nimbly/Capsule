@@ -50,7 +50,7 @@ class ServerRequestFactoryTest extends TestCase
 		$_COOKIE = ["cookie1" => "value1"];
 
 		$_FILES = [
-			[
+			"upload" => [
 				"name" => "file1.json",
 				"type" => "text/plain",
 				"tmp_name" => __DIR__ . "/fixtures/test.json",
@@ -105,27 +105,27 @@ class ServerRequestFactoryTest extends TestCase
 
 		$this->assertEquals(
 			"file1.json",
-			$request->getUploadedFiles()[0]->getClientFilename()
+			$request->getUploadedFiles()["upload"]->getClientFilename()
 		);
 
 		$this->assertEquals(
 			"text/plain",
-			$request->getUploadedFiles()[0]->getClientMediaType()
+			$request->getUploadedFiles()["upload"]->getClientMediaType()
 		);
 
 		$this->assertEquals(
 			100,
-			$request->getUploadedFiles()[0]->getSize()
+			$request->getUploadedFiles()["upload"]->getSize()
 		);
 
 		$this->assertEquals(
 			UPLOAD_ERR_OK,
-			$request->getUploadedFiles()[0]->getError()
+			$request->getUploadedFiles()["upload"]->getError()
 		);
 
 		$this->assertEquals(
 			"{\"name\": \"Test\", \"email\": \"test@example.com\"}",
-			$request->getUploadedFiles()[0]->getStream()->getContents()
+			$request->getUploadedFiles()["upload"]->getStream()->getContents()
 		);
 
 		$this->assertEquals(

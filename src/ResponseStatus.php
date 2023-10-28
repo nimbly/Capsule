@@ -2,6 +2,9 @@
 
 namespace Nimbly\Capsule;
 
+/**
+ * All officially supported HTTP response codes and their corresponding reason phrase.
+ */
 enum ResponseStatus: int
 {
 	case CONTINUE = 100;

@@ -7,6 +7,9 @@ use Nimbly\Capsule\ResponseStatus;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * With this factory you can generate Response instances.
+ */
 class ResponseFactory implements ResponseFactoryInterface
 {
 	/**
