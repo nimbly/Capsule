@@ -17,28 +17,28 @@ use PHPUnit\Framework\TestCase;
  */
 class ResponseFactoryTest extends TestCase
 {
-	public function test_create_response()
+	public function test_create_response(): void
 	{
 		$responseFactory = new ResponseFactory;
 
 		$response = $responseFactory->createResponse(200);
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals(ResponseStatus::OK, $response->getStatusCode());
-		$this->assertEquals(ResponseStatus::getPhrase(ResponseStatus::OK), $response->getReasonPhrase());
+		$this->assertEquals(ResponseStatus::OK->value, $response->getStatusCode());
+		$this->assertEquals(ResponseStatus::OK->getPhrase(), $response->getReasonPhrase());
 	}
 
-	public function test_create_response_with_reasonphrase()
+	public function test_create_response_with_reasonphrase(): void
 	{
 		$responseFactory = new ResponseFactory;
 
 		$response = $responseFactory->createResponse(
-			ResponseStatus::NOT_FOUND,
+			ResponseStatus::NOT_FOUND->value,
 			"Resource not found"
 		);
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals(ResponseStatus::NOT_FOUND, $response->getStatusCode());
+		$this->assertEquals(ResponseStatus::NOT_FOUND->value, $response->getStatusCode());
 		$this->assertEquals("Resource not found", $response->getReasonPhrase());
 	}
 }

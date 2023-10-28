@@ -8,6 +8,9 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
+/**
+ * With this factory you can generate various StreamInterface instances.
+ */
 class StreamFactory implements StreamFactoryInterface
 {
 	/**

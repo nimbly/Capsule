@@ -12,7 +12,7 @@ use RuntimeException;
  */
 class StreamFactoryTest extends TestCase
 {
-	public function test_create_stream()
+	public function test_create_stream(): void
 	{
 		$streamFactory = new StreamFactory;
 
@@ -22,7 +22,7 @@ class StreamFactoryTest extends TestCase
 		$this->assertEquals("Capsule!", $stream->getContents());
 	}
 
-	public function test_create_stream_from_file()
+	public function test_create_stream_from_file(): void
 	{
 		if( !\is_dir(__DIR__ . "/tmp") ){
 			\mkdir(__DIR__ . "/tmp");
@@ -37,7 +37,7 @@ class StreamFactoryTest extends TestCase
 		$this->assertEquals("test_create_stream_from_file", $stream->getContents());
 	}
 
-	public function test_create_stream_from_file_that_fails()
+	public function test_create_stream_from_file_that_fails(): void
 	{
 		$streamFactory = new StreamFactory;
 
@@ -45,7 +45,7 @@ class StreamFactoryTest extends TestCase
 		$streamFactory->createStreamFromFile("foo");
 	}
 
-	public function test_create_stream_from_resource()
+	public function test_create_stream_from_resource(): void
 	{
 		if( !\is_dir(__DIR__ . "/tmp") ){
 			\mkdir(__DIR__ . "/tmp");

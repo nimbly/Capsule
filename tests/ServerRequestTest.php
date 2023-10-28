@@ -56,7 +56,7 @@ class ServerRequestTest extends TestCase
 		return $serverRequest->withParsedBody(["name" => "Test User", "email" => "test@example.com"]);
 	}
 
-	public function test_create_with_uri_instance()
+	public function test_create_with_uri_instance(): void
 	{
 		$uri = UriFactory::createFromString("http://example.org/foo/bar?q=search");
 
@@ -68,7 +68,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_create_with_string_body_creates_buffer_stream()
+	public function test_create_with_string_body_creates_buffer_stream(): void
 	{
 		$request = new ServerRequest(
 			"post",
@@ -82,7 +82,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_get_server_params()
+	public function test_get_server_params(): void
 	{
 		$request = $this->makeRequest();
 
@@ -109,7 +109,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_get_cookie_params()
+	public function test_get_cookie_params(): void
 	{
 		$request = $this->makeRequest();
 
@@ -122,7 +122,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_with_cookie_params()
+	public function test_with_cookie_params(): void
 	{
 		$request = $this->makeRequest();
 
@@ -140,7 +140,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_get_query_params()
+	public function test_get_query_params(): void
 	{
 		$request = $this->makeRequest();
 
@@ -154,7 +154,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_with_query_params()
+	public function test_with_query_params(): void
 	{
 		$request = $this->makeRequest();
 
@@ -177,7 +177,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_get_uploaded_files()
+	public function test_get_uploaded_files(): void
 	{
 		$request = $this->makeRequest();
 
@@ -196,7 +196,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_with_uploaded_files_is_immutable()
+	public function test_with_uploaded_files_is_immutable(): void
 	{
 		$request = $this->makeRequest();
 
@@ -219,7 +219,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_with_parsed_body()
+	public function test_with_parsed_body(): void
 	{
 		$request = $this->makeRequest();
 
@@ -238,7 +238,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_with_attribute()
+	public function test_with_attribute(): void
 	{
 		$request = $this->makeRequest();
 
@@ -255,7 +255,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_get_attributes()
+	public function test_get_attributes(): void
 	{
 		$request = $this->makeRequest();
 
@@ -271,7 +271,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_without_attribute()
+	public function test_without_attribute(): void
 	{
 		$request = $this->makeRequest();
 
@@ -296,28 +296,28 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_has_body_param()
+	public function test_has_body_param(): void
 	{
 		$request = $this->makeRequest();
 
 		$this->assertTrue($request->hasBodyParam("name"));
 	}
 
-	public function test_has_query_param()
+	public function test_has_query_param(): void
 	{
 		$request = $this->makeRequest();
 
 		$this->assertTrue($request->hasQueryParam("query1"));
 	}
 
-	public function test_get_query_param()
+	public function test_get_query_param(): void
 	{
 		$request = $this->makeRequest();
 
 		$this->assertEquals("value1", $request->getQueryParam("query1"));
 	}
 
-	public function test_get_body_param_from_array_parsed_body()
+	public function test_get_body_param_from_array_parsed_body(): void
 	{
 		$request = $this->makeRequest();
 
@@ -330,7 +330,7 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals("test@nimbly.io", $request->getBodyParam("email"));
 	}
 
-	public function test_get_body_param_from_object_parsed_body()
+	public function test_get_body_param_from_object_parsed_body(): void
 	{
 		$request = $this->makeRequest();
 
@@ -343,7 +343,7 @@ class ServerRequestTest extends TestCase
 		$this->assertEquals("test@nimbly.io", $request->getBodyParam("email"));
 	}
 
-	public function test_get_body_param_returns_null_if_not_found()
+	public function test_get_body_param_returns_null_if_not_found(): void
 	{
 		$request = $this->makeRequest();
 
@@ -356,7 +356,7 @@ class ServerRequestTest extends TestCase
 		$this->assertNull($request->getBodyParam("id"));
 	}
 
-	public function test_only_body_params()
+	public function test_only_body_params(): void
 	{
 		$request = $this->makeRequest();
 
@@ -377,7 +377,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_except_body_params()
+	public function test_except_body_params(): void
 	{
 		$request = $this->makeRequest();
 
@@ -398,7 +398,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_has_uploaded_file()
+	public function test_has_uploaded_file(): void
 	{
 		$request = $this->makeRequest();
 
@@ -415,7 +415,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_get_uploaded_file()
+	public function test_get_uploaded_file(): void
 	{
 		$request = $this->makeRequest();
 
@@ -433,7 +433,7 @@ class ServerRequestTest extends TestCase
 		);
 	}
 
-	public function test_get_all_params()
+	public function test_get_all_params(): void
 	{
 		$request = $this->makeRequest();
 

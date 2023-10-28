@@ -5,6 +5,10 @@ namespace Nimbly\Capsule\Stream;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
+/**
+ * A simple in memory character buffer stream. This stream is ideal for streaming smaller string contents. There is no
+ * PHP stream resource backing this stream, instead, all content is buffered directly into the instance.
+ */
 class BufferStream implements StreamInterface
 {
 	/**
@@ -17,7 +21,7 @@ class BufferStream implements StreamInterface
 	protected ?string $buffer = "";
 
 	/**
-	 * @param string $data
+	 * @param string $data Initial data to write to buffer.
 	 */
 	public function __construct(string $data = "")
 	{

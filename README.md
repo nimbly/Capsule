@@ -100,14 +100,14 @@ $response = new Response(200, \json_encode(["foo" => "bar"]), ["Content-Type" =>
 
 ### Response Status
 
-Capsule provides a `ResponseStatus` helper class with HTTP response codes as constants and reason phrases.
+Capsule provides a `ResponseStatus` enum with HTTP response codes and reason phrases.
 
 ```php
-$response = new Response(ResponseStatus::NOT_FOUND);
+$response = new Response(ResponseStatus::NOT_FOUND));
 ```
 
 ```php
-$phrase = ResponseStatus::getPhrase(ResonseStatus::NOT_FOUND);
+$phrase = ResponseStatus::NOT_FOUND->getPhrase();
 
 echo $phrase; // Outputs "Not Found"
 ```

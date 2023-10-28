@@ -37,7 +37,7 @@ class ResourceStream implements StreamInterface
 	protected $resource;
 
 	/**
-	 * @param resource $resource Resource *must* be of type "stream."
+	 * @param resource $resource Resource *must* be of PHP type "stream." For example: $resource = \fopen("/tmp/aa981naai1", "r");
 	 */
 	public function __construct($resource)
 	{
