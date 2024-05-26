@@ -114,6 +114,99 @@ echo $phrase; // Outputs "Not Found"
 
 ## HTTP Factory (PSR-17)
 
-Capsule includes a set of PSR-17 factory classes to be used to create `Request`, `ServerRequest`,  `Response`, `Stream`, `UploadedFile`, and `Uri` instances.
+Capsule includes a set of PSR-17 factory classes to be used to create `Request`, `ServerRequest`,  `Response`, `Stream`, `UploadedFile`, and `Uri` instances, found in the `Nimbly\Capsule\Factory` namespace. These factories are typically used with other libraries that are PSR-7 agnostic. They're also useful for creating mocked instances in unit testing.
 
-`RequestFactory`, `ServerRequestFactory`, `ResponseFactory`, `StreamFactory`, `UploadedFileFactory`, and `UriFactory`.
+### RequestFactory
+```php
+$requestFactory = new RequestFactory;
+$request = $requestFactory->createRequest("get", "https://api.example.com");
+```
+
+### ServerRequestFactory
+```php
+$serverRequestFactory = new ServerRequestFactory;
+$serverRequest = $serverRequestFactory->createServerRequest("post", "https://api.example.com/books");
+```
+
+In addition, the `ServerRequestFactory` provides several static methods for creating server requests.
+
+#### Creating ServerRequest from PHP globals
+You can create a `ServerRequest` instance from the PHP globals space ($_POST, $_GET, $_FILES, $_SERVER, and $_COOKIES).
+
+```php
+$serverRequest = ServerRequestFactory::createFromGlobals();
+```
+
+#### Creating ServerRequest from another PSR-7 ServerRequest
+You can create a Capsule `ServerRequest` instance from another PSR-7 ServerRequest instance:
+
+```php
+$serverRequest = ServerRequestFactory::createServerRequestFromPsr7($otherServerRequest);
+```
+
+### ResponseFactory
+
+```php
+$responseFactory = new ResponseFactory;
+$response = $responseFactory->createResponse(404);
+```
+
+### StreamFactory
+
+#### Create a stream from string content
+
+```php
+$streamFactory = new StreamFactory;
+$stream = $streamFactory->createStream(\json_encode($body));
+```
+
+#### Create a stream from a file
+
+```php
+$streamFactory = new StreamFactory;
+$stream = $streamFactory->createStreamFromFile("/reports/q1.pdf");
+```
+
+#### Create a stream from any resource
+
+```php
+$resource = \fopen("https://example.com/reports/q1.pdf", "r");
+
+$streamFactory = new StreamFactory;
+$stream = $streamFactory->createStreamFromResource($resource);
+```
+
+Alternatively, these methods are also available statically:
+
+```php
+// Create a stream from a string.
+$stream = StreamFactory::createFromString(\json_encode($body));
+
+// Create a stream from a local file.
+$stream = StreamFactory::createFromFile("/reports/q1.pdf");
+
+// Create a stream from a PHP resource.
+$resource = \fopen("https://example.com/reports/q1.pdf", "r");
+$stream = StreamFactory::createFromResource($resource);
+```
+
+### UploadedFileFactory
+
+#### Create an UploadedFile instance
+```php
+$uploadedFileFactory = new UploadedFileFactory;
+
+$stream = StreamFactory::createFromFile("/tmp/upload");
+
+$uploadedFile = $uploadedFileFactory->createUploadedFile(
+    $stream,
+    $stream->getSize(),
+    UPLOAD_ERR_OK,
+    "q1_report.pdf",
+    "application/pdf"
+);
+```
+
+You can also 
+
+`UploadedFileFactory`, and `UriFactory`.

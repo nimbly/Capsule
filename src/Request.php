@@ -139,7 +139,7 @@ class Request extends MessageAbstract implements RequestInterface
 	public function withRequestTarget($requestTarget): static
 	{
 		$instance = clone $this;
-		$instance->requestTarget = $requestTarget;
+		$instance->requestTarget = (string) $requestTarget;
 		return $instance;
 	}
 }

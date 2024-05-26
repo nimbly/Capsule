@@ -2,7 +2,6 @@
 
 namespace Nimbly\Capsule\Factory;
 
-use InvalidArgumentException;
 use Nimbly\Capsule\UploadedFile;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
@@ -10,7 +9,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 
 /**
- * With this factory you can generate various an UploadedFile instance.
+ * With this factory you can generate an UploadedFile instance.
  */
 class UploadedFileFactory implements UploadedFileFactoryInterface
 {
@@ -18,12 +17,12 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 	 * @inheritDoc
 	 */
 	public function createUploadedFile(
-        StreamInterface $stream,
-        int $size = null,
-        int $error = UPLOAD_ERR_OK,
-        string $clientFilename = null,
-        string $clientMediaType = null
-    ): UploadedFileInterface {
+		StreamInterface $stream,
+		int $size = null,
+		int $error = UPLOAD_ERR_OK,
+		string $clientFilename = null,
+		string $clientMediaType = null
+	): UploadedFileInterface {
 
 		return new UploadedFile(
 			$stream,
