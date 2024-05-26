@@ -207,6 +207,16 @@ $uploadedFile = $uploadedFileFactory->createUploadedFile(
 );
 ```
 
-You can also 
+### UriFactory
 
-`UploadedFileFactory`, and `UriFactory`.
+The `UriFactory` allows you to create and parse URIs.
+
+```php
+$uriFactory = new UriFactory;
+$uri = $uriFactory->createUri("https://api.example.com/v1/books?a=Kurt+Vonnegut");
+```
+
+This method is also available statically:
+
+```php
+$uri = UriFactory::createFromString("https://api.example.com/v1/books?a=Kurt+Vonnegut");
