@@ -92,7 +92,17 @@ class UploadedFileTest extends TestCase
 		$uploadedFile = $this->makeFile();
 
 		$this->expectException(RuntimeException::class);
-		$uploadedFile->moveTo("/root");
+
+		switch (PHP_OS) {
+			case 'WINNT':
+				$destination = 'C:\\';
+				break;
+
+			default:
+				$destination = '/root';
+		}
+
+		$uploadedFile->moveTo($destination);
 	}
 
 	public function test_calling_move_to_more_than_once_throws_exception(): void
