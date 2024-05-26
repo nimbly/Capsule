@@ -16,6 +16,16 @@ class Uri implements UriInterface
 		"https" => 443
 	];
 
+	/**
+	 * @param string|null $scheme The HTTP scheme to use for the URI. For example: "http" or "https".
+	 * @param string|null $host The host name of the URI. For example: "api.example.com"
+	 * @param string|null $path The path of the URI. For example: "/books/12345".
+	 * @param integer|null $port The port of the URI if service is using a non-standard port. If service is using 80 for HTTP or 443 for HTTPS, then you do not need to provide the port. For example: 8080.
+	 * @param string|null $username The user name of the URI. For example: "jbossman".
+	 * @param string|null $password The password of the URI. For example: "bologne1".
+	 * @param string|null $query The query part of the URI using the RFC XXX format. For example: "color=red&size=sm"
+	 * @param string|null $fragment The fragment (#table_of_contents) part of the URI. For example: "table_of_contents".
+	 */
 	public function __construct(
 		protected ?string $scheme = null,
 		protected ?string $host = null,

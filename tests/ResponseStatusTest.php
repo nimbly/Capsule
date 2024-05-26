@@ -10,16 +10,10 @@ use Nimbly\Capsule\ResponseStatus;
  */
 class ResponseStatusTest extends TestCase
 {
-	public function test_supported_response_code_returns_phrase()
+	public function test_all_supported_response_codes_return_phrase()
 	{
-		$this->assertEquals(
-			"Ok",
-			ResponseStatus::getPhrase(ResponseStatus::OK)
-		);
-	}
-
-	public function test_unsupported_response_code_returns_empty_string()
-	{
-		$this->assertEmpty(ResponseStatus::getPhrase(1));
+		foreach( ResponseStatus::cases() as $case ){
+			$this->assertNotEmpty($case->getPhrase());
+		}
 	}
 }
