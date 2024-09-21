@@ -7,6 +7,9 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 
+/**
+ * The UploadedFile class represents a single uploaded file within a ServerRequest instance.
+ */
 class UploadedFile implements UploadedFileInterface
 {
 	protected StreamInterface $stream;
@@ -19,11 +22,11 @@ class UploadedFile implements UploadedFileInterface
 	private bool $file_moved = false;
 
 	/**
-	 * @param string|StreamInterface $stream StreamInterface instance or a string to the full path of the file.
-	 * @param string|null $fileName
-	 * @param string|null $mediaType
-	 * @param integer|null $size
-	 * @param integer $error
+	 * @param string|StreamInterface $stream StreamInterface instance of the file contents or a string to the full path of the file. For example: "/tmp/upload_aa38ajbak189"
+	 * @param string|null $fileName Name of the file. For example: "weekly_report.csv"
+	 * @param string|null $mediaType The media or mime type of the file. For example: "image/png".
+	 * @param integer|null $size The size of the file in bytes. For example: 1048576.
+	 * @param integer $error The PHP UPLOAD_ERR_* error code for the file upload.
 	 */
 	public function __construct(
 		string|StreamInterface $stream,

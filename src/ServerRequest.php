@@ -7,6 +7,14 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
+/**
+ * The `ServerRequest` class represents an incoming HTTP request to be handled in your application, service, or
+ * middleware. Typically, you would want to create an instance of this class using the `ServerRequestFactory::createFromGlobals()`
+ * static method, which populates the ServerRequest from the PHP globals space ($_SERVER, $_POST, $_COOKIES, etc).
+ *
+ * You might want to create an instance of this class directly when mocking incoming requests for your application
+ * to build unit and integration tests.
+ */
 class ServerRequest extends Request implements ServerRequestInterface
 {
 	/**
@@ -26,7 +34,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Uploaded files sent in request.
 	 *
-	 * @var array<UploadedFile>
+	 * @var array<array-key,UploadedFileInterface|array<UploadedFileInterface>>
 	 */
 	protected array $uploadedFiles = [];
 
@@ -52,15 +60,15 @@ class ServerRequest extends Request implements ServerRequestInterface
 	protected array $serverParams = [];
 
 	/**
-	 * @param string $method
-	 * @param string|UriInterface $uri
-	 * @param string|StreamInterface $body
-	 * @param array<string,mixed> $query
-	 * @param array<string,mixed> $headers
-	 * @param array<string,mixed> $cookies
-	 * @param array<UploadedFile> $files
-	 * @param array<string,mixed> $serverParams
-	 * @param string $version
+	 * @param string $method The HTTP method of the request. For example, "POST", "GET", etc.
+	 * @param string|UriInterface $uri The URI of the resource to be called. For example: "https://api.example.com/books/12345"
+	 * @param string|StreamInterface $body The body of the request. If request does not contain a body, you can use a null or empty string value.
+	 * @param array<string,mixed> $query An array of key & value pairs for the query params. For example: ["q" => "red socks", "p" => 2]
+	 * @param array<string,mixed> $headers An array of key & value pairs for headers in the request. For example: ["Content-Type" => "application/json"]
+	 * @param array<string,mixed> $cookies An array of key & value pairs of the cookies in the request. For example: ["c_source" => "web"]
+	 * @param array<array-key,UploadedFileInterface|array<UploadedFileInterface>> $files An array of UploadedFileInterface instance for the files to be included in the request.
+	 * @param array<string,mixed> $serverParams An array of key & value pairs to be included into the server params space. For example: ["REAL_IP" => "4.4.4.4"]
+	 * @param string $version The HTTP protocol version used for this request. Defaults to "1.1".
 	 */
 	public function __construct(
 		string $method,
@@ -134,7 +142,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
-	 * @return array<UploadedFileInterface>
+	 * @return array<array-key,UploadedFileInterface|array<UploadedFileInterface>>
 	 */
 	public function getUploadedFiles(): array
 	{
@@ -336,9 +344,9 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * Get an UploadedFileInterface instance by its name.
 	 *
 	 * @param string $name
-	 * @return UploadedFileInterface|null
+	 * @return UploadedFileInterface|array<UploadedFileInterface>|null
 	 */
-	public function getUploadedFile(string $name): ?UploadedFileInterface
+	public function getUploadedFile(string $name): UploadedFileInterface|array|null
 	{
 		return $this->getUploadedFiles()[$name] ?? null;
 	}

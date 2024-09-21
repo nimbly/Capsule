@@ -7,6 +7,9 @@ use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 
+/**
+ * With this factory you can generate a Uri instance.
+ */
 class UriFactory implements UriFactoryInterface
 {
 	/**
