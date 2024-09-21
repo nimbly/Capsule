@@ -17,9 +17,9 @@ class Request extends MessageAbstract implements RequestInterface
 	/**
 	 * HTTP method
 	 *
-	 * @var string
+	 * @var HttpMethod
 	 */
-	protected string $method;
+	protected HttpMethod $method;
 
 	/**
 	 * Request URI
@@ -36,20 +36,20 @@ class Request extends MessageAbstract implements RequestInterface
 	protected ?string $requestTarget = null;
 
 	/**
-	 * @param string $method The HTTP method to use for the request. For example, "POST", "GET", etc.
+	 * @param string|HttpMethod $method The HTTP method to use for the request. For example, "POST", "GET", etc.
 	 * @param string|UriInterface $uri The URI of the resource you are trying to call. For example: "https://api.example.com/books/12345"
 	 * @param string|StreamInterface|null $body The body of the request. If request does not contain a body, you can use a null or empty string value.
 	 * @param array<string,string> $headers An array of key & value pairs for headers to be included in the request. For example, ["Content-Type" => "application/json"]
 	 * @param string $httpVersion The HTTP protocol version to use for this request. Defaults to "1.1".
 	 */
 	public function __construct(
-		string $method,
+		string|HttpMethod $method,
 		string|UriInterface $uri,
 		string|StreamInterface|null $body = null,
 		array $headers = [],
 		string $httpVersion = "1.1")
 	{
-		$this->method = \strtoupper($method);
+		$this->method = \is_string($method) ? HttpMethod::from(\strtoupper($method)) : $method;
 		$this->uri = $uri instanceof UriInterface ? $uri : UriFactory::createFromString($uri);
 		$this->body = $body instanceof StreamInterface ? $body : StreamFactory::createFromString((string) $body);
 
@@ -64,13 +64,13 @@ class Request extends MessageAbstract implements RequestInterface
 
 	/**
 	 * @inheritDoc
-	 * @param string $method
+	 * @param string|HttpMethod $method
 	 * @return static
 	 */
 	public function withMethod($method): static
 	{
 		$instance = clone $this;
-		$instance->method = \strtoupper($method);
+		$instance->method = \is_string($method) ? HttpMethod::from(\strtoupper($method)) : $method;
 		return $instance;
 	}
 
@@ -79,7 +79,7 @@ class Request extends MessageAbstract implements RequestInterface
 	 */
 	public function getMethod(): string
 	{
-		return $this->method;
+		return $this->method->value;
 	}
 
 	/**

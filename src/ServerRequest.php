@@ -60,7 +60,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	protected array $serverParams = [];
 
 	/**
-	 * @param string $method The HTTP method of the request. For example, "POST", "GET", etc.
+	 * @param string|HttpMethod $method The HTTP method of the request. For example, "POST", "GET", etc.
 	 * @param string|UriInterface $uri The URI of the resource to be called. For example: "https://api.example.com/books/12345"
 	 * @param string|StreamInterface $body The body of the request. If request does not contain a body, you can use a null or empty string value.
 	 * @param array<string,mixed> $query An array of key & value pairs for the query params. For example: ["q" => "red socks", "p" => 2]
@@ -71,7 +71,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param string $version The HTTP protocol version used for this request. Defaults to "1.1".
 	 */
 	public function __construct(
-		string $method,
+		string|HttpMethod $method,
 		string|UriInterface $uri,
 		string|StreamInterface|null $body = null,
 		array $query = [],
