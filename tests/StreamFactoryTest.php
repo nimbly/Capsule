@@ -59,4 +59,19 @@ class StreamFactoryTest extends TestCase
 		$this->assertInstanceOf(ResourceStream::class, $stream);
 		$this->assertEquals("test_create_stream_from_resource", $stream->getContents());
 	}
+
+	public function test_create_from_resource(): void
+	{
+		if( !\is_dir(__DIR__ . "/tmp") ){
+			\mkdir(__DIR__ . "/tmp");
+		}
+
+		\file_put_contents(__DIR__ . "/tmp/tmp_file", "test_create_stream_from_resource");
+
+		$streamFactory = new StreamFactory;
+		$stream = $streamFactory::createFromResource(\fopen(__DIR__ . "/tmp/tmp_file", "r"));
+
+		$this->assertInstanceOf(ResourceStream::class, $stream);
+		$this->assertEquals("test_create_stream_from_resource", $stream->getContents());
+	}
 }
