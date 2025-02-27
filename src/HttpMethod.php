@@ -2,6 +2,9 @@
 
 namespace Nimbly\Capsule;
 
+/**
+ * All officially supported HTTP methods
+ */
 enum HttpMethod: string
 {
 	case GET = "GET";

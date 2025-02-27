@@ -6,6 +6,9 @@ use Nimbly\Capsule\Factory\StreamFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * The `Response` class represents a response to an HTTP request and can be used for both `Request` and `ServerRequest` instances.
+ */
 class Response extends MessageAbstract implements ResponseInterface
 {
 	protected ResponseStatus $statusCode;
