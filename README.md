@@ -1,7 +1,7 @@
 # Capsule
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/nimbly/capsule.svg?style=flat-square)](https://packagist.org/packages/nimbly/capsule)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nimbly/capsule/php.yml?style=flat-square)](https://github.com/nimbly/Capsule/actions/workflows/php.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nimbly/capsule/php.yml?style=flat-square)](https://github.com/nimbly/Capsule/actions/workflows/coverage.yml)
 [![Codecov branch](https://img.shields.io/codecov/c/github/nimbly/capsule/master?style=flat-square)](https://app.codecov.io/github/nimbly/Capsule)
 [![License](https://img.shields.io/github/license/nimbly/capsule.svg?style=flat-square)](https://packagist.org/packages/nimbly/capsule)
 
