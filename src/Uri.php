@@ -239,7 +239,7 @@ class Uri implements UriInterface
 			$url .= "/";
 		}
 		elseif( $this->path ) {
-			$url .= ("/" . \trim($this->path, "/"));
+			$url .= (!\str_starts_with($this->path, "/")) ? ("/" . $this->path) : $this->path;
 		}
 
 		if( $this->query ){

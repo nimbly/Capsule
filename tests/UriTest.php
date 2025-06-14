@@ -197,4 +197,23 @@ class UriTest extends TestCase
 			(string) $uri
 		);
 	}
+
+	public function test_to_string_trailing_forward_slash_on_path_is_preserved(): void
+	{
+		$url = "https://api.example.com/resource/";
+		$uri = UriFactory::createFromString($url);
+
+		$this->assertEquals(
+			$url,
+			(string) $uri
+		);
+
+		$url = "https://api.example.com/resource";
+		$uri = UriFactory::createFromString($url);
+
+		$this->assertEquals(
+			$url,
+			(string) $uri
+		);
+	}
 }
