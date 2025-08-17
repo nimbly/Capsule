@@ -2,19 +2,14 @@
 
 namespace Nimbly\Capsule\Tests;
 
+use Nimbly\Capsule\MessageAbstract;
 use Nimbly\Capsule\Request;
 use Nimbly\Capsule\Stream\BufferStream;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-/**
- * @covers Nimbly\Capsule\MessageAbstract
- * @covers Nimbly\Capsule\Request
- * @covers Nimbly\Capsule\Stream\BufferStream
- * @covers Nimbly\Capsule\Factory\UriFactory
- * @covers Nimbly\Capsule\Uri
- * @covers Nimbly\Capsule\Factory\StreamFactory
- */
+#[CoversClass(MessageAbstract::class)]
 class MessageTest extends TestCase
 {
 	public function test_valid_protocol_versions_allowed(): void
@@ -156,19 +151,5 @@ class MessageTest extends TestCase
 			["Host" => ["example.org"]],
 			\array_slice($headers, 0 , 1)
 		);
-	}
-
-	public function test_set_host_header_removes_previous_host_header(): void
-	{
-		$request = new Request("get", "http://example.org");
-
-		$reflection = new ReflectionClass($request);
-		$method = $reflection->getMethod("setHostHeader");
-		$method->setAccessible(true);
-		$method->invokeArgs($request, ["capsule.org", 8080]);
-
-		$this->assertEquals([
-			"capsule.org:8080"
-		], $request->getHeader("Host"));
 	}
 }

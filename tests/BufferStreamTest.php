@@ -4,12 +4,11 @@ namespace Nimbly\Capsule\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Nimbly\Capsule\Stream\BufferStream;
+use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;
 use RuntimeException;
 
-/**
- * @covers Nimbly\Capsule\Stream\BufferStream
- */
+#[CoversClass(BufferStream::class)]
 class BufferStreamTest extends TestCase
 {
 	public function test_contructor_sets_buffer_contents(): void

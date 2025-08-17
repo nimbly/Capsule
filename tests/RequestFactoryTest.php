@@ -4,17 +4,10 @@ namespace Nimbly\Capsule\Tests;
 
 use Nimbly\Capsule\Factory\RequestFactory;
 use Nimbly\Capsule\Request;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Nimbly\Capsule\Factory\RequestFactory
- * @covers Nimbly\Capsule\Request
- * @covers Nimbly\Capsule\Factory\UriFactory
- * @covers Nimbly\Capsule\Uri
- * @covers Nimbly\Capsule\MessageAbstract
- * @covers Nimbly\Capsule\Stream\BufferStream
- * @covers Nimbly\Capsule\Factory\StreamFactory
- */
+#[CoversClass(RequestFactory::class)]
 class RequestFactoryTest extends TestCase
 {
 	public function test_create_request_with_string_uri(): void

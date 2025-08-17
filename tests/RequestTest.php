@@ -2,20 +2,14 @@
 
 namespace Nimbly\Capsule\Tests;
 
+use ReflectionClass;
 use Nimbly\Capsule\Factory\UriFactory;
 use Nimbly\Capsule\Request;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 
-/**
- * @covers Nimbly\Capsule\Request
- * @covers Nimbly\Capsule\Factory\UriFactory
- * @covers Nimbly\Capsule\Uri
- * @covers Nimbly\Capsule\Stream\BufferStream
- * @covers Nimbly\Capsule\Stream\ResourceStream
- * @covers Nimbly\Capsule\MessageAbstract
- * @covers Nimbly\Capsule\Factory\StreamFactory
- */
+#[CoversClass(Request::class)]
 class RequestTest extends TestCase
 {
 	public function test_with_method_saves_data(): void
@@ -118,6 +112,21 @@ class RequestTest extends TestCase
 
 		$this->assertEquals(
 			["example.org"],
+			$request->getHeader("Host")
+		);
+	}
+
+	public function test_set_host_header_removes_previous_host_header(): void
+	{
+		$request = new Request("get", "http://example.org");
+
+		$reflection = new ReflectionClass($request);
+		$method = $reflection->getMethod("setHostHeader");
+		$method->setAccessible(true);
+		$method->invokeArgs($request, ["capsule.org", 8080]);
+
+		$this->assertEquals(
+			["capsule.org:8080"],
 			$request->getHeader("Host")
 		);
 	}

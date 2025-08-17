@@ -4,25 +4,10 @@ namespace Nimbly\Capsule\Tests;
 
 use Nimbly\Capsule\Factory\ServerRequestFactory;
 use Nimbly\Capsule\ServerRequest;
-use Nimbly\Capsule\UploadedFile;
-use Nimbly\Capsule\Stream\BufferStream;
-use Nimbly\Capsule\Stream\ResourceStream;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\StreamInterface;
 
-/**
- * @covers Nimbly\Capsule\MessageAbstract
- * @covers Nimbly\Capsule\Request
- * @covers Nimbly\Capsule\ServerRequest
- * @covers Nimbly\Capsule\UploadedFile
- * @covers Nimbly\Capsule\Uri
- * @covers Nimbly\Capsule\Stream\BufferStream
- * @covers Nimbly\Capsule\Stream\ResourceStream
- * @covers Nimbly\Capsule\Factory\ServerRequestFactory
- * @covers Nimbly\Capsule\Factory\StreamFactory
- * @covers Nimbly\Capsule\Factory\UploadedFileFactory
- * @covers Nimbly\Capsule\Factory\UriFactory
- */
+#[CoversClass(ServerRequestFactory::class)]
 class ServerRequestFactoryTest extends TestCase
 {
 	public function test_create_server_request(): void

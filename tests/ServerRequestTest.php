@@ -6,18 +6,10 @@ use Nimbly\Capsule\Factory\UriFactory;
 use Nimbly\Capsule\ServerRequest;
 use Nimbly\Capsule\Stream\BufferStream;
 use Nimbly\Capsule\UploadedFile;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Nimbly\Capsule\ServerRequest
- * @covers Nimbly\Capsule\Request
- * @covers Nimbly\Capsule\Factory\UriFactory
- * @covers Nimbly\Capsule\Uri
- * @covers Nimbly\Capsule\Stream\BufferStream
- * @covers Nimbly\Capsule\MessageAbstract
- * @covers Nimbly\Capsule\UploadedFile
- * @covers Nimbly\Capsule\Factory\StreamFactory
- */
+#[CoversClass(ServerRequest::class)]
 class ServerRequestTest extends TestCase
 {
 	private function makeRequest(): ServerRequest

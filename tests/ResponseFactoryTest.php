@@ -5,16 +5,10 @@ namespace Nimbly\Capsule\Tests;
 use Nimbly\Capsule\Factory\ResponseFactory;
 use Nimbly\Capsule\Response;
 use Nimbly\Capsule\ResponseStatus;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Nimbly\Capsule\Factory\ResponseFactory
- * @covers Nimbly\Capsule\Factory\StreamFactory
- * @covers Nimbly\Capsule\Response
- * @covers Nimbly\Capsule\ResponseStatus
- * @covers Nimbly\Capsule\MessageAbstract
- * @covers Nimbly\Capsule\Stream\BufferStream
- */
+#[CoversClass(ResponseFactory::class)]
 class ResponseFactoryTest extends TestCase
 {
 	public function test_create_response(): void

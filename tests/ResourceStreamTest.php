@@ -4,11 +4,10 @@ namespace Nimbly\Capsule\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Nimbly\Capsule\Stream\ResourceStream;
+use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
 
-/**
- * @covers Nimbly\Capsule\Stream\ResourceStream
- */
+#[CoversClass(ResourceStream::class)]
 class ResourceStreamTest extends TestCase
 {
 	protected function getResourceStream(): ResourceStream

@@ -7,7 +7,7 @@
 	colors="true"
 	cacheDirectory=".phpunit.cache"
 	requireCoverageMetadata="true"
-	beStrictAboutCoverageMetadata="true">
+	beStrictAboutCoverageMetadata="false">
   <testsuites>
     <testsuite name="default">
       <directory suffix="Test.php">tests</directory>

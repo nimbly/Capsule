@@ -3,12 +3,10 @@
 namespace Nimbly\Capsule\Tests;
 
 use Nimbly\Capsule\Factory\UriFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Nimbly\Capsule\Factory\UriFactory
- * @covers Nimbly\Capsule\Uri
- */
+#[CoversClass(UriFactory::class)]
 class UriFactoryTest extends TestCase
 {
 	public function test_create_uri(): void

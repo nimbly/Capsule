@@ -3,13 +3,11 @@
 namespace Nimbly\Capsule\Stream;
 
 use Nimbly\Capsule\Factory\StreamFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * @covers Nimbly\Capsule\Factory\StreamFactory
- * @covers Nimbly\Capsule\Stream\ResourceStream
- */
+#[CoversClass(StreamFactory::class)]
 class StreamFactoryTest extends TestCase
 {
 	public function test_create_stream(): void

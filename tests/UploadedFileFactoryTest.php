@@ -5,16 +5,11 @@ namespace Nimbly\Capsule\Tests;
 use Nimbly\Capsule\Factory\UploadedFileFactory;
 use Nimbly\Capsule\Stream\BufferStream;
 use Nimbly\Capsule\UploadedFile;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-/**
- * @covers Nimbly\Capsule\Factory\StreamFactory
- * @covers Nimbly\Capsule\Factory\UploadedFileFactory
- * @covers Nimbly\Capsule\UploadedFile
- * @covers Nimbly\Capsule\Stream\BufferStream
- * @covers Nimbly\Capsule\Stream\ResourceStream
- */
+#[CoversClass(UploadedFileFactory::class)]
 class UploadedFileFactoryTest extends TestCase
 {
 	public function test_create_uploaded_file(): void

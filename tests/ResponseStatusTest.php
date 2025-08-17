@@ -4,10 +4,9 @@ namespace Nimbly\Capsule\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Nimbly\Capsule\ResponseStatus;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers Nimbly\Capsule\ResponseStatus
- */
+#[CoversClass(ResponseStatus::class)]
 class ResponseStatusTest extends TestCase
 {
 	public function test_all_supported_response_codes_return_phrase()

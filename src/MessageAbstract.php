@@ -73,7 +73,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string $name
 	 * @return string|null
 	 */
-	private function findHeaderKey(string $name): ?string
+	protected function findHeaderKey(string $name): ?string
 	{
 		foreach( \array_keys($this->headers) as $header ){
 			if( \strtolower($header) === \strtolower($name) ){
@@ -220,29 +220,6 @@ abstract class MessageAbstract implements MessageInterface
 
 			$this->headers[$name] = $value;
 		}
-	}
-
-	/**
-	 * Set the Host header.
-	 *
-	 * @param string $host
-	 * @param int|null $port
-	 * @return void
-	 */
-	protected function setHostHeader(string $host, ?int $port = null): void
-	{
-		if( ($key = $this->findHeaderKey("Host")) ){
-			unset($this->headers[$key]);
-		}
-
-		if( $port ){
-			$host .= ":{$port}";
-		}
-
-		$this->headers = \array_merge(
-			["Host" => [$host]],
-			$this->headers
-		);
 	}
 
 	/**

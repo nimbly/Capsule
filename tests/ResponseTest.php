@@ -5,16 +5,11 @@ namespace Nimbly\Capsule\Tests;
 use Nimbly\Capsule\Response;
 use Nimbly\Capsule\ResponseStatus;
 use Nimbly\Capsule\Stream\BufferStream;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 
-/**
- * @covers Nimbly\Capsule\Response
- * @covers Nimbly\Capsule\ResponseStatus
- * @covers Nimbly\Capsule\MessageAbstract
- * @covers Nimbly\Capsule\Stream\BufferStream
- * @covers Nimbly\Capsule\Factory\StreamFactory
- */
+#[CoversClass(Response::class)]
 class ResponseTest extends TestCase
 {
 	public function test_reason_phrase_set_on_constructor(): void

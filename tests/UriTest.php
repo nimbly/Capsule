@@ -4,12 +4,10 @@ namespace Nimbly\Capsule\Tests;
 
 use Nimbly\Capsule\Factory\UriFactory;
 use Nimbly\Capsule\Uri;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Nimbly\Capsule\Uri
- * @covers Nimbly\Capsule\Factory\UriFactory
- */
+#[CoversClass(Uri::class)]
 class UriTest extends TestCase
 {
 	public function test_get_port_with_none_provided_returns_null(): void

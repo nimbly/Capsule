@@ -142,4 +142,27 @@ class Request extends MessageAbstract implements RequestInterface
 		$instance->requestTarget = (string) $requestTarget;
 		return $instance;
 	}
+
+	/**
+	 * Set the Host header.
+	 *
+	 * @param string $host
+	 * @param int|null $port
+	 * @return void
+	 */
+	protected function setHostHeader(string $host, ?int $port = null): void
+	{
+		if( ($key = $this->findHeaderKey("Host")) ){
+			unset($this->headers[$key]);
+		}
+
+		if( $port ){
+			$host .= ":{$port}";
+		}
+
+		$this->headers = \array_merge(
+			["Host" => [$host]],
+			$this->headers
+		);
+	}
 }
