@@ -36,7 +36,7 @@ $response = $framework->dispatch($serverRequest);
 
 #### Creating from globals
 
-Typically, you will want to create a `ServerRequest` instance from the PHP globals space (`$_SERVER`, `$_POST`, `$_GET`, `$_FILES`, and `$_COOKIES`) for your incoming requests. The `ServerRequestFactory` provides a static method to create such an instance.
+Typically, you will want to create a `ServerRequest` instance from the PHP globals space (`$_SERVER`, `$_POST`, `$_GET`, `$_FILES`, and `$_COOKIES`) for your incoming requests. The `ServerRequestFactory` provides a `createFromGlobals` static method to create such an instance.
 
 ```php
 $serverRequest = ServerRequestFactory::createFromGlobals();

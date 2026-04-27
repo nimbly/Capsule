@@ -9,7 +9,7 @@ class Uri implements UriInterface
 	/**
 	 * Standard ports.
 	 *
-	 * @var array<array-key,int>
+	 * @var array<string,int>
 	 */
 	protected array $standard_ports = [
 		"http" => 80,
@@ -47,7 +47,7 @@ class Uri implements UriInterface
 	 */
 	protected function getStandardPortForScheme(string $scheme): ?int
 	{
-		return $this->standard_ports[$scheme] ?? null;
+		return $this->standard_ports[\strtolower($scheme)] ?? null;
 	}
 
 	/**
@@ -209,7 +209,6 @@ class Uri implements UriInterface
 		return $instance;
 	}
 
-
 	/**
 	 * @inheritDoc
 	 */
@@ -243,11 +242,19 @@ class Uri implements UriInterface
 		}
 
 		if( $this->query ){
-			$url .= ("?" . $this->query);
+			if( !\str_starts_with($this->query, "?") ){
+				$url .= "?";
+			}
+
+			$url .= $this->query;
 		}
 
 		if( $this->fragment ){
-			$url .= ("#" . $this->fragment);
+			if( !\str_starts_with($this->fragment, "#") ){
+				$url .= "#";
+			}
+
+			$url .= $this->fragment;
 		}
 
 		return $url;

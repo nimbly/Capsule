@@ -152,7 +152,9 @@ class Request extends MessageAbstract implements RequestInterface
 	 */
 	protected function setHostHeader(string $host, ?int $port = null): void
 	{
-		if( ($key = $this->findHeaderKey("Host")) ){
+		$key = $this->findHeaderKey("Host");
+
+		if( $key ){
 			unset($this->headers[$key]);
 		}
 

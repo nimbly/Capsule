@@ -1,6 +1,7 @@
 {
 	"name": "nimbly/capsule",
 	"description": "Capsule is a simple PSR-7 HTTP message and PSR-17 HTTP factory implementation.",
+	"keywords": ["PSR-7", "http", "message"],
 	"type": "library",
 	"license": "MIT",
 	"authors": [

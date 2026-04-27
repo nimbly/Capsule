@@ -71,17 +71,14 @@ abstract class MessageAbstract implements MessageInterface
 	 * Find a header by its case-insensitive name.
 	 *
 	 * @param string $name
-	 * @return string|null
+	 * @return string|null Returns the header name (array key) as it exists in the array of headers.
 	 */
 	protected function findHeaderKey(string $name): ?string
 	{
-		foreach( \array_keys($this->headers) as $header ){
-			if( \strtolower($header) === \strtolower($name) ){
-				return $header;
-			}
-		}
-
-		return null;
+		return \array_find(
+			\array_keys($this->headers),
+			fn(string $header) => \strtolower($header) === \strtolower($name)
+		);
 	}
 
 	/**
@@ -104,8 +101,8 @@ abstract class MessageAbstract implements MessageInterface
 
 	/**
 	 * @inheritDoc
-	 * @param string $name
-	 * @return array<string>
+	 * @param string $name Header name
+	 * @return array<string> Returns all values for given header
 	 */
 	public function getHeader($name): array
 	{
@@ -120,7 +117,7 @@ abstract class MessageAbstract implements MessageInterface
 
 	/**
 	 * @inheritDoc
-	 * @param string $name
+	 * @param string $name Returns comma separated list of header values. Returns an empty string if header not found.
 	 */
 	public function getHeaderLine($name): string
 	{

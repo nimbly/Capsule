@@ -309,7 +309,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * Get a query parameter from the query params.
 	 *
 	 * @param string $param
-	 * @return string|null
+	 * @return string|null Returns value of query param or `null` if query param does not exist.
 	 */
 	public function getQueryParam(string $param): ?string
 	{

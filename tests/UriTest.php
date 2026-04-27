@@ -196,6 +196,28 @@ class UriTest extends TestCase
 		);
 	}
 
+	public function test_to_string_query_with_question_mark_is_not_duplicated(): void
+	{
+		$uri = UriFactory::createFromString("https://api.example.com/resource/");
+		$uri = $uri->withQuery("?p=1");
+
+		$this->assertEquals(
+			"https://api.example.com/resource/?p=1",
+			(string) $uri
+		);
+	}
+
+	public function test_to_string_fragment_with_hash_mark_is_not_duplicated(): void
+	{
+		$uri = UriFactory::createFromString("https://api.example.com/resource/");
+		$uri = $uri->withFragment("#ch1");
+
+		$this->assertEquals(
+			"https://api.example.com/resource/#ch1",
+			(string) $uri
+		);
+	}
+
 	public function test_to_string_trailing_forward_slash_on_path_is_preserved(): void
 	{
 		$url = "https://api.example.com/resource/";
