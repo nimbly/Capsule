@@ -19,7 +19,7 @@ class Response extends MessageAbstract implements ResponseInterface
 	 * @param string|StreamInterface|null $body The body of the response. If no body is expected for the response, you can use a null or empty string value.
 	 * @param array<string,string> $headers An array of key & value pairs for headers to be included in the response. For example, ["Content-Type" => "application/json"]
 	 * @param string|null $reasonPhrase The HTTP status code reason phrase. For example, "Not Found" for 404. By default, the reason phrases listed in the ResponseStatus enum will be used if none provided.
-	 * @param string $http_version The HTTP protocol version of the response. Defaults to "1.1".
+	 * @param string $httpVersion The HTTP protocol version of the response. Defaults to "1.1".
 	 */
 	public function __construct(
 		int|ResponseStatus $statusCode,
@@ -45,14 +45,14 @@ class Response extends MessageAbstract implements ResponseInterface
 
 	/**
 	 * @inheritDoc
-	 * @param int $code
+	 * @param int|ResponseStatus $code
 	 * @param string $reasonPhrase
 	 * @return static
 	 */
-	public function withStatus($code, $reasonPhrase = ""): static
+	public function withStatus(int|ResponseStatus $code, string $reasonPhrase = ""): static
 	{
 		$instance = clone $this;
-		$instance->statusCode = ResponseStatus::from($code);
+		$instance->statusCode = \is_int($code) ? ResponseStatus::from($code) : $code;
 		$instance->reasonPhrase = $reasonPhrase ?: $instance->statusCode->getPhrase();
 		return $instance;
 	}

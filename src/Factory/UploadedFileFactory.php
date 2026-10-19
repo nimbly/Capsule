@@ -54,8 +54,8 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
 	/**
 	 * Create a tree of UploadedFile instances.
 	 *
-	 * @param array<array-key,array{tmp_name:string,name:string,type:string,size:int,error:int}|array{tmp_name:array<string>,name:array<string>,type:array<string>,size:array<int>,error:array<int>}> $files Tree of uploaded files in the PHP $_FILES format.
-	 * @return array<array-key,UploadedFile|array<UploadedFile>>
+	 * @param array<string,array{tmp_name:string,name:string,type:string,size:int,error:int}|array{tmp_name:array<string>,name:array<string>,type:array<string>,size:array<int>,error:array<int>}> $files Tree of uploaded files in the PHP $_FILES format.
+	 * @return array<string,UploadedFile|array<UploadedFile>>
 	 */
 	public static function createFromGlobals(array $files): array
 	{

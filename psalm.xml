@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="3"
+    errorLevel="2"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -14,4 +14,12 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+
+	<issueHandlers>
+		<ClassMustBeFinal errorLevel="suppress" />
+	</issueHandlers>
+
+	<issueHandlers>
+		<RiskyTruthyFalsyComparison errorLevel="suppress" />
+	</issueHandlers>
 </psalm>

@@ -151,7 +151,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withScheme($scheme): static
+	public function withScheme(string $scheme): static
 	{
 		$instance = clone $this;
 		$instance->scheme = \strtolower($scheme);
@@ -161,7 +161,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withUserInfo($user, $password = null): static
+	public function withUserInfo(string $user, ?string $password = null): static
 	{
 		$instance = clone $this;
 		$instance->username = $user;
@@ -172,7 +172,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withHost($host): static
+	public function withHost(string $host): static
 	{
 		$instance = clone $this;
 		$instance->host = $host;
@@ -182,7 +182,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withPort($port): static
+	public function withPort(?int $port): static
 	{
 		$instance = clone $this;
 		$instance->port = $port;
@@ -192,7 +192,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withPath($path): static
+	public function withPath(string $path): static
 	{
 		$instance = clone $this;
 		$instance->path = $path;
@@ -202,7 +202,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withQuery($query): static
+	public function withQuery(string $query): static
 	{
 		$instance = clone $this;
 		$instance->query = $query;
@@ -212,7 +212,7 @@ class Uri implements UriInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withFragment($fragment): static
+	public function withFragment(string $fragment): static
 	{
 		$instance = clone $this;
 		$instance->fragment = $fragment;

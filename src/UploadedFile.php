@@ -69,7 +69,7 @@ class UploadedFile implements UploadedFileInterface
 	 * @param string $targetPath
 	 * @return void
 	 */
-	public function moveTo($targetPath): void
+	public function moveTo(string $targetPath): void
 	{
 		$this->validateStream();
 

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+<phpunit
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.4/phpunit.xsd"
 	bootstrap="tests/bootstrap.php"
-	executionOrder="depends,defects"
+	executionOrder="defects"
 	beStrictAboutOutputDuringTests="true"
 	colors="true"
 	cacheDirectory=".phpunit.cache"
 	requireCoverageMetadata="true"
-	beStrictAboutCoverageMetadata="false">
+	beStrictAboutCoverageMetadata="false"
+	resolveDependencies="true">
   <testsuites>
     <testsuite name="default">
       <directory suffix="Test.php">tests</directory>

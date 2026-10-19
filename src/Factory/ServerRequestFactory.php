@@ -23,7 +23,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 	/**
 	 * Create a Capsule ServerRequest instance from another PSR-7 ServerRequestInterface instance.
 	 *
-	 * @param ServerRequestInterface $serverRequest
+	 * @param ServerRequestInterface $psr7ServerRequest
 	 * @return ServerRequest
 	 */
 	public static function createServerRequestFromPsr7(ServerRequestInterface $psr7ServerRequest): ServerRequest

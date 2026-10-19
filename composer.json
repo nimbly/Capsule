@@ -25,9 +25,9 @@
 		}
 	},
 	"require-dev": {
-		"vimeo/psalm": "^6.0",
-		"phpunit/phpunit": "^10.0",
-		"symfony/var-dumper": "^4.3"
+		"vimeo/psalm": "^6.16",
+		"phpunit/phpunit": "^13.0",
+		"symfony/var-dumper": "^8.0"
 	},
 	"autoload-dev": {
 		"psr-4": {

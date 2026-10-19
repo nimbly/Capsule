@@ -67,7 +67,7 @@ class Request extends MessageAbstract implements RequestInterface
 	 * @param string|HttpMethod $method
 	 * @return static
 	 */
-	public function withMethod($method): static
+	public function withMethod(string|HttpMethod $method): static
 	{
 		$instance = clone $this;
 		$instance->method = \is_string($method) ? HttpMethod::from(\strtoupper($method)) : $method;
@@ -96,7 +96,7 @@ class Request extends MessageAbstract implements RequestInterface
 	 * @param bool $preserveHost
 	 * @return static
 	 */
-	public function withUri(UriInterface $uri, $preserveHost = false): static
+	public function withUri(UriInterface $uri, bool $preserveHost = false): static
 	{
 		$instance = clone $this;
 		$instance->uri = $uri;
@@ -133,13 +133,13 @@ class Request extends MessageAbstract implements RequestInterface
 
 	/**
 	 * @inheritDoc
-	 * @param mixed $requestTarget
+	 * @param string $requestTarget
 	 * @return static
 	 */
-	public function withRequestTarget($requestTarget): static
+	public function withRequestTarget(string $requestTarget): static
 	{
 		$instance = clone $this;
-		$instance->requestTarget = (string) $requestTarget;
+		$instance->requestTarget = $requestTarget;
 		return $instance;
 	}
 

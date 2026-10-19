@@ -34,7 +34,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Uploaded files sent in request.
 	 *
-	 * @var array<array-key,UploadedFileInterface|array<UploadedFileInterface>>
+	 * @var array<string,UploadedFileInterface|array<UploadedFileInterface>>
 	 */
 	protected array $uploadedFiles = [];
 
@@ -66,7 +66,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param array<string,mixed> $query An array of key & value pairs for the query params. For example: ["q" => "red socks", "p" => 2]
 	 * @param array<string,mixed> $headers An array of key & value pairs for headers in the request. For example: ["Content-Type" => "application/json"]
 	 * @param array<string,mixed> $cookies An array of key & value pairs of the cookies in the request. For example: ["c_source" => "web"]
-	 * @param array<array-key,UploadedFileInterface|array<UploadedFileInterface>> $files An array of UploadedFileInterface instance for the files to be included in the request.
+	 * @param array<string,UploadedFileInterface|array<UploadedFileInterface>> $files An array of UploadedFileInterface instance for the files to be included in the request.
 	 * @param array<string,mixed> $serverParams An array of key & value pairs to be included into the server params space. For example: ["REAL_IP" => "4.4.4.4"]
 	 * @param string $version The HTTP protocol version used for this request. Defaults to "1.1".
 	 */
@@ -142,7 +142,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
 	/**
 	 * @inheritDoc
-	 * @return array<array-key,UploadedFileInterface|array<UploadedFileInterface>>
+	 * @return array<string,UploadedFileInterface|array<UploadedFileInterface>>
 	 */
 	public function getUploadedFiles(): array
 	{
@@ -193,7 +193,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getAttribute($name, $default = null): mixed
+	public function getAttribute(string $name, $default = null): mixed
 	{
 		return $this->attributes[$name] ?? $default;
 	}
@@ -204,7 +204,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param mixed $value
 	 * @return static
 	 */
-	public function withAttribute($name, $value): static
+	public function withAttribute(string $name, $value): static
 	{
 		$instance = clone $this;
 		$instance->attributes[$name] = $value;
@@ -217,7 +217,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * @param string $name
 	 * @return static
 	 */
-	public function withoutAttribute($name): static
+	public function withoutAttribute(string $name): static
 	{
 		$instance = clone $this;
 		unset($instance->attributes[$name]);
@@ -231,7 +231,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	 * Note, this method will return *true* as long as the param exists, even
 	 * if the value of the param is null or generally "falsey".
 	 *
-	 * @param string $name
+	 * @param string $param The name of the body param to check for.
 	 * @return boolean
 	 */
 	public function hasBodyParam(string $param): bool
@@ -242,7 +242,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 	/**
 	 * Get a request parameter from the parsed request body.
 	 *
-	 * @param string $name Parsed body param name.
+	 * @param string $param Parsed body param name.
 	 * @return mixed|null Null is returned if body param does not exist.
 	 */
 	public function getBodyParam(string $param): mixed

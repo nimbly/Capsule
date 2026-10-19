@@ -56,7 +56,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string $version
 	 * @return static
 	 */
-	public function withProtocolVersion($version): self
+	public function withProtocolVersion(string $version): MessageInterface
 	{
 		if( !\in_array($version, $this->allowedVersions) ){
 			throw new RuntimeException("Invalid protocol version {$version}");
@@ -94,7 +94,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @inheritDoc
 	 * @param string $name
 	 */
-	public function hasHeader($name): bool
+	public function hasHeader(string $name): bool
 	{
 		return ($this->findHeaderKey($name) !== null);
 	}
@@ -104,7 +104,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string $name Header name
 	 * @return array<string> Returns all values for given header
 	 */
-	public function getHeader($name): array
+	public function getHeader(string $name): array
 	{
 		$key = $this->findHeaderKey($name);
 
@@ -119,7 +119,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @inheritDoc
 	 * @param string $name Returns comma separated list of header values. Returns an empty string if header not found.
 	 */
-	public function getHeaderLine($name): string
+	public function getHeaderLine(string $name): string
 	{
 		$header = $this->getHeader($name);
 
@@ -136,7 +136,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string|array<string> $value
 	 * @return static
 	 */
-	public function withHeader($name, $value): static
+	public function withHeader(string $name, $value): MessageInterface
 	{
 		$instance = clone $this;
 
@@ -160,7 +160,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string|array<string> $value
 	 * @return static
 	 */
-	public function withAddedHeader($name, $value): static
+	public function withAddedHeader(string $name, $value): MessageInterface
 	{
 		$key = $this->findHeaderKey($name);
 
@@ -187,7 +187,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @param string $name
 	 * @return static
 	 */
-	public function withoutHeader($name): static
+	public function withoutHeader(string $name): MessageInterface
 	{
 		$key = $this->findHeaderKey($name);
 
@@ -231,7 +231,7 @@ abstract class MessageAbstract implements MessageInterface
 	 * @inheritDoc
 	 * @return static
 	 */
-	public function withBody(StreamInterface $body): static
+	public function withBody(StreamInterface $body): MessageInterface
 	{
 		$instance = clone $this;
 		$instance->body = $body;
