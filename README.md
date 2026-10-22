@@ -112,6 +112,17 @@ $phrase = ResponseStatus::NOT_FOUND->getPhrase();
 echo $phrase; // Outputs "Not Found"
 ```
 
+## HTTP Methods
+
+The `HttpMethod` enum can be used with Capsule in place of string HTTP methods. It supports all official HTTP methods (get, post, put, patch, query, etc.)
+
+```php
+$request = new ServerRequest(
+	method: HttpMethod::GET,
+	uri: "https://api.example.com/v1/books"
+)
+```
+
 ## HTTP Factory (PSR-17)
 
 Capsule includes a set of PSR-17 factory classes to be used to create `Request`, `ServerRequest`,  `Response`, `Stream`, `UploadedFile`, and `Uri` instances, found in the `Nimbly\Capsule\Factory` namespace. These factories are typically used with other libraries that are PSR-7 agnostic. They're also useful for creating mocked instances in unit testing.

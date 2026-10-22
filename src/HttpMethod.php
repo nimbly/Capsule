@@ -8,6 +8,7 @@ namespace Nimbly\Capsule;
 enum HttpMethod: string
 {
 	case GET = "GET";
+	case QUERY = "QUERY";
 	case POST = "POST";
 	case PUT = "PUT";
 	case PATCH = "PATCH";
