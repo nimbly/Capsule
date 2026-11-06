@@ -11,6 +11,7 @@ if( \function_exists("array_find") === false ){
 	 * @param array<string,mixed> $array
 	 * @param callable $callback
 	 * @return string|null Returns the key if found, null otherwise.
+	 * @psalm-suppress MissingReturnType
 	 */
 	function array_find(array $array, callable $callback): ?string
 	{
