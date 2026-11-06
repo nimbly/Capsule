@@ -22,11 +22,14 @@
 	"autoload": {
 		"psr-4": {
 			"Nimbly\\Capsule\\": "src/"
-		}
+		},
+		"files": [
+			"src/compat.php"
+		]
 	},
 	"require-dev": {
 		"vimeo/psalm": "^6.16",
-		"phpunit/phpunit": "^13.0",
+		"phpunit/phpunit": "^11.0",
 		"symfony/var-dumper": "^8.0"
 	},
 	"autoload-dev": {
