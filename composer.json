@@ -30,7 +30,7 @@
 	"require-dev": {
 		"vimeo/psalm": "^6.16",
 		"phpunit/phpunit": "^11.0",
-		"symfony/var-dumper": "^8.0"
+		"symfony/var-dumper": "^7.0"
 	},
 	"autoload-dev": {
 		"psr-4": {
